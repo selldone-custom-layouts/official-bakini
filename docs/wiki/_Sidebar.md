@@ -1,4 +1,4 @@
-**[Argon Electronics](Home)**
+**[Medio Electronics](Home)**
 
 - [Install with AI](Install-with-AI)
 - [Manual Setup](Manual-Setup)
@@ -11,6 +11,6 @@
 
 ---
 
-- [Live shop](https://argon.selldone.shop)
-- [Repository](https://github.com/selldone-custom-layouts/official-argon)
+- [Live shop](https://medio.selldone.shop)
+- [Repository](https://github.com/selldone-custom-layouts/official-medio)
 - [All custom Layouts](https://github.com/selldone-custom-layouts)

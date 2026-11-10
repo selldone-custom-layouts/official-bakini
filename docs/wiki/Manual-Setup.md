@@ -1,16 +1,16 @@
 # Manual Setup
 
-Set Argon up on your shop yourself. Follow these steps in order, or let an agent do it: [Install with AI](Install-with-AI).
+Set Medio up on your shop yourself. Follow these steps in order, or let an agent do it: [Install with AI](Install-with-AI).
 
 ## 0. Before you start: sign-in
 
 Set up your shop's **OAuth client id** first (in the shop dashboard's login / OAuth client settings, or with the Selldone MCP connector's `selldone_shop_client_list` and `selldone_shop_client_create`). Without it, Sign in on the Layout leaves for Selldone and shows an error.
 
-Guest checkout, payment methods, shipping methods and login modes are your settings. Argon handles each choice; see [Shop Requirements](Shop-Requirements).
+Guest checkout, payment methods, shipping methods and login modes are your settings. Medio handles each choice; see [Shop Requirements](Shop-Requirements).
 
 ## 1. Get your own copy
 
-Fork **selldone-custom-layouts/official-argon** on GitHub, then clone your fork with its submodules:
+Fork **selldone-custom-layouts/official-medio** on GitHub, then clone your fork with its submodules:
 
 ```bash
 git clone --recurse-submodules https://github.com/<you>/<your-repo>.git
@@ -44,13 +44,13 @@ VITE_APP_SAMPLE_DEFAULT_LANGUAGE=en
 VITE_APP_DEV_SERVER_PORT=9132
 ```
 
-`.env.development.local` picks the buyer-account design for development: `VITE_KALIO_ACCOUNT=desk` (side rail, the one Argon ships) or remove it for `home` (tabs).
+`.env.development.local` picks the buyer-account design for development: `VITE_KALIO_ACCOUNT=desk` (side rail, the one Medio ships) or remove it for `home` (tabs).
 
 ## 4. Your brand and theme
 
-- **Name:** `components/kalio/kalio-brand.ts`, `BRAND.name = "Argon"`. Put your name there. The logo tile, page titles, footer and messages follow it. `null` keeps your shop's own title.
-- **Mark:** `assets/brand/argon-mark.svg` (the tab icon and the avatar on order messages). Replace it with your own 64×64 SVG, or keep it.
-- **Theme:** `components/argon/argon-theme.settings.ts`, the one file for colours, light or dark and the visitor switcher. See [Theme and colours](Theme-and-colours).
+- **Name:** `components/kalio/kalio-brand.ts`, `BRAND.name = "Medio"`. Put your name there. The round logo, page titles, footer and messages follow it. `null` keeps your shop's own title.
+- **Mark:** `assets/brand/medio-mark.svg` (the tab icon and the avatar on order messages). Replace it with your own 64×64 SVG, or keep it.
+- **Theme:** `components/medio/medio-theme.settings.ts`, the one file for colours, light or dark and the visitor switcher. See [Theme and colours](Theme-and-colours).
 
 ## 5. Run it
 
@@ -58,7 +58,7 @@ VITE_APP_DEV_SERVER_PORT=9132
 npm run serve
 ```
 
-Open <http://localhost:9132>. Check the home, a category, a product page, the cart and the account against your shop. If a section is missing, see [Shop Requirements](Shop-Requirements). Grey boxes with a file name are photo slots: see [Customize](Customize#the-photos).
+Open <http://localhost:9134>. Check the home, a category, a product page, the basket and the account against your shop. If a section is missing, see [Shop Requirements](Shop-Requirements). Grey boxes with a file name are photo slots: see [Customize](Customize#photos).
 
 ## 6. Give the Layout your identity
 
@@ -91,7 +91,7 @@ git fetch upstream main --tags --prune
 git merge --no-ff upstream/main
 ```
 
-Resolve conflicts by keeping Argon's templates and Selldone's logic. Then re-apply the patches if the submodules changed:
+Resolve conflicts by keeping Medio's templates and Selldone's logic. Then re-apply the patches if the submodules changed:
 
 ```bash
 git -C modules/components apply ../../patches/modules-components.kalio.patch

@@ -35,15 +35,15 @@ The shop's Home is a Page Builder page. Set Home to **Shop**: see [Go Live](Go-L
 
 ## Grey boxes with a file name in them
 
-Those are photo slots waiting for their photo. Put a WebP with exactly that name in `assets/photos/`, then build and release. A new tag or brand asks for its own `trend-<tag>.webp` or `brand-<brand>.webp`. See [Customize](Customize#the-photos).
+Those are photo slots waiting for their photo. Put a WebP with exactly that name in `assets/photos/`, then build and release. A new tag or brand asks for its own `trend-<tag>.webp` or `brand-<brand>.webp`. See [Customize](Customize#photos).
 
 ## A category shows a collage of products instead of a photo
 
-It has no photo of that shape. Add `assets/argon/<shape>-<category slug>.webp` (the slug is the category's `name`), then build and release. See [Customize](Customize#category-photos).
+It has no photo of that shape. Add `assets/medio/<shape>-<category slug>.webp` (the slug is the category's `name`), then build and release. See [Customize](Customize#category-photos).
 
 ## A home section is missing
 
-Each section folds away without its data: "<Category> offers" and the deal strip need discounts, "Shop the latest tech" needs four categories with products, "Explore our brands" needs four brands, "Trending now" needs tags other than `best-seller` and `new-arrival`, "Tips and guides" needs blog posts. See [Shop Requirements](Shop-Requirements).
+Each section folds away without its data: the campaign strip and "Deals" cards need discounts, the promo tiles need seven categories with products, "The latest from…" needs a brand with three products, "Deals from our top brands" needs three brands with deals, "Popular picks" needs tags other than `best-seller` and `new-arrival`, "Guides & inspiration" needs blog posts. See [Shop Requirements](Shop-Requirements).
 
 ## The deal clock or the deal date is missing
 
@@ -51,11 +51,11 @@ A clock counts only to a deal's own end date. Give the discount an end date in S
 
 ## The Theme button doesn't show on my shop
 
-That is by design: with `themeSwitcher: "showcase"` it shows only on Argon's showcase shops. Set `themeSwitcher: "on"` in `components/argon/argon-theme.settings.ts` to give your visitors the switcher. See [Theme and colours](Theme-and-colours).
+That is by design: with `themeSwitcher: "showcase"` it shows only on Medio's showcase shops. Set `themeSwitcher: "on"` in `components/medio/medio-theme.settings.ts` to give your visitors the switcher. See [Theme and colours](Theme-and-colours).
 
 ## Purple buttons appear in some places
 
-Those are Selldone's own components using the theme colour. Argon sets `--v-theme-primary` from its buy colour in `style/kalio-tokens.scss`; if a part still shows Selldone's purple, make it read that variable rather than a fixed colour. To change the colours themselves, use the settings file, not the tokens.
+Those are Selldone's own components using the theme colour. Medio sets `--v-theme-primary` from its buy colour in `style/kalio-tokens.scss`; if a part still shows Selldone's purple, make it read that variable rather than a fixed colour. To change the colours themselves, use the settings file, not the tokens.
 
 ## Filters are missing or show old values
 

@@ -1,16 +1,16 @@
 # Shop Requirements
 
-The Layout reads everything from your shop. Nothing about Digini is hard-coded. Here is what your shop's data needs so that each part looks as it does on [argon.selldone.shop](https://argon.selldone.shop). A section with no data folds away; it never shows an empty box.
+The Layout reads everything from your shop. Nothing about Digini is hard-coded. Here is what your shop's data needs so that each part looks as it does on [medio.selldone.shop](https://medio.selldone.shop). A section with no data folds away; it never shows an empty box.
 
 ## Settings (yours to choose)
 
 | Setting | What to set | What the Layout does |
 | --- | --- | --- |
 | **OAuth client id** | Set it up for your shop first | Sign in opens your shop's own sign-in. Without it, Sign in leaves for Selldone and shows an error. |
-| **Business model** | A normal shop | Argon shows no seller names, seller pages or seller sections. |
-| **Guest checkout** | Your choice | When guests may buy, "Add to cart" works signed out; otherwise it asks the shopper to sign in first, as Selldone's own button does. |
-| **Payment methods** | At least one, for your currency | Without one, the cart says the shop is not taking payments yet, and Pay does not open an empty window. |
-| **Shipping methods / pickup points** | What you offer | The product page's Delivery and returns card lists them; "Delivery method" in the cart appears only when there is a choice. |
+| **Business model** | A normal shop | Medio shows no seller names, seller pages or seller sections. |
+| **Guest checkout** | Your choice | When guests may buy, "Add to basket" works signed out; otherwise it asks the shopper to sign in first, as Selldone's own button does. |
+| **Payment methods** | At least one, for your currency | Without one, the basket says the shop is not taking payments yet, and Pay does not open an empty window. |
+| **Shipping methods / pickup points** | What you offer | The product page's Delivery and returns card lists them; "Delivery method" in the basket appears only when there is a choice. |
 | **Login modes** | Your choice | The sign-in window follows them. |
 | **Currency, country, language** | Your market | Prices, the address form, the language and currency pickers in the footer. |
 | **Home of the domain** | The shop page | The designed home is the shop page. A Page Builder page set as Home replaces it on `/`. |
@@ -24,7 +24,7 @@ The Layout reads everything from your shop. Nothing about Digini is hard-coded. 
 - **"<Category> offers" pills** are the four categories with the most deals.
 - **"Shop the latest tech"** shows four categories, those with a photo first, then those with the most new arrivals. It needs at least four categories with products.
 - **The wide banner** ("Up to X% off <Category>") is the category with the biggest saving, a category with a wide photo first.
-- **Photos (optional):** `wide-`, `portrait-` or `square-<slug>.webp` in `assets/argon/` (see [Customize](Customize#category-photos)). Without a photo a category gets a collage of its own products.
+- **Photos (optional):** `wide-`, `portrait-` or `square-<slug>.webp` in `assets/medio/` (see [Customize](Customize#category-photos)). Without a photo a category gets a collage of its own products.
 
 ## Products
 
@@ -37,7 +37,7 @@ The Layout reads everything from your shop. Nothing about Digini is hard-coded. 
 
 ## Specs and filters
 
-The results page's dropdowns and the All filters sheet come from **product specs** and the category's **filter list**:
+The results page's Filters panel (and its phone sheet) comes from **product specs** and the category's **filter list**:
 
 - Write specs **flat**: `{"Group": "group", "Key": ["value"]}` with `spec_order`. Nested specs are ignored by Selldone.
 - After changing specs, save the category's filter list again (its values are frozen when saved).
@@ -48,9 +48,9 @@ The results page's dropdowns and the All filters sheet come from **product specs
 
 Tags are found from your products, never named in code. A tag with no products shows nothing; a new tag on any product shows up without a code change.
 
-- `best-seller` → the Best seller badge, the "Best sellers" promo card, and first place in Popular products.
-- `new-arrival` → the New badge and the "New arrivals" promo card (else the newest products).
-- **Any other tag** → the header's "Trending" dropdown and a card in "Trending now" (the four most used tags). Each card has its own photo slot, `trend-<tag>.webp` (see [Customize](Customize#the-photos)).
+- `best-seller` → the Best seller badge and the home's "Best sellers" rail.
+- `new-arrival` → the New badge and the home's "Just arrived" rail (else the newest products).
+- **Any other tag** → a tab in the home's "Popular picks" rail, and a choice in each hub's "Can't decide?" (with its own photo slot, `choose-<tag>.webp`; see [Customize](Customize#photos)).
 
 ## Content
 

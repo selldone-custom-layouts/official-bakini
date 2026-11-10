@@ -1,95 +1,78 @@
 # Customize
 
-Argon's design lives in its own components and style sheets. Selldone's commerce logic underneath (cart, bill, checkout, variants, orders) stays untouched. After any change: build and upload a new version ([Build and Upload](Build-and-Upload)) and put it live ([Go Live](Go-Live)).
+Medio's design lives in its own components and style sheets. Selldone's commerce logic underneath (basket, bill, checkout, variants, orders) stays untouched. After any change: build and upload a new version ([Build and Upload](Build-and-Upload)) and put it live ([Go Live](Go-Live)).
 
-## The name, in one line
+## The name and the logo
 
-`components/kalio/kalio-brand.ts`: `BRAND.name = "Argon"`. The logo (`components/argon/ArgonLogo.vue`) draws it in lower case, white on a red rounded tile; the page titles, footer and messages follow. Set it to `null` to use your shop's own title.
+`components/kalio/kalio-brand.ts`: `BRAND.name = "Medio"`. The logo (`components/medio/MedioLogo.vue`) draws it in lower case, white, inside a round violet disc with a small magenta dot; the page titles, footer and messages follow. Set it to `null` to use your shop's own title.
 
-The mark, `assets/brand/argon-mark.svg` (a white "a" on the red tile, 64×64), is the tab icon and the avatar on order messages. Replace the file to use your own.
+The mark, `assets/brand/medio-mark.svg` (a white "m" on the violet disc with the magenta dot, 64×64), is the tab icon and the avatar on order messages. Replace the file to use your own.
 
-## Colours, light or dark
+## The colours, light or dark
 
-One file: `components/argon/argon-theme.settings.ts`. See [Theme and colours](Theme-and-colours). Do not edit the palettes in `components/argon/argon-theme.ts` or the tokens in `style/argon-theme.scss` for a merchant's theme.
+One file: `components/medio/medio-theme.settings.ts`. See [Theme and colours](Theme-and-colours). Do not edit the palettes in `components/medio/medio-theme.ts` or the tokens in `style/medio-theme.scss` for a merchant's theme.
 
-## Type and icons
+## Type, tokens and words
 
 | What | Where |
 | --- | --- |
-| Fonts (Barlow, Material Symbols Rounded) | `components/kalio/kalio-fonts.ts` |
-| Colour tokens (red brand, green buy, near-black pills, grey grounds, sale red) | `style/argon-theme.scss` |
+| Fonts (Outfit, Material Symbols Rounded) | `components/kalio/kalio-fonts.ts` |
+| Colour tokens (violet actions, magenta savings, black pills, grey page, white cards, slate footer, pastels) | `style/medio-theme.scss` |
+| The word for the basket in Selldone's own English strings | `components/kalio/kalio-brand.ts` (`cartWords`) |
+| Medio's own words (every one through `t("medio.…", "English")`) | the components; other languages in `components/medio/i18n/` |
 
-## The photos
+## Photos
 
-Argon has two kinds of photo. Both are plain files: drop them in, build, release. No code change.
+Medio has two kinds of photo. Both are plain files: drop them in, build, release. No code change.
 
 ### Photo slots
 
-17 photo slots are registered in `components/argon/argon-photos.ts`: nine fixed ones, four for the tags in Trending now and four for the brands in Explore our brands. Each slot looks for `assets/photos/<file>.webp`. Until that file exists, the slot shows a calm grey placeholder of the same shape with the file's name in it, so you can see which file goes where.
+The slots are registered in `components/medio/medio-photos.ts`. Each looks for `assets/photos/<file>.webp`. Until that file exists, the slot shows a calm tinted placeholder of the same shape with a photo icon and the file's name, so you can see which file goes where.
 
-| File | Size | Where it shows |
+| File | Size | Where |
 | --- | --- | --- |
-| `promo-deals.webp` | 1200×800 (3:2) | Home, the first dark promo card (Today's deals) |
-| `promo-new.webp` | 1200×800 (3:2) | Home, the second promo card (New arrivals) |
-| `promo-best.webp` | 1200×800 (3:2) | Home, the third promo card (Best sellers) |
-| `banner-compare.webp` | 1200×675 (16:9) | Home, the right side of the dark red compare band |
-| `trend-<tag>.webp` | 1200×800 (3:2) | Home, Trending now: one per tag shown (four) |
-| `brand-<brand>.webp` | 1000×1000 (1:1) | Home, Explore our brands: one per brand shown (four) |
-| `service-track.webp` | 1000×1000 (1:1) | Home, There's even more: Track an order |
-| `service-compare.webp` | 1000×1000 (1:1) | Home, There's even more: Compare products |
-| `service-help.webp` | 1000×1000 (1:1) | Home, There's even more: Help & FAQ |
-| `service-contact.webp` | 1000×1000 (1:1) | Home, There's even more: Contact us |
-| `help-desk.webp` | 1200×800 (3:2) | Home, the Need a hand? block |
+| `hero-main.webp` | 2400×960 | Home, the big hero (words on its calm left side); without it the hero shows the three biggest deals on a white stage |
+| `why-deals.webp`, `why-compare.webp`, `why-track.webp`, `why-returns.webp`, `why-help.webp`, `why-secure.webp` | 800×800 | Home, the six "Why shop with" tiles (shown in a circle) |
+| `help-hero.webp` | 2400×640 | Help & Support (the FAQ), beside the banner's words |
+| `about-hero.webp` | 2400×900 | About us |
+| `notfound.webp` | 1200×900 | The 404 page |
+| `choose-<tag>.webp` | 1200×800 | A category hub's "Can't decide?" choice for that tag (`choose-wireless.webp`, `choose-4k.webp`…); a new tag looks for its own file |
 
-The `trend-` and `brand-` names follow your live data: the tag or brand in lower case, with spaces and signs as `-` ("4K" → `trend-4k.webp`). A new tag or brand shows a placeholder with its own file name until you add that file.
-
-To add or replace photos:
-
-1. Make WebP files at the sizes above (quality about 82). Keep the subject inside the frame with some room at the edges; each photo is cropped slightly to fill its slot. No text or logos in the photos.
-2. Put them in `assets/photos/` with exactly those names. To replace one, overwrite the file.
-3. Build and release a new version. The slots pick the files up at build time.
-
-The photo prompts used for Argon's showcase shop are kept in the owner's design folder (`digini-design/codex-photos-argon.md`, not in this repository). They are a good starting point for your own.
+The photo prompts used for Medio's showcase shop are kept in the owner's design folder (`digini-design/codex-photos-medio.md`, not in this repository). They are a good starting point for your own: no text, logos or faces in any photo.
 
 ### Category photos
 
-The category photos are `assets/argon/<shape>-<category slug>.webp`. The slug is the category's `name` in Selldone.
+The home's promo tiles use the category photos: `assets/medio/<shape>-<category slug>.webp`. The slug is the category's `name` in Selldone.
 
-| Shape | Ratio | Where it shows |
+| Shape | Size | Where |
 | --- | --- | --- |
-| `wide` | 16:9, a quiet left third for words | the "Up to X% off <Category>" banner; also the photo cards when there is no other shape |
-| `square` | 1:1 | the "Shop the latest tech" photo cards (first choice) |
-| `portrait` | 4:5 | the About page; the photo cards when there is no square one |
+| `portrait-<slug>.webp` | 4:5 | the tall promo tile |
+| `square-<slug>.webp` | 1:1 | the 2×2 promo tiles |
+| `wide-<slug>.webp` | 16:9 (a calm left third) | the two wide promo tiles |
 
-A category without a photo gets a collage of its own products, so the Layout is complete with no photos at all. An optional smaller copy, `<shape>-<slug>-800.webp`, is used on small screens. Add, replace or remove files the same way: drop them in `assets/argon/`, build, release.
+A category without a photo gets a collage of its own products, so the Layout is complete with no photos at all. Add, replace or remove files the same way: drop them in `assets/medio/`, build, release.
 
-Keep the total file count of a release under about 360 (Selldone's upload limit). The photos above fit.
+## Sections and pages
 
-## Where things are
-
-| Area | Files |
+| What | Where |
 | --- | --- |
-| Header (utility row, logo tile, Shop and Trending dropdowns, search, actions, benefits strip, phone side panel) | `components/argon/shell/ArgonHeader.vue` |
-| Footer (columns, sign-up, legal row) | `components/argon/shell/ArgonFooter.vue` |
-| Home | `components/argon/ArgonHome.vue`, `ArgonRail.vue`, `ArgonRow.vue`, `ArgonPhoto.vue`, `ArgonSlot.vue`, `argon.ts` |
-| Product card (everywhere, also inside Selldone's catalogue grid) | `components/argon/ArgonCard.vue`, `argon-buy.ts`, `ArgonDealClock.vue` |
-| Results page (crumbs, title, filter dropdowns, All filters) | `pages/products/StorefrontPageProducts.vue`, `components/argon/shop/ArgonListTop.vue`, `ArgonFilterBar.vue` |
-| Product page | `pages/product/StorefrontPageProduct.vue`, `components/argon/product/` (`ArgonProductOverview.vue`, `ArgonComplete.vue`, `argon-spec.ts`) |
-| Quick-buy sheet | `components/kalio/KalioQuickBuy.vue` (Argon's overview inside) |
-| Compare | `components/kalio/compare/`, `style/kalio-compare.scss` |
-| Cart drawer, cart page, address sheet, payment window | `components/kalio/shell/KalioBasketDrawer.vue`, `pages/basket/cart/`, `components/kalio/checkout/`, `style/kalio-checkout.scss` |
-| Order page | `pages/basket/order/`, `components/kalio/order/` |
-| Account ("desk") | `components/kalio/account/`, `style/kalio-account.scss` |
-| Content pages, 404 | `pages/official/`, `pages/blog/`, `pages/faq/`, `pages/errors/404/` |
-| Every page's Argon dress | `style/argon.scss`, `style/argon-pages.scss` (loaded last) |
+| Header (message strip, utility row, logo, Shop All / Services / Deals panels, search, actions, promises, phone menu, basket drawer) | `components/medio/shell/MedioHeader.vue` |
+| Footer (five columns, the Theme strip, legal row) | `components/medio/shell/MedioFooter.vue` |
+| Home | `components/medio/MedioHome.vue`, `MedioRail.vue`, `MedioRow.vue`, `MedioScroller.vue`, `MedioPhoto.vue`, `MedioSlot.vue`, `medio.ts` |
+| Product card and list row (everywhere, also inside Selldone's listing) | `components/medio/MedioCard.vue`, `medio-buy.ts`, `MedioDealClock.vue` |
+| Category hub | `components/medio/shop/MedioHub.vue` |
+| Results page (title, banner, Filters, toolbar, List / Grid) | `pages/products/StorefrontPageProducts.vue`, `components/medio/shop/MedioFilterPanel.vue`, `components/medio/medio-listing.ts` |
+| Product page | `pages/product/StorefrontPageProduct.vue`, `components/medio/product/` (`MedioProductOverview.vue`, `MedioAddons.vue`, `MedioTogether.vue`, `medio-spec.ts`) |
+| Quick-buy sheet | `components/kalio/KalioQuickBuy.vue` (Medio's overview inside) |
+| Help & Support (FAQ) | `pages/faq/StorefrontPageFaq.vue` |
+| 404 | `pages/errors/404/StorefrontPageError404.vue` |
+| Styles | `style/medio.scss` (base, header, footer, cards), `medio-home.scss`, `medio-shop.scss`, `medio-pdp.scss`, `medio-dress.scss` (the other pages), loaded last |
 
 ## Rules the design keeps
 
-- **Re-skin, don't replace.** Keep Selldone's scripts for the cart, bill, checkout, variants and orders; change templates and styles.
-- **Two colours.** Green for every buy action (Add to cart, Checkout, chosen state), red for the brand (logo tile, links, accents). Every colour is a token.
-- **Flat buttons; hover changes the colour only.** No line under any word or icon, except links inside an article's text.
-- **Rings inside the box.** Selection and focus rings are drawn inside the element, never as an outline outside it.
-- **Nothing is named in code.** Categories, tags, brands, prices and deals come from the shop. A tag with no products shows nothing.
-- **Deal clocks are real.** They count to the deal's own end date; no date, no clock.
-- **No product counts in shopper words.** Only a results page shows a result count.
-- **No pop-ups.** "Add to cart" turns into "− n +" in place; there is no "Added" toast and no phone bottom bar.
+- **One action colour.** Violet for every button, the round search button, links and chosen states; magenta only for savings and the campaign strip; black pills only for campaign tags. Every colour is a token.
+- **Flat.** Buttons are pills without shadows; hover changes the colour only; no line under any word or icon.
+- **Rings inside the box.** Every selection ring and card edge is an inset shadow, never an outline.
+- **Packshots on white.** Product photos have white grounds, so they always sit on a white well (in dark mode too).
+- **Honest words.** No product counts in shopper text, no invented credit offers ("Pay in parts at checkout where available"), delivery lines only from the shop's own delivery ways, deal clocks only to a deal's real end date.
+- **Live data.** Nothing names a product, price, category, brand or tag; tags make their own sections and hub choices.

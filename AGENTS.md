@@ -22,14 +22,14 @@ the owner's controlled clone, fork, or release branch.
 
 ## Theme (palette, brand colour, light or dark, the visitor switcher)
 
-When a merchant asks for a theme ("use the yellow theme", "my brand colour is #F5C400", "make it dark"), edit **one file only**: `components/argon/argon-theme.settings.ts`. Nothing else needs to change, and the colours are made readable automatically (buttons, links, the logo tile, dark mode). Argon's own palette paints buy buttons green and the logo, links and accents red; a merchant's brand colour or any other palette uses one colour for both.
+When a merchant asks for a theme ("use the yellow theme", "my brand colour is #F5C400", "make it dark"), edit **one file only**: `components/medio/medio-theme.settings.ts`. Nothing else needs to change, and the colours are made readable automatically (buttons, the round search button, links, the round logo, dark mode). Medio paints every action with one colour (deep violet by default); savings stay magenta in every palette.
 
 | Setting | Allowed values |
 | --- | --- |
-| `palette` | `"argon"` (Argon: green buy buttons and a red brand; the default), `"cobalt"`, `"plum"`, `"teal"`, `"tangerine"` |
+| `palette` | `"medio"` (Medio violet; the default), `"ocean"`, `"emerald"`, `"ruby"`, `"copper"` |
 | `brandColor` | any `"#RRGGBB"`; when set it replaces `palette` |
 | `mode` | `"light"` or `"dark"` |
-| `themeSwitcher` | `"showcase"` (the visitor switcher shows only on Argon's own showcase shop, Digini 15549; the default), `"on"` (the merchant's visitors get the Theme row in the footer), `"off"` |
+| `themeSwitcher` | `"showcase"` (the visitor switcher shows only on Medio's own showcase shop, Digini 15549; the default), `"on"` (the merchant's visitors get the Theme row in the footer), `"off"` |
 | `textOnBrand` | only with `brandColor`: `"auto"` (a light brand such as yellow keeps its colour, with dark words on it) or `"white"` (white words; a light colour is darkened) |
 
 Worked examples (change only these lines; leave the rest of the file as it is):
@@ -39,15 +39,19 @@ Worked examples (change only these lines; leave the rest of the file as it is):
 - **"Make it dark"**: `mode: "dark"`.
 - **"Let visitors switch themes"**: `themeSwitcher: "on"`.
 - **"Remove the switcher"**: `themeSwitcher: "off"`. On a merchant's own shop it is already hidden with `"showcase"`.
-- **"Go back to the original colours"**: remove `brandColor` and set `palette: "argon", mode: "light"`.
+- **"Go back to the original colours"**: remove `brandColor` and set `palette: "medio", mode: "light"`.
 
-The switcher itself is the shared package in `components/theme-switcher/` (the same code as every other Layout; see its PORTING.md in the kit). Argon's palettes and tokens are in `components/argon/argon-theme.ts`; do not edit them for a merchant's theme.
+The switcher itself is the shared package in `components/theme-switcher/` (the same code as every other Layout; see its PORTING.md in the kit). Medio's palettes and tokens are in `components/medio/medio-theme.ts`; do not edit them for a merchant's theme.
 
 Then release and check:
 
 1. Build and upload: `LAYOUT_ID=<your Layout id> SELLDONE_CLI_SRC=<cli clone> bash scripts/release.sh <new version> desk`. Put the version live.
 2. Check the contrast on the live shop. It must print `TOTAL 0`:
    ```sh
-   PAGES="home=/,category=/<a category>,product=/product/<id>" node components/theme-switcher/tools/contrast-audit.cjs https://<your shop> ".ar-cats"
+   PAGES="home=/,category=/<a category>,product=/product/<id>" node components/theme-switcher/tools/contrast-audit.cjs https://<your shop> ".md-header"
    ```
-3. If the visitor switcher is on, also run the kit's `ring-sweep.cjs` in light and dark (`STORAGE='{"argon-theme":"{\\"palette\\":\\"argon\\",\\"mode\\":\\"dark\\"}"}'`). The switcher is the Theme row in the footer (since 1.0.4).
+3. If the visitor switcher is on, also run the kit's `ring-sweep.cjs` in light and dark (`STORAGE='{"medio-theme":"{\\"palette\\":\\"medio\\",\\"mode\\":\\"dark\\"}"}'`). The switcher is the Theme row in the footer.
+
+## Words and languages
+
+Medio's own words go through `t("medio.<area>.<name>", "English")` (`components/kalio/i18n/kalio-i18n.ts`, the shared i18n runtime). To add a language the shop enables, add `components/medio/i18n/<code>.ts` with the same keys and register it in `components/medio/i18n/index.ts` (`MEDIO_LANGUAGES`); it is fetched only when a visitor picks it. Use logical CSS (`margin-inline`, `inset-inline`, `text-align: start`) so a right-to-left language mirrors.

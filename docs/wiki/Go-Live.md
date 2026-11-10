@@ -19,9 +19,9 @@ Before you go live, check that your shop's **OAuth client id** is set up (see [S
 
 Your Layout id is the one printed after your first upload. Pin the **exact** version, never `latest`, so an unverified upload never goes live. Read `api.shops.layout.options` before and after.
 
-## Two Layouts on one shop (how Argon runs)
+## Two Layouts on one shop (how Medio runs)
 
-A shop can show a different Layout on one of its domains. Argon lives only on `argon.selldone.shop` (domain 1241 of the shop Digini; Argon's Layout id: see `ARGON.md`), while the shop's default and its other domains carry other Layouts:
+A shop can show a different Layout on one of its domains. Medio lives only on `medio.selldone.shop` (domain 1243 of the shop Digini; Medio's Layout id: see `MEDIO.md`), while the shop's default and its other domains carry other Layouts:
 
 ```json
 api.shops.domains.layout.set   path { "domain_key": "<the domain's id>" }
@@ -53,7 +53,7 @@ If `/` shows a Page Builder landing page while `/shop` shows the Layout, the sho
 Open your shop's address **without a query** (a query shows the catalogue instead of the home). Then:
 
 - the page source's `window.sdShopLayout` → `"saved"` block names your package and the new version;
-- the header shows your logo tile, and the home starts with the category carousel;
+- the header shows your round logo, and the home starts with the campaign strip, the hero and the round "Shop deals" tiles;
 - no blank page and no flash of an old design;
 - Sign in opens your shop's own sign-in;
 - check on a phone-sized screen too.
