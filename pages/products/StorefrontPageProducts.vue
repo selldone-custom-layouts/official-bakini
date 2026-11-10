@@ -64,22 +64,22 @@
       <!-- Shown on the bare shop page only. Every narrowing action the
            listing performs travels as a query parameter, so the home page
            gets out of the way the moment a shopper searches or filters. -->
-      <argon-home v-if="show_home" />
+      <medio-home v-if="show_home" />
 
-      <!-- ▆▆▆▆▆▆▆▆ Category, search, Deals, All products (Argon) ▆▆▆▆▆▆▆▆ -->
+      <!-- ▆▆▆▆▆▆▆▆ Category, search, Deals, All products (Medio) ▆▆▆▆▆▆▆▆ -->
       <!-- A big catalogue store's results page: the title, a row of filter
            dropdowns with "All filters" (a side sheet) and the result count,
            the filters that are on as chips, then the grid, four to a row
            (two on a phone). No side column. -->
-      <div v-if="!show_home" class="ar-wrap ar-list">
-        <argon-list-top
+      <div v-if="!show_home" class="md-wrap md-list">
+        <medio-list-top
           :aisle="listing_parent"
           :category-name="category_name"
           :filter="t_filter"
           :mode="category_name ? 'aisle' : 'catalogue'"
           :products="listing_products"
         />
-        <argon-filter-bar
+        <medio-filter-bar
           :cats="aisle_list"
           :current="category_name"
           :filters="filters_def"
@@ -97,11 +97,11 @@
             <div v-if="lm.updating" aria-live="polite" class="lm-pill" role="status"><i class="lm-spin" aria-hidden="true"></i>Updating results…</div>
           </transition>
         </div>
-        <div v-if="on_chips.length" class="ar-chips ar-list__on">
-          <button v-for="c in on_chips" :key="c.key" class="ar-chip -on" type="button" @click="c.off()">
+        <div v-if="on_chips.length" class="md-chips md-list__on">
+          <button v-for="c in on_chips" :key="c.key" class="md-chip -on" type="button" @click="c.off()">
             {{ c.label }}<span class="ms">close</span>
           </button>
-          <button v-if="on_chips.length > 1" class="ar-link" type="button" @click="setFilter(null)">Clear all</button>
+          <button v-if="on_chips.length > 1" class="md-link" type="button" @click="setFilter(null)">Clear all</button>
         </div>
         <s-products-listing
           ref="listing"
@@ -110,7 +110,7 @@
           :vendor-id="vendor_id"
           :has-breadcrumb="false"
           :has-filter="false"
-          class="t-listing w-listing ar-grid"
+          class="t-listing w-listing md-grid"
           load-more
           route-mode
           update-route
@@ -124,11 +124,11 @@
         </div>
 
         <!-- ▆▆▆▆▆▆▆▆ Under the grid ▆▆▆▆▆▆▆▆ -->
-        <argon-row v-if="catalogue && search_query" :limit="12" lazy sort="bestselling" title="Popular right now" />
-        <section v-if="more_aisles.length" class="ar-keep">
-          <h2 class="ar-keep__h">Keep shopping</h2>
-          <div class="ar-keep__list">
-            <router-link v-for="a in more_aisles" :key="a.id" :to="aisleTo(a)" class="ar-pill -line">{{ a.title || a.name }}</router-link>
+        <medio-row v-if="catalogue && search_query" :limit="12" lazy sort="bestselling" title="Popular right now" />
+        <section v-if="more_aisles.length" class="md-keep">
+          <h2 class="md-keep__h">Keep shopping</h2>
+          <div class="md-keep__list">
+            <router-link v-for="a in more_aisles" :key="a.id" :to="aisleTo(a)" class="md-pill -line">{{ a.title || a.name }}</router-link>
           </div>
         </section>
       </div>
@@ -142,12 +142,12 @@
 <script lang="ts">
 import SProductsListing from "@selldone/components-vue/storefront/products/listing/SProductsListing.vue";
 import TemplateMixin from "@selldone/components-vue/mixin/template/TemplateMixin.ts";
-import ArgonHome from "../../components/argon/ArgonHome.vue";
-import ArgonListTop from "../../components/argon/shop/ArgonListTop.vue";
-import ArgonFilterBar from "../../components/argon/shop/ArgonFilterBar.vue";
-import ArgonRow from "../../components/argon/ArgonRow.vue";
+import MedioHome from "../../components/medio/MedioHome.vue";
+import MedioListTop from "../../components/medio/shop/MedioListTop.vue";
+import MedioFilterBar from "../../components/medio/shop/MedioFilterBar.vue";
+import MedioRow from "../../components/medio/MedioRow.vue";
 import { fromRoute } from "../../components/walio/shop/walio-filters";
-import { colourName } from "../../components/argon/argon";
+import { colourName } from "../../components/medio/medio";
 import { aisleRoute, aisles, countProducts, offers, vendors } from "../../components/kalio/kalio-catalog";
 import {StorefrontSeo} from "../../helpers/StorefrontSeo";
 import KalioQuickBuy from "../../components/kalio/KalioQuickBuy.vue";
@@ -160,10 +160,10 @@ export default {
   name: "StorefrontPageProducts",
   components: {
     SProductsListing,
-    ArgonHome,
-    ArgonListTop,
-    ArgonFilterBar,
-    ArgonRow,
+    MedioHome,
+    MedioListTop,
+    MedioFilterBar,
+    MedioRow,
     KalioQuickBuy,
   },
   mixins: [TemplateMixin],

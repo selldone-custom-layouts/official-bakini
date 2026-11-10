@@ -71,7 +71,7 @@
 <script>
 import { settling, shownCount, stepTo } from "../kalio-basket";
 import { productImage, sellerRoute, vendorImage, vendors } from "../kalio-catalog";
-import { colourName } from "../../argon/argon";
+import { colourName } from "../../medio/medio";
 
 /* The size of a variant in words: its volume, weight, pack, colour or style. */
 function sizeOf(variant) {
@@ -156,7 +156,7 @@ export default {
     },
 
     size(item) {
-      /* Argon: a colour line says its colour too. */
+      /* Medio: a colour line says its colour too. */
       return sizeOf(item.variant) || (item.variant?.color ? colourName(item.variant.color) : null);
     },
 

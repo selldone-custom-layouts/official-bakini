@@ -1,8 +1,8 @@
 {
   "deploy_server": "https://layouts.selldone.com",
   "deploy_path": "",
-  "package": "argon-electronics",
-  "name": "Argon Electronics",
+  "package": "medio-electronics",
+  "name": "Medio Electronics",
   "version": "1.0.9",
   "storefront": true,
   "backoffice": false,

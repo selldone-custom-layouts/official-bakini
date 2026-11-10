@@ -9,36 +9,36 @@
   results sit in, and on a search its top match as one wide card.
 -->
 <template>
-  <!-- Argon (digini-design/shop-b.html, search-b.html, deals-b.html): the
+  <!-- Medio (digini-design/shop-b.html, search-b.html, deals-b.html): the
        crumbs, the title with the category's one-line description beside it
        (no product counts), and on a search its top match as a wide band. -->
-  <div class="w-top ar-top">
-    <nav aria-label="Breadcrumb" class="ar-crumbs">
+  <div class="w-top md-top">
+    <nav aria-label="Breadcrumb" class="md-crumbs">
       <router-link :to="{ path: '/' }">Home</router-link>
       <span aria-hidden="true" class="ms">chevron_right</span>
       <span aria-current="page">{{ crumb }}</span>
     </nav>
 
-    <div :class="{ '-deals': deals_page }" class="ar-top__title">
+    <div :class="{ '-deals': deals_page }" class="md-top__title">
       <h1>{{ mode === "aisle" ? (aisle ? aisle.title || aisle.name : crumb) : title }}</h1>
       <p v-if="mode === 'aisle' && aisle && aisle.description">{{ aisle.description }}</p>
     </div>
 
-    <argon-deal-of-day v-if="deals_page && dotd" :more="dotdMore" :product="dotd" class="ar-top__dotd" @quick-buy="$emit('quick-buy', $event)" />
+    <medio-deal-of-day v-if="deals_page && dotd" :more="dotdMore" :product="dotd" class="md-top__dotd" @quick-buy="$emit('quick-buy', $event)" />
 
     <template v-if="mode !== 'aisle'">
-      <div v-if="hits.length > 1" class="ar-inaisles">
+      <div v-if="hits.length > 1" class="md-inaisles">
         <span>In departments</span>
-        <router-link v-for="h in hits" :key="h.aisle.id" :to="h.to" class="ar-chip">{{ h.aisle.title || h.aisle.name }}</router-link>
+        <router-link v-for="h in hits" :key="h.aisle.id" :to="h.to" class="md-chip">{{ h.aisle.title || h.aisle.name }}</router-link>
       </div>
-      <router-link v-if="search && top" :to="productTo(top)" class="ar-match">
-        <span class="ar-match__im"><img :src="image(top, false)" :srcset="srcset(top)" alt="" sizes="(max-width: 760px) 96px, 200px" @error="dropSrcset" /></span>
-        <span class="ar-match__tx">
+      <router-link v-if="search && top" :to="productTo(top)" class="md-match">
+        <span class="md-match__im"><img :src="image(top, false)" :srcset="srcset(top)" alt="" sizes="(max-width: 760px) 96px, 200px" @error="dropSrcset" /></span>
+        <span class="md-match__tx">
           <small>Top match</small>
           <b>{{ top.title }}</b>
-          <span class="ar-match__price">
+          <span class="md-match__price">
             <u-price :amount="price(top).now" :currency="currency" />
-            <span v-if="price(top).was" class="ar-save">Save <u-price :amount="price(top).was - price(top).now" :currency="currency" /></span>
+            <span v-if="price(top).was" class="md-save">Save <u-price :amount="price(top).was - price(top).now" :currency="currency" /></span>
           </span>
           <em>See the product<span class="ms">chevron_right</span></em>
         </span>
@@ -49,13 +49,13 @@
 
 <script>
 import CurrencyMixin from "@selldone/components-vue/mixin/currency/CurrencyMixin.ts";
-import ArgonDealOfDay from "../../argon/ArgonDealOfDay.vue";
-import { catalogue, dealOfTheDay, dealsOf, mixByCategory } from "../../argon/argon";
+import MedioDealOfDay from "../../medio/MedioDealOfDay.vue";
+import { catalogue, dealOfTheDay, dealsOf, mixByCategory } from "../../medio/medio";
 import { aisleImage, aisleIndex, dropSrcset, priceOf, productImage, productSrcset, tintFor } from "../../kalio/kalio-catalog";
 
 export default {
   name: "WalioShelfTop",
-  components: { ArgonDealOfDay },
+  components: { MedioDealOfDay },
   mixins: [CurrencyMixin],
   emits: ["quick-buy"],
   inject: ["$shop"],
@@ -98,7 +98,7 @@ export default {
     title() {
       if (this.search) return `Results for “${this.search}”`;
       if (this.deals) return "Today’s deals";
-      /* Argon: a brand's page (Shop by brand, Brands menu). */
+      /* Medio: a brand's page (Shop by brand, Brands menu). */
       if (this.filter?.brands?.length === 1) return this.filter.brands[0];
       return "All products";
     },

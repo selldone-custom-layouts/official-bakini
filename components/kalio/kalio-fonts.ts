@@ -1,8 +1,8 @@
 /*
- * Argon — typefaces.
+ * Medio — typefaces.
  *
- * Barlow sets every word; Material Symbols Rounded draws Argon's own icons
- * (the `.ms` spans in components/argon). They are requested from the app at
+ * Barlow sets every word; Material Symbols Rounded draws Medio's own icons
+ * (the `.ms` spans in components/medio). They are requested from the app at
  * start-up rather than from index.html: in production the Layout runs inside
  * the HTML Selldone renders for the shop, and index.html never reaches the
  * visitor. Selldone's own components keep their Material Icons (v-icon).

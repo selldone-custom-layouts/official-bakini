@@ -266,8 +266,8 @@ export async function reorder(vm: any, items: any[]): Promise<{ added: number; f
   return { added, failed };
 }
 
-/* ━━━━━━━━━━━━ Argon: a card adds the colour picked on it ━━━━━━━━━━━━
-   Argon's cards show a product's colour swatches; a tap picks that variant
+/* ━━━━━━━━━━━━ Medio: a card adds the colour picked on it ━━━━━━━━━━━━
+   Medio's cards show a product's colour swatches; a tap picks that variant
    and "Add to cart" puts that colour in the cart, then reads "− n +" for it.
    The same queue as every other count (stepTo), keyed by product and
    variant, so quick taps add up here too. */
@@ -304,7 +304,7 @@ export function addVariant(vm: any, product: any, variant: any): Promise<any> {
   }).catch(() => null);
 }
 
-/** Argon's product page: put `count` of a product (or one variant) in the
+/** Medio's product page: put `count` of a product (or one variant) in the
  *  cart at once (its quantity menu, then Add to cart). A line already in the
  *  cart grows by `count`; the same queue as every stepper, so a quick second
  *  tap is never lost. */

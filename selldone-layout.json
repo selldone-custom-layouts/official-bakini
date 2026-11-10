@@ -1,9 +1,9 @@
 {
-  "name": "Argon Electronics",
+  "name": "Medio Electronics",
   "shop": "Digini",
   "kind": "Electronics store · bright catalogue store",
   "summary": "A single-shop electronics store dressed as a bright, busy catalogue retailer: a red logo tile and a wide search, a category carousel with packshot tiles, dark promo cards, a green deal strip that names the deals' real end date, photo cards, product rails with Deal, New and Best seller badges and green Add to cart buttons, trending tags, brands and services; a results page with a row of filter dropdowns and an All filters side sheet; a two-column product page (gallery card left, stacked buy cards right) with Complete your purchase; a side-by-side compare page; a receipt-first cart and a desk-style account.",
-  "live": "https://argon.selldone.shop",
+  "live": "https://medio.selldone.shop",
   "cover": "docs/screenshots/cover.jpg",
   "screenshots": [
     "docs/screenshots/desktop-home.jpg",
@@ -23,7 +23,7 @@
     "red",
     "green"
   ],
-  "package": "argon-electronics",
+  "package": "medio-electronics",
   "base": "selldone/storefront",
   "status": "live"
 }

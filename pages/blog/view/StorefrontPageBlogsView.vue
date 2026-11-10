@@ -141,7 +141,7 @@ import KalioSampleNote from "@app-storefront/components/kalio/pages/KalioSampleN
 import KalioMiniProduct from "@app-storefront/components/kalio/pages/KalioMiniProduct.vue";
 import KalioQuickBuy from "@app-storefront/components/kalio/KalioQuickBuy.vue";
 import { addVariant, basketLine, hasSizes, mayBuy, pendingLine, quickAdd, shownCount } from "@app-storefront/components/kalio/kalio-basket";
-import { catalogueById, variantDimension } from "@app-storefront/components/argon/argon";
+import { catalogueById, variantDimension } from "@app-storefront/components/medio/medio";
 import { priceOf, productsById } from "@app-storefront/components/kalio/kalio-catalog";
 import {
   dateParts,
@@ -226,7 +226,7 @@ export default {
       return `mailto:?subject=${encodeURIComponent(this.article?.title || "")}&body=${encodeURIComponent(location.href)}`;
     },
     /* Products "Add all" can put straight in the cart: no choice to make,
-       or (Argon) a colour, which goes in as its first colour in stock. */
+       or (Medio) a colour, which goes in as its first colour in stock. */
     addable() {
       return this.list.filter((product) => !hasSizes(product) || this.firstColour(product));
     },

@@ -12,21 +12,21 @@
 //   ALIGN    the icons' left edges differ by more than 1px.
 //
 // Usage: node scripts/box-check.cjs <base> [home selector]
-//   PAGES="home=/,category=/x-category,…"   (default: Argon's set)
-//   WIDTHS=1440,390   STORAGE='{"argon-theme":"{\"palette\":\"argon\",\"mode\":\"dark\"}"}'
+//   PAGES="home=/,category=/x-category,…"   (default: Medio's set)
+//   WIDTHS=1440,390   STORAGE='{"medio-theme":"{\"palette\":\"medio\",\"mode\":\"dark\"}"}'
 //   STATES=1 (default) also opens: the Shop menu, the phone menu, a quick-buy sheet, the cart drawer and
 //   the cart page with a cart filled in the local store only (SHOP=<xapi name>, CART=<cart button>).
 // Prints each finding and "TOTAL n". Deliver at 0.
 const PW = process.env.PW || "D:/Kalio Sample Shop Claude/kalio-marketplace/node_modules/playwright";
 const { chromium } = require(PW);
 const base = (process.argv[2] || "http://localhost:9132").replace(/\/$/, "");
-const WAIT = process.argv[3] || ".ar-cats";
+const WAIT = process.argv[3] || ".md-cats";
 const PAGES = (process.env.PAGES ||
   "home=/,category=/action-camera-category,deals=/?filter=%7B%22only_has_discount%22%3Atrue%7D,search=/?search=wireless,product=/product/710091,product2=/product/710058,compare=/comparison?list=p710091_p710089,blog=/blog,404=/no-such-page,faq=/faq,contact=/contact-us")
   .split(",").map((s) => s.split("="));
 const WIDTHS = (process.env.WIDTHS || "1440,390").split(",").map(Number);
 const SHOP = process.env.SHOP || "digini-hzgablru";
-const CART = process.env.CART || ".ar-act.-cart";
+const CART = process.env.CART || ".md-act.-cart";
 const STATES = process.env.STATES !== "0";
 
 function audit() {
@@ -158,19 +158,19 @@ const fillCart = (pg) =>
       await push(pg, "/");
       await pg.waitForTimeout(3500);
       if (!mob) {
-        await pg.click(".ar-nav__b[data-dd=shop]").catch(() => {});
+        await pg.click(".md-nav__b[data-dd=shop]").catch(() => {});
         await pg.waitForTimeout(800);
         report(`${w} shop-menu`, await pg.evaluate(audit));
         await pg.keyboard.press("Escape");
-        await pg.click(".ar-nav__b[data-dd=shop]").catch(() => {});
+        await pg.click(".md-nav__b[data-dd=shop]").catch(() => {});
       } else {
-        await pg.click(".ar-burger").catch(() => {});
+        await pg.click(".md-burger").catch(() => {});
         await pg.waitForTimeout(900);
         report(`${w} phone-menu`, await pg.evaluate(audit));
-        await pg.click(".ar-menu .ar-x").catch(() => {});
+        await pg.click(".md-menu .md-x").catch(() => {});
       }
       await pg.waitForTimeout(500);
-      const opened = await pg.evaluate(() => { const b = [...document.querySelectorAll(".ar-card .ar-btn")].find((x) => /Choose options/i.test(x.textContent)); if (b) { b.scrollIntoView(); b.click(); } return !!b; });
+      const opened = await pg.evaluate(() => { const b = [...document.querySelectorAll(".md-card .md-btn")].find((x) => /Choose options/i.test(x.textContent)); if (b) { b.scrollIntoView(); b.click(); } return !!b; });
       if (opened) {
         await pg.waitForTimeout(3500);
         report(`${w} quick-buy`, await pg.evaluate(audit));

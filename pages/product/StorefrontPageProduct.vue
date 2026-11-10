@@ -14,18 +14,18 @@
 
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <!--
-    Argon — product page (digini-design/argon-product.html), after a big
+    Medio — product page (digini-design/medio-product.html), after a big
     catalogue store's: the breadcrumb of the category, then two columns on a
-    light-grey ground (ArgonProductOverview): the gallery card with About
+    light-grey ground (MedioProductOverview): the gallery card with About
     this product, the specifications, delivery and reviews under it on the
     left; the stacked buy cards on the right, in view while the left
     scrolls. Then "Customers also viewed" and "More in <category>".
   -->
-  <div class="s--product k-product ar-product">
+  <div class="s--product k-product md-product">
     <div style="order: 0">
-      <div class="s--product-section-info ar-wrap">
+      <div class="s--product-section-info md-wrap">
         <slot name="header" :center="true"></slot>
-        <nav aria-label="Breadcrumb" class="ar-crumbs">
+        <nav aria-label="Breadcrumb" class="md-crumbs">
           <router-link :to="{ path: '/' }">Home</router-link>
           <template v-if="product && product.category">
             <span aria-hidden="true" class="ms">chevron_right</span>
@@ -36,30 +36,30 @@
           </template>
           <template v-if="product">
             <span aria-hidden="true" class="ms">chevron_right</span>
-            <span aria-current="page" class="ar-crumbs__here">{{ product.title }}</span>
+            <span aria-current="page" class="md-crumbs__here">{{ product.title }}</span>
           </template>
-          <span class="ar-crumbs__tools">
+          <span class="md-crumbs__tools">
             <s-product-admin-button v-if="$vuetify.display.mdAndUp"></s-product-admin-button>
           </span>
         </nav>
 
-        <argon-product-overview v-if="product" can-buy show-cover>
+        <medio-product-overview v-if="product" can-buy show-cover>
           <template #below>
             <!-- About this product -->
-            <section id="ar-about" aria-labelledby="ar-about-h" class="ar-pcard ar-about">
-              <h2 id="ar-about-h" class="ar-pcard__h -big">About this product</h2>
-              <ul v-if="features.length" class="ar-about__bullets">
+            <section id="md-about" aria-labelledby="md-about-h" class="md-pcard md-about">
+              <h2 id="md-about-h" class="md-pcard__h -big">About this product</h2>
+              <ul v-if="features.length" class="md-about__bullets">
                 <li v-for="f in features" :key="f.key"><b>{{ f.key }}:</b> {{ f.value }}</li>
               </ul>
-              <p v-if="product.title_en && product.title_en !== product.title" class="ar-about__en">{{ product.title_en }}</p>
+              <p v-if="product.title_en && product.title_en !== product.title" class="md-about__en">{{ product.title_en }}</p>
               <s-product-article v-if="article" class="k-prose" hide-title></s-product-article>
-              <p v-else-if="aboutLine" class="ar-about__p">{{ aboutLine }}</p>
+              <p v-else-if="aboutLine" class="md-about__p">{{ aboutLine }}</p>
             </section>
 
             <!-- Specifications, in the shop's own groups -->
-            <section v-if="spec_groups.length" id="ar-specs" aria-labelledby="ar-specs-h" class="ar-pcard ar-specs">
-              <h2 id="ar-specs-h" class="ar-pcard__h -big">Specifications</h2>
-              <table v-for="g in spec_groups" :key="g.title" class="ar-spec">
+            <section v-if="spec_groups.length" id="md-specs" aria-labelledby="md-specs-h" class="md-pcard md-specs">
+              <h2 id="md-specs-h" class="md-pcard__h -big">Specifications</h2>
+              <table v-for="g in spec_groups" :key="g.title" class="md-spec">
                 <caption v-if="spec_groups.length > 1 || g.title">{{ g.title }}</caption>
                 <tbody>
                   <tr v-for="r in g.rows" :key="r.key">
@@ -71,9 +71,9 @@
             </section>
 
             <!-- Delivery and returns -->
-            <section class="ar-pcard ar-ship">
-              <h2 class="ar-pcard__h -big">Delivery and returns</h2>
-              <ul v-if="ways.length" class="ar-ship__ways">
+            <section class="md-pcard md-ship">
+              <h2 class="md-pcard__h -big">Delivery and returns</h2>
+              <ul v-if="ways.length" class="md-ship__ways">
                 <li v-for="w in ways" :key="w.key">
                   <span class="ms">{{ w.icon === "storefront" ? "storefront" : "local_shipping" }}</span>
                   <span
@@ -83,20 +83,20 @@
                   </span>
                 </li>
               </ul>
-              <p v-else class="ar-about__p">Delivery options and their prices show at checkout, for your address.</p>
-              <s-product-shipping class="ar-block"></s-product-shipping>
-              <s-product-warranty class="ar-block"></s-product-warranty>
-              <s-product-guide class="ar-block"></s-product-guide>
-              <router-link :to="{ name: window.$storefront.routes.SHOP_PROFILE_PAGE_TERMS }" class="ar-link">Returns and terms<span class="ms">chevron_right</span></router-link>
+              <p v-else class="md-about__p">Delivery options and their prices show at checkout, for your address.</p>
+              <s-product-shipping class="md-block"></s-product-shipping>
+              <s-product-warranty class="md-block"></s-product-warranty>
+              <s-product-guide class="md-block"></s-product-guide>
+              <router-link :to="{ name: window.$storefront.routes.SHOP_PROFILE_PAGE_TERMS }" class="md-link">Returns and terms<span class="ms">chevron_right</span></router-link>
             </section>
 
             <!-- Reviews -->
-            <section id="ar-reviews" aria-labelledby="ar-reviews-h" class="ar-pcard ar-reviews k-reviews">
-              <h2 id="ar-reviews-h" class="ar-pcard__h -big">Reviews</h2>
+            <section id="md-reviews" aria-labelledby="md-reviews-h" class="md-pcard md-reviews k-reviews">
+              <h2 id="md-reviews-h" class="md-pcard__h -big">Reviews</h2>
               <kalio-reviews></kalio-reviews>
             </section>
           </template>
-        </argon-product-overview>
+        </medio-product-overview>
         <s-product-overview-loading v-else />
         <u-loading-progress v-if="busy"></u-loading-progress>
       </div>
@@ -104,16 +104,16 @@
 
     <template v-if="product">
       <div :style="{ order: getOrder('offer') }">
-        <s-product-offers class="s--product-section ar-wrap ar-block"></s-product-offers>
+        <s-product-offers class="s--product-section md-wrap md-block"></s-product-offers>
       </div>
       <div :style="{ order: getOrder('includes') }">
-        <s-product-includes class="ar-wrap ar-block"></s-product-includes>
+        <s-product-includes class="md-wrap md-block"></s-product-includes>
       </div>
       <div :style="{ order: getOrder('files') }">
-        <s-product-files-list class="ar-wrap ar-block"></s-product-files-list>
+        <s-product-files-list class="md-wrap md-block"></s-product-files-list>
       </div>
       <div :style="{ order: getOrder('contents') }">
-        <s-product-subscription-membership class="ar-wrap ar-block"></s-product-subscription-membership>
+        <s-product-subscription-membership class="md-wrap md-block"></s-product-subscription-membership>
       </div>
       <div :style="{ order: getOrder('page') }">
         <s-product-landing></s-product-landing>
@@ -121,17 +121,17 @@
 
       <!-- Customers also viewed, more in the category -->
       <div :style="{ order: getOrder('related-products') }">
-        <div id="ar-related">
-          <argon-rail v-if="related === null || related.length" :products="related" class="ar-wrap" title="Customers also viewed" @quick-buy="quickBuy" />
+        <div id="md-related">
+          <medio-rail v-if="related === null || related.length" :products="related" class="md-wrap" title="Customers also viewed" @quick-buy="quickBuy" />
         </div>
-        <argon-row
+        <medio-row
           v-if="product.category"
           :key="'cat-' + product.category.id"
           :dir="product.category.name"
           :exclude="product.id"
           :more-to="{ name: window.$storefront.routes.SHOP_CATEGORY_PAGE, params: { category_name: product.category.name } }"
           :title="'More in ' + (product.category.title || product.category.name)"
-          class="ar-wrap"
+          class="md-wrap"
           lazy
           sort="bestselling"
         />
@@ -145,12 +145,12 @@
 import { money as moneyFrom } from "../../components/region-switcher/region";
 import NotificationService from "@selldone/components-vue/plugins/notification/NotificationService.ts";
 
-import ArgonProductOverview from "../../components/argon/product/ArgonProductOverview.vue";
-import ArgonRail from "../../components/argon/ArgonRail.vue";
+import MedioProductOverview from "../../components/medio/product/MedioProductOverview.vue";
+import MedioRail from "../../components/medio/MedioRail.vue";
 import KalioQuickBuy from "../../components/kalio/KalioQuickBuy.vue";
-import { specGroups, specRows } from "../../components/argon/product/argon-spec";
-import { catalogue, mixByCategory, rememberViewed, tagged } from "../../components/argon/argon";
-import ArgonRow from "../../components/argon/ArgonRow.vue";
+import { specGroups, specRows } from "../../components/medio/product/medio-spec";
+import { catalogue, mixByCategory, rememberViewed, tagged } from "../../components/medio/medio";
+import MedioRow from "../../components/medio/MedioRow.vue";
 import { waysOf } from "../../components/walio/walio-home";
 import { EventBus } from "@selldone/components-vue/utils/events/EventBus.ts";
 import SProductOverviewLoading from "@selldone/components-vue/storefront/product/overview/loading/SProductOverviewLoading.vue";
@@ -201,9 +201,9 @@ export default {
     SProductIncludes,
 
     SProductOverviewLoading,
-    ArgonProductOverview,
-    ArgonRail,
-    ArgonRow,
+    MedioProductOverview,
+    MedioRail,
+    MedioRow,
     KalioQuickBuy,
 
   },

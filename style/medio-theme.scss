@@ -1,0 +1,140 @@
+/* ▆▆▆▆▆▆▆▆▆▆▆▆▆▆ Medio — the theme tokens ▆▆▆▆▆▆▆▆▆▆▆▆▆▆
+
+   Every colour Medio paints comes from these tokens: medio.scss and
+   medio-pages.scss read them through their $variables, and Kalio's tokens
+   read them (kalio-tokens.scss: --k-green is var(--md-blue), which is the
+   buy colour).
+
+   Medio is a bright catalogue store: white page, light-grey section grounds,
+   a green buy colour (every "Add to cart" and Checkout), a red brand colour
+   (the logo tile, links, accents, a saving's words), near-black pills for
+   quick links, Barlow type.
+
+   The values here are Medio's designed default: Medio red, light. The shared
+   theme switcher (components/theme-switcher/, config medio-theme.ts) writes a
+   palette's values and the dark set inline on <html>, and puts the class
+   "md-dark" on it while dark, before the app mounts; it does that only on
+   Medio's own showcase shop unless medio-theme.settings.ts says otherwise.
+   The build step (tools/postcss-dark-tokens.mjs, vite.config.ts) gives every
+   remaining fixed colour a dark value under html.md-dark. */
+
+:root {
+  --md-max: 1440px;
+  --md-pad: 32px;
+  --md-r: 10px;
+  --md-r-s: 8px;
+
+  /* The palette (the switcher rewrites these inline). */
+  --md-buy: #007a3d; /* every buy button: "Add to cart", Checkout */
+  --md-buy-d: #00602f; /* its hover */
+  --md-buy-l: #e6f2eb; /* a light wash of it */
+  --md-buy-t: #007a3d; /* it as words */
+  --md-buy-rgb: 0, 122, 61;
+  --md-brand: #c8102e; /* the logo tile, the deal badge, accents */
+  --md-brand-d: #a50d25;
+  --md-brand-l: #fdecee;
+  --md-brand-t: #c8102e; /* links and accent words */
+  --md-brand-rgb: 200, 16, 46;
+  --md-head: #c8102e; /* the logo tile (the light brand in both modes) */
+  --md-head-d: #a50d25;
+  --md-on-head: #ffffff;
+  --md-on-head-rgb: 255, 255, 255;
+  --md-on-brand: #ffffff; /* words on a buy button */
+  --md-on-brand-rgb: 255, 255, 255;
+
+  /* The inherited names (Kalio, Walio and Besti pieces read these). */
+  --md-blue: var(--md-buy);
+  --md-blue-d: var(--md-buy-d);
+  --md-blue-l: var(--md-buy-l);
+  --md-blue-t: var(--md-brand-t); /* the accent as words: links are the brand colour */
+  --md-blue-rgb: var(--md-buy-rgb);
+  --md-navy: #1f1f1f; /* dark bands (promo cards, the share card) */
+  --md-navy-2: #2e2e2e;
+  --md-pop: #ffffff;
+  --md-brand-ink: var(--md-ink); /* brand names, the 404's digits */
+
+  /* Quick links: near-black pills (light pills in dark mode). */
+  --md-pill: #1a1a1a;
+  --md-on-pill: #ffffff;
+  --md-pill-hover: #3a3a3a;
+
+  /* Fixed accents */
+  --md-yellow: #ffd91a;
+  --md-on-yellow: #1a1a1a;
+  --md-yellow-l: #fff6c2;
+  --md-red: #c8102e; /* sale red: the deal badge (white words) */
+  --md-red-solid: #c8102e; /* fixed red fills under white words */
+  --md-red-t: #c8102e; /* a saving as words (sale red in every palette) */
+  --md-new: #1d4fc4; /* the "New" badge */
+  --md-green: #007a3d;
+  --md-green-t: #007a3d;
+  --md-warn-t: #a14a00;
+  --md-promo: #7a0c1e; /* the dark red promo band (white words, 10:1) */
+  --md-dark-card: #1f1f1f; /* the dark promo cards */
+
+  /* Grounds, lines and words */
+  --md-bg: #ffffff;
+  --md-surface: #ffffff;
+  --md-page: #f2f2f2; /* section grounds */
+  --md-tile: #efefef; /* category tiles */
+  --md-line: #dedede;
+  --md-line-2: #c4c4c4;
+  --md-hover-line: #a8a8a8;
+  --md-deco: #8a8a8a; /* separators and empty stars: 3:1 on the ground */
+  --md-ink: #1a1a1a;
+  --md-ink-2: #333333;
+  --md-muted: #5c5c5c;
+  --md-soft: #6b6b6b;
+  --md-off-bg: #e8e8e8;
+  --md-off-ink: #4f4f4f;
+  --md-photo: #ffffff; /* a packshot's tile: white in both modes */
+  --md-ph-c0: #e9ecef; /* a photo slot waiting for its photo */
+  --md-ph-c1: #dde1e6;
+  --md-ph-c2: #5c5c5c;
+  --md-sw-edge: rgba(15, 23, 41, 0.34); /* a swatch disc's edge */
+  --md-shine: rgba(255, 255, 255, 0.7); /* a skeleton's shimmer */
+  --md-pop-shadow: rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 899px) {
+  :root {
+    --md-pad: 16px;
+  }
+}
+
+/* Dark (html.md-dark, medio-theme.ts sets the grounds and words): Vuetify's
+   dark theme on Medio's grounds. */
+html.md-dark,
+html.md-dark .v-theme--dark {
+  --v-theme-background: 18, 19, 21 !important;
+  --v-theme-on-background: 236, 236, 238 !important;
+  --v-theme-surface: 27, 29, 33 !important;
+  --v-theme-on-surface: 236, 236, 238 !important;
+  --v-theme-surface-variant: 51, 54, 60 !important;
+  --v-theme-on-surface-variant: 236, 236, 238 !important;
+}
+
+/* The page's own ground under the app (overscroll, the moment before the app
+   draws) follows the mode; Selldone's grey body rule loads later. */
+html body,
+html {
+  background: var(--md-bg) !important;
+}
+
+/* Dark: brand marks drawn in black (Apple's sign-in mark) turn white. */
+html.md-dark img[src*="apple-b"] {
+  filter: invert(1);
+}
+
+/* Dark: Selldone's own white rows (Vuetify's .bg-white, e.g. the billing
+   Business / Personal choice) take the card's ground; photo tiles keep white. */
+html.md-dark .bg-white:not(:has(> img, > .v-img)) {
+  background-color: var(--md-surface) !important;
+  color: var(--md-ink) !important;
+}
+
+/* A picture's caption in a product's or article's text: Selldone's #ccc on
+   white read 1.6:1; the muted ink reads in both modes. */
+.v-application figure figcaption {
+  color: var(--md-muted) !important;
+}

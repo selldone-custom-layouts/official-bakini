@@ -71,7 +71,7 @@
 import { ProductType } from "@selldone/core-js/enums/product/ProductType";
 import { settling, shownCount, stepTo } from "../kalio-basket";
 import { productImage } from "../kalio-catalog";
-import { colourName } from "../../argon/argon";
+import { colourName } from "../../medio/medio";
 import { money } from "../../region-switcher/region";
 import KalioOftenAdded from "../KalioOftenAdded.vue";
 
@@ -126,7 +126,7 @@ export default {
       return productImage(product, true);
     },
 
-    /* Argon is one shop, not a marketplace: the line says its size or
+    /* Medio is one shop, not a marketplace: the line says its size or
        colour, never a seller. */
     meta(item) {
       return sizeOf(item.variant) || (item.variant?.color ? colourName(item.variant.color) : null);

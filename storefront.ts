@@ -42,19 +42,19 @@ import { PageHyper } from "@selldone/page-builder/PageHyperService.ts";
 import {SetupPageBuilder} from "@selldone/page-builder/page-builder.ts";
 import {SetupService} from "@selldone/core-js/server";
 import {Shop} from "@selldone/core-js/models";
-import { bootThemeSwitcher } from "./components/theme-switcher/theme-switcher"; // the shared theme switcher (Argon 1.0.11)
-import { ARGON_THEME } from "./components/argon/argon-theme";
+import { bootThemeSwitcher } from "./components/theme-switcher/theme-switcher"; // the shared theme switcher (Medio 1.0.11)
+import { MEDIO_THEME } from "./components/medio/medio-theme";
 import { bootRegion, defineMessages } from "./components/region-switcher/region"; // language + currency (the owner's choice B)
-import { ARGON_MESSAGES } from "./components/argon/i18n";
+import { MEDIO_MESSAGES } from "./components/medio/i18n";
 
 const vuetify = VuetifyInstance(i18n);
 // Vuetify's light error red reads 4.5:1 on white (its #ff5252 is 3.3:1); set
 // here, not in the switcher's config, so it stays when the switcher is hidden.
 try { vuetify.theme.themes.value.light.colors.error = "#c4122f"; } catch (e) {}
 // The shopper's palette and Light / Dark (the header's Theme action), painted
-// before the first paint so the default never flashes; only on Argon's own
-// showcase shop unless argon-theme.settings.ts says otherwise.
-bootThemeSwitcher(ARGON_THEME, vuetify);
+// before the first paint so the default never flashes; only on Medio's own
+// showcase shop unless medio-theme.settings.ts says otherwise.
+bootThemeSwitcher(MEDIO_THEME, vuetify);
 
 //█████████████████████████████████████████████████████████████
 //―――――――――――――― Global Types ―――――――――――――――
@@ -93,7 +93,7 @@ app.use(components);
 
 // ━━━ Storefront SDK (xapi) ━━━
 StorefrontSDK.Setup(); // Set up the Shop SDK.
-defineMessages(ARGON_MESSAGES); // Argon's own words, per language
+defineMessages(MEDIO_MESSAGES); // Medio's own words, per language
 bootRegion(store); // the visitor's currency and language, mirrored for money() and t()
 
 // ━━━ Community SDK (capi) ━━━

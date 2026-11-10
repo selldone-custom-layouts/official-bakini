@@ -30,7 +30,7 @@
       </div>
       <v-card-text class="k-quickbuy__body thin-scroll">
         <s-product-overview-loading v-if="busy && !full" />
-        <argon-product-overview v-if="full" can-buy quick-buy-mode show-cover />
+        <medio-product-overview v-if="full" can-buy quick-buy-mode show-cover />
       </v-card-text>
     </v-card>
   </v-bottom-sheet>
@@ -38,13 +38,13 @@
 
 <script>
 import { computed } from "vue";
-import ArgonProductOverview from "../argon/product/ArgonProductOverview.vue";
+import MedioProductOverview from "../medio/product/MedioProductOverview.vue";
 import SProductOverviewLoading from "@selldone/components-vue/storefront/product/overview/loading/SProductOverviewLoading.vue";
 import NotificationService from "@selldone/components-vue/plugins/notification/NotificationService.ts";
 
 export default {
   name: "KalioQuickBuy",
-  components: { ArgonProductOverview, SProductOverviewLoading },
+  components: { MedioProductOverview, SProductOverviewLoading },
 
   props: {
     modelValue: Boolean,
