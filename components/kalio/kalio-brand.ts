@@ -7,11 +7,11 @@
    SEO page Selldone serves to crawlers) keeps its own title.
 
    THE BRAND IS THIS ONE LINE: `name`. The wordmark (components/medio/
-   MedioLogo.vue) is drawn from it in lower case, white on a red rounded
-   tile. Set `name: null` to keep the shop's own title.
+   MedioLogo.vue) is drawn from it in lower case, white, inside a round
+   violet disc with a magenta dot. Set `name: null` to keep the shop's own title.
 
-   The mark (assets/brand/medio-mark.svg, 64x64 SVG: a white "a" on the red
-   tile) is the browser tab's icon and the avatar on order messages. */
+   The mark (assets/brand/medio-mark.svg, 64x64 SVG: a white "m" on the violet
+   disc, a magenta dot) is the browser tab's icon and the avatar on order messages. */
 
 import mark from "../../assets/brand/medio-mark.svg?url";
 
@@ -54,10 +54,11 @@ export function brandIcon(): void {
   }
 }
 
-/* ━━━━━━━━━━━━ One word for the cart ━━━━━━━━━━━━
-   Medio says "cart" everywhere. Selldone's own English strings that still
-   say "basket" (its buy button, the share-order dialog, the "others have
-   this" line) are set to "cart" here, in English only, once. */
+/* ━━━━━━━━━━━━ One word for the basket ━━━━━━━━━━━━
+   Medio says "basket" everywhere, as big UK electronics retailers do.
+   Selldone's own English strings (its buy button, the share-order dialog,
+   the "others have this" line) are set to "basket" here, in English only,
+   once. */
 let wordsMerged = false;
 export function cartWords(): void {
   if (wordsMerged || typeof window === "undefined") return;
@@ -65,9 +66,9 @@ export function cartWords(): void {
   const locale = i18n?.locale?.value ?? i18n?.locale;
   if (!i18n?.mergeLocaleMessage || !String(locale).startsWith("en")) return;
   i18n.mergeLocaleMessage(locale, {
-    buy_button: { quantity_in_basket: "In your cart", add_to_basket: "Add to cart" },
-    share_order: { address_included: "Share cart items + address", address_excluded: "Share only cart items" },
-    product_section_incentivise: { have_in_their_bag: "<b>{in_carts}</b> others have this in their carts!" },
+    buy_button: { quantity_in_basket: "In your basket", add_to_basket: "Add to basket" },
+    share_order: { address_included: "Share basket items + address", address_excluded: "Share only basket items" },
+    product_section_incentivise: { have_in_their_bag: "<b>{in_carts}</b> others have this in their baskets!" },
     /* Selldone's countdown (the product page's deal clock) reads "Day",
        "Hour": Medio's clocks say days, hrs, min, sec everywhere. */
     global: { count_down: { days: "days", hours: "hrs", minutes: "min", seconds: "sec" } },

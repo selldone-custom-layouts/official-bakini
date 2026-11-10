@@ -1,0 +1,861 @@
+/* ▆▆▆▆▆▆▆▆▆▆▆▆▆▆ Medio — the home page ▆▆▆▆▆▆▆▆▆▆▆▆▆▆
+   MedioHome.vue (digini-design/medio-home.html): the campaign strip, the
+   hero, round category tiles, promo tiles, the latest from a brand, brand
+   deal cards, dark deal cards, rails, grey offer cards, pastel "Why shop
+   with" tiles, guides and the note. Packshots always sit on white
+   (--md-photo stays white in dark mode); words on photos sit on a dark
+   violet gradient (white in both modes). */
+
+$buy: var(--md-buy);
+$buy-l: var(--md-buy-l);
+$brand-t: var(--md-brand-t);
+$sale-t: var(--md-sale-t);
+$page: var(--md-page);
+$line: var(--md-line);
+$ink: var(--md-ink);
+$ink-2: var(--md-ink-2);
+$muted: var(--md-muted);
+$surface: var(--md-surface);
+$photo: var(--md-photo);
+$font: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+.md-home {
+  padding-top: 18px;
+}
+
+/* 1. The campaign strip */
+.md-campaign {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 50px;
+  padding: 8px 18px;
+  border-radius: var(--md-r);
+  background: var(--md-sale-solid);
+  color: #fff !important;
+  font: 600 16px/1.3 $font;
+  text-align: center;
+  .ms {
+    font-size: 22px;
+  }
+  &:hover {
+    background: #a90a54;
+  }
+}
+
+/* 2. The hero */
+.md-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: 32px;
+  min-height: 400px;
+  margin-top: 18px;
+  padding: 44px 48px;
+  border-radius: 18px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 78% 50%, rgba(255, 255, 255, 0.07) 0 22%, transparent 22.2% 30%, rgba(255, 255, 255, 0.05) 30.2% 38%, transparent 38.2%),
+    linear-gradient(120deg, #2b1470 0%, var(--md-head) 70%, color-mix(in oklab, var(--md-head) 70%, #c40c63) 100%);
+  color: #fff;
+  &__txt {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    max-width: 520px;
+  }
+  .md-tag {
+    background: #141414;
+    color: #fff !important;
+  }
+  &__h {
+    margin: 0;
+    font: 700 46px/1.05 $font !important;
+    letter-spacing: -0.025em !important;
+    color: #fff;
+  }
+  &__p {
+    margin: 0;
+    font: 400 18px/1.4 $font;
+    color: #fff;
+    opacity: 0.94;
+  }
+  .md-btn {
+    margin-top: 6px;
+  }
+  &__stage {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    padding: 22px;
+    border-radius: 16px;
+    background: #fff;
+  }
+  &__pick {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    &.-skel .md-hero__img {
+      background: #f1eff6;
+    }
+  }
+  &__img {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    background: #fff;
+    overflow: hidden;
+    img {
+      position: absolute;
+      inset: 4%;
+      width: 92%;
+      height: 92%;
+      object-fit: contain;
+    }
+  }
+  &__tag {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px 8px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #f1eff6;
+    color: #1c1b22;
+    font: 700 13.5px $font;
+    b {
+      color: #c40c63 !important;
+      font-weight: 600;
+    }
+  }
+  /* With the photo: the words on the photo's calm left side. */
+  &.-photo {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 420px;
+    background: #1d1830;
+    .md-hero__txt {
+      max-width: 46%;
+    }
+  }
+  &__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 70% 50%;
+  }
+  &.-photo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(90deg, rgba(20, 10, 50, 0.78) 0%, rgba(20, 10, 50, 0.4) 42%, transparent 62%);
+  }
+  &.-photo .md-hero__txt {
+    z-index: 2;
+  }
+}
+[dir="rtl"] .md-hero.-photo::before,
+.v-locale--is-rtl .md-hero.-photo::before {
+  transform: scaleX(-1);
+}
+
+/* 3. Round category tiles */
+.md-rounds {
+  .md-scroller__track {
+    gap: 20px;
+    padding-inline: 4px;
+  }
+}
+.md-round-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 132px;
+  color: $ink !important;
+  text-align: center;
+  &__disc {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 132px;
+    height: 132px;
+    border-radius: 50%;
+    background: $photo;
+    box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--md-buy) 26%, #fff);
+    overflow: hidden;
+    img {
+      position: absolute;
+      inset: 18%;
+      width: 64%;
+      height: 64%;
+      object-fit: contain;
+    }
+    .ms {
+      font-size: 46px;
+      color: var(--md-on-brand);
+    }
+  }
+  &.-all .md-round-tile__disc {
+    background: $buy;
+    box-shadow: none;
+  }
+  &__t {
+    margin-top: 6px;
+    font: 500 14.5px/1.25 $font;
+  }
+  small {
+    font: 500 12.5px $font;
+    color: $muted;
+  }
+  &:hover .md-round-tile__disc {
+    box-shadow: inset 0 0 0 3px $buy;
+  }
+  &.-all:hover .md-round-tile__disc {
+    background: var(--md-buy-d);
+  }
+}
+html.md-dark .md-round-tile__disc {
+  box-shadow: inset 0 0 0 1.5px #c9c6d2;
+}
+
+/* 4. Promo tiles */
+.md-promos {
+  &__top {
+    display: grid;
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1fr);
+    gap: 16px;
+  }
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  &__wide {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+}
+.md-ptile {
+  position: relative;
+  display: block;
+  min-height: 0;
+  aspect-ratio: 1.2;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #1d1830;
+  color: #fff !important;
+  .md-photo {
+    position: absolute;
+    inset: 0;
+    transition: transform 0.4s ease;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 42%, rgba(29, 12, 72, 0.88) 100%);
+  }
+  &__txt {
+    position: absolute;
+    inset-inline: 22px;
+    bottom: 18px;
+    z-index: 1;
+    display: grid;
+    gap: 6px;
+    b {
+      font: 600 22px/1.15 $font;
+      letter-spacing: -0.01em;
+      color: #fff;
+      em {
+        font-style: normal;
+        color: #ff9bcb;
+      }
+    }
+    small {
+      display: inline-flex;
+      align-items: center;
+      font: 600 14px $font;
+      color: #fff;
+      .ms {
+        font-size: 18px;
+      }
+    }
+  }
+  &.-tall {
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 420px;
+    .md-ptile__txt b {
+      font-size: 28px;
+    }
+  }
+  &.-wide {
+    aspect-ratio: 2.3;
+    &::after {
+      background: linear-gradient(90deg, rgba(29, 12, 72, 0.86) 0%, rgba(29, 12, 72, 0.4) 40%, transparent 62%);
+    }
+    .md-ptile__txt {
+      top: 50%;
+      bottom: auto;
+      transform: translateY(-50%);
+      max-width: 46%;
+      b {
+        font-size: 26px;
+      }
+    }
+  }
+  &:hover .md-photo {
+    transform: scale(1.03);
+  }
+}
+.md-ptile .md-photo.-collage {
+  background: #fff;
+}
+[dir="rtl"] .md-ptile.-wide::after,
+.v-locale--is-rtl .md-ptile.-wide::after {
+  transform: scaleX(-1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .md-ptile:hover .md-photo {
+    transform: none;
+  }
+}
+
+/* 5. The latest from <brand> */
+.md-latest {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  &__tile {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 42%;
+    align-items: center;
+    gap: 14px;
+    min-height: 170px;
+    padding: 18px;
+    border-radius: 16px;
+    background: $page;
+    color: $ink !important;
+    &.-dark {
+      background: var(--md-dark-card);
+      color: #fff !important;
+      .md-latest__txt small {
+        color: #d8ccff;
+      }
+      .md-latest__txt b,
+      .md-latest__txt em {
+        color: #fff;
+      }
+    }
+    &:hover {
+      box-shadow: inset 0 0 0 2px $buy;
+    }
+  }
+  &__txt {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+    small {
+      font: 600 12px $font;
+      color: $brand-t;
+    }
+    b {
+      font: 600 18px/1.25 $font;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    em {
+      display: inline-flex;
+      align-items: center;
+      font: 600 14px $font;
+      font-style: normal;
+      color: $brand-t;
+      .ms {
+        font-size: 18px;
+      }
+    }
+  }
+  &__img {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    background: $photo;
+    overflow: hidden;
+    img {
+      position: absolute;
+      inset: 8%;
+      width: 84%;
+      height: 84%;
+      object-fit: contain;
+    }
+  }
+}
+
+/* 6. Brand deal cards */
+.md-brands .md-scroller__track {
+  gap: 14px;
+}
+.md-brandcard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 196px;
+  padding: 18px 14px 16px;
+  border-radius: var(--md-r);
+  background: $surface;
+  box-shadow: inset 0 0 0 1px $line;
+  color: $ink !important;
+  text-align: center;
+  box-sizing: border-box;
+  &__w {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font: 800 22px/1.1 $font;
+    letter-spacing: -0.02em;
+  }
+  &__img {
+    position: relative;
+    width: 88px;
+    height: 88px;
+    border-radius: 12px;
+    background: $photo;
+    overflow: hidden;
+    img {
+      position: absolute;
+      inset: 6px;
+      width: calc(100% - 12px);
+      height: calc(100% - 12px);
+      object-fit: contain;
+    }
+  }
+  .md-pill {
+    min-height: 32px;
+    max-width: 100%;
+    padding: 0 12px;
+    font-size: 12.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &:hover {
+    box-shadow: inset 0 0 0 1.5px $buy;
+  }
+}
+
+/* 7. Dark deal cards (the home's Deals and the hub's Top deals) */
+.md-darkdeals .md-scroller__track {
+  gap: 16px;
+}
+.md-darkdeals .md-dcard {
+  width: calc((100% - 3 * 16px) / 4);
+  min-width: 230px;
+}
+.md-dcard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 10px 16px;
+  border-radius: var(--md-r);
+  background: var(--md-dark-card);
+  color: #fff !important;
+  box-sizing: border-box;
+  &__img {
+    position: relative;
+    display: block;
+    aspect-ratio: 1.3;
+    border-radius: 10px;
+    background: #fff;
+    overflow: hidden;
+    img {
+      position: absolute;
+      inset: 8%;
+      width: 84%;
+      height: 84%;
+      object-fit: contain;
+    }
+  }
+  &__t {
+    padding-inline: 6px;
+    font: 500 14.5px/1.35 $font;
+    color: #fff;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: calc(1.35em * 2);
+  }
+  &__save {
+    color: #ff7ab8;
+    font-weight: 700;
+  }
+  &__l {
+    padding-inline: 6px;
+    font: 500 12.5px $font;
+    color: #ff9bcb;
+    margin-top: auto;
+  }
+  &:hover {
+    background: color-mix(in oklab, var(--md-dark-card) 86%, #fff);
+  }
+}
+
+/* 8. Rails with tabs */
+.md-railsec .md-head h2 {
+  margin-inline-end: 4px;
+}
+.md-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.md-tab {
+  min-height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: $surface;
+  box-shadow: inset 0 0 0 1px $line;
+  color: $ink-2 !important;
+  font: 500 13.5px $font;
+  cursor: pointer;
+  &:hover {
+    box-shadow: inset 0 0 0 1.5px $buy;
+  }
+  &.-on {
+    background: $buy;
+    color: var(--md-on-brand) !important;
+    box-shadow: none;
+  }
+}
+
+/* 9. Grey offer cards */
+.md-offers {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+.md-ocard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 12px 16px;
+  border-radius: var(--md-r);
+  background: var(--md-tile);
+  color: $ink !important;
+  &__img {
+    position: relative;
+    display: block;
+    aspect-ratio: 1.3;
+    border-radius: 10px;
+    background: $photo;
+    overflow: hidden;
+    img {
+      position: absolute;
+      inset: 8%;
+      width: 84%;
+      height: 84%;
+      object-fit: contain;
+    }
+  }
+  &__t {
+    padding-inline: 4px;
+    font: 500 14.5px/1.35 $font;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: calc(1.35em * 2);
+  }
+  &__l {
+    padding-inline: 4px;
+    font: 600 13px $font;
+  }
+  &:hover {
+    box-shadow: inset 0 0 0 1.5px $buy;
+  }
+}
+
+/* 10. Why shop with … (pastel tiles; dark mode: the dark end of each hue) */
+.md-why {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  &__tile {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 112px;
+    align-items: center;
+    gap: 12px;
+    min-height: 128px;
+    padding: 18px 18px 18px 22px;
+    border-radius: var(--md-r);
+    color: $ink !important;
+    overflow: hidden;
+    &.-lemon { background: var(--md-p-lemon); }
+    &.-pink { background: var(--md-p-pink); }
+    &.-mint { background: var(--md-p-mint); }
+    &.-lilac { background: var(--md-p-lilac); }
+    &.-peach { background: var(--md-p-peach); }
+    &.-sky { background: var(--md-p-sky); }
+    &:hover {
+      box-shadow: inset 0 0 0 2px $buy;
+    }
+  }
+  &__txt {
+    display: grid;
+    gap: 6px;
+    b {
+      font: 600 17px/1.25 $font;
+    }
+    small {
+      font: 400 13.5px/1.45 $font;
+      color: $ink-2;
+    }
+  }
+  &__img {
+    width: 112px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.55);
+    .md-slot__ph small {
+      font-size: 10px;
+    }
+  }
+}
+html.md-dark .md-why__img {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* 11. Guides */
+.md-posts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+.md-post {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 10px 16px;
+  border-radius: var(--md-r);
+  background: $surface;
+  box-shadow: inset 0 0 0 1px $line;
+  color: $ink !important;
+  &__img {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 10;
+    border-radius: 10px;
+    overflow: hidden;
+    background: $page;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  time {
+    margin-top: 6px;
+    padding-inline: 4px;
+    font: 500 12.5px $font;
+    color: $muted;
+  }
+  &__t {
+    padding-inline: 4px;
+    font: 600 16px/1.3 $font;
+  }
+  &__p {
+    padding-inline: 4px;
+    font: 400 13.5px/1.5 $font;
+    color: $muted;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  &:hover {
+    box-shadow: inset 0 0 0 1.5px $buy;
+  }
+}
+
+/* ━━━ Tablet and phone ━━━ */
+@media (max-width: 1100px) {
+  .md-hero__h {
+    font-size: 38px !important;
+  }
+  .md-latest__tile {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .md-latest__img {
+    max-width: 180px;
+  }
+  .md-offers,
+  .md-posts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .md-why {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .md-home {
+    padding-top: 12px;
+  }
+  .md-campaign {
+    min-height: 44px;
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+  .md-hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    min-height: 0;
+    padding: 26px 20px 20px;
+    border-radius: 16px;
+    &__h {
+      font-size: 32px !important;
+    }
+    &__p {
+      font-size: 16px;
+    }
+    &__stage {
+      gap: 8px;
+      padding: 12px;
+    }
+    &__tag {
+      padding: 4px 8px;
+      font-size: 12px;
+      b {
+        display: none;
+      }
+    }
+    &.-photo {
+      min-height: 460px;
+      align-content: end;
+      .md-hero__txt {
+        max-width: none;
+      }
+    }
+    &.-photo::before {
+      background: linear-gradient(180deg, transparent 30%, rgba(20, 10, 50, 0.85) 75%);
+    }
+  }
+  .md-title,
+  .md-head h2 {
+    font-size: 20px !important;
+  }
+  .md-sec {
+    margin-top: 34px;
+  }
+  .md-round-tile {
+    width: 100px;
+    &__disc {
+      width: 100px;
+      height: 100px;
+    }
+    &__t {
+      font-size: 13.5px;
+    }
+  }
+  .md-rounds .md-scroller__track {
+    gap: 12px;
+  }
+  .md-promos__top,
+  .md-promos__wide {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .md-promos__grid {
+    gap: 10px;
+  }
+  .md-ptile {
+    border-radius: 14px;
+    &__txt {
+      inset-inline: 12px;
+      bottom: 10px;
+      b {
+        font-size: 16px;
+      }
+      small {
+        font-size: 12.5px;
+      }
+    }
+    &.-tall {
+      min-height: 0;
+      aspect-ratio: 0.95;
+      .md-ptile__txt b {
+        font-size: 22px;
+      }
+    }
+    &.-wide .md-ptile__txt {
+      max-width: 60%;
+      b {
+        font-size: 19px;
+      }
+    }
+  }
+  .md-latest {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    &__tile {
+      grid-template-columns: minmax(0, 1fr) 110px;
+      min-height: 0;
+      padding: 14px;
+    }
+  }
+  .md-brandcard {
+    width: 156px;
+    &__w {
+      font-size: 19px;
+    }
+  }
+  .md-darkdeals .md-dcard {
+    width: 66vw;
+    min-width: 0;
+  }
+  .md-offers {
+    gap: 10px;
+  }
+  .md-why {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    &__tile {
+      grid-template-columns: minmax(0, 1fr) 88px;
+      min-height: 0;
+      padding: 14px 14px 14px 16px;
+    }
+    &__img {
+      width: 88px;
+    }
+  }
+  .md-posts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .md-head.-center {
+    justify-content: space-between;
+    .md-title {
+      text-align: start;
+    }
+    .md-more {
+      position: static;
+    }
+  }
+}

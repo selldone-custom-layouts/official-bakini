@@ -109,6 +109,10 @@ export default ({mode}: any) => {
             include: [/\/style\//, /\/StorefrontApp\.vue/, /\/components\//, /\/pages\//, /\/layouts\//],
             exclude: [/\/node_modules\//, /\/modules\/pagebuilder\//, /\/theme-switcher\//],
             lightVars: ["--k-well", "--k-tint", "--k-leaf", "--md-photo", "--md-yellow"],
+            /* White discs and panels that stay white in dark mode: the round
+               arrows, the hero's packshot stage and white button, the dark
+               deal cards' packshot wells, the switch's knob. */
+            keepLightExtra: /md-arrow|md-round(?![-\w])|md-hero|md-btn\.-white|md-dcard__img|md-switch/,
             card: "#151c2b",
             raise: "#1c2536",
             variant: "#2b3549",

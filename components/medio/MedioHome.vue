@@ -1,242 +1,232 @@
 <!--
-  Medio — the home page, after a big catalogue store's sections
-  (digini-design/medio-home.html):
+  Medio — the home page (digini-design/medio-home.html), after a big
+  electronics retailer's home, by its sections (never its name, logo,
+  slogans or images). Everything is the shop's live data; nothing names a
+  product, a price, a brand, a category or a tag.
 
-   1. the category carousel: a "Today's deals" tile, then every category on
-      a light-grey tile with its own packshot;
-   2. three dark promo cards (Today's deals, New arrivals, Best sellers) and
-      four black "<Category> offers" pills, the categories with most deals;
-   3. a green strip: "Deal prices locked until <the deals' real end>";
-   4. "Shop the latest tech": four categories as photo cards;
-   5. a wide banner: "Up to X% off <Category>", the biggest saving;
-   6. "Popular products on Medio", a sideways row of cards;
-   7. the dark red compare banner;
-   8. "Trending now": the shop's other tags (wireless, 4K…) as photo cards;
-   9. "Explore our brands": the four brands with most products (hidden
-      under four brands);
-  10. "There's even more to Medio": order tracking, compare, help, contact;
-  11. "More deals", another row;
-  12. "Need a hand?" (FAQ and Contact);
-  13. the four newest articles (the owner's rule: articles last), then the
-      text about the shop and the footer.
-
-  Everything is read from the shop. A tag with no products, a category
-  with no photo or a brand list under four never leaves an empty box:
-  category cards fall back to a collage of the category's products, and the
-  other photo slots draw a named placeholder until their file is added
-  (medio-photos.ts).
+   1. A slim magenta campaign strip: the biggest saving and the deals' real
+      end date (a link to the deals).
+   2. The hero: a photo when hero-main.webp is in the build; until then a
+      deep violet panel with the three biggest deals on a white stage.
+   3. "Shop deals": round tiles of every category (its top deal's
+      packshot), "All deals" first, with arrows. (The categories are the
+      page's second section, the owner's rule.)
+   4. Promo tiles: one tall, a 2×2, then a row of two, each a category's
+      own photo (the owner's photos; a collage of its products without one)
+      with its best saving.
+   5. "The latest from <brand>": the brand with the most products, its three
+      newest.
+   6. "Deals from our top brands": white brand cards with "Shop <brand> deals".
+   7. "Deals": dark cards, the biggest savings, each with its own clock.
+   8. Product rails: Best sellers, Just arrived (from the shop's tags), and
+      "Popular picks" with one tab per other tag (a new tag adds a tab; a tag
+      with no products shows nothing).
+   9. "Discover our amazing offers": four grey cards.
+  10. "Why shop with <shop>": six pastel tiles, each a link to a real page.
+  11. "Guides & inspiration": the four newest articles with their dates
+      (the owner's rule: articles last).
+  12. A small note: how prices, deals and payment work.
 -->
 <template>
   <div class="md-home">
-    <!-- ▆▆▆▆ 1. Categories ▆▆▆▆ -->
-    <section aria-label="Shop by category" class="md-wrap md-cats">
-      <div ref="cats" class="md-cats__track" @scroll.passive="measureCats">
-        <router-link :to="dealsTo" class="md-cat -deals">
-          <span class="md-cat__tile"><b>Today’s<br />deals</b></span>
-          <span class="md-cat__t">Deals</span>
-        </router-link>
-        <template v-if="cats.length">
-          <router-link v-for="c in cats" :key="c.id" :to="catTo(c)" class="md-cat">
-            <span class="md-cat__tile"><img v-if="c.icon" :alt="''" :src="catIcon(c)" loading="lazy" /></span>
-            <span class="md-cat__t">{{ c.title || c.name }}</span>
+    <div class="md-wrap">
+      <!-- ▆▆▆▆ 1. Campaign strip ▆▆▆▆ -->
+      <router-link :to="dealsTo" class="md-campaign">
+        <span>{{ campaignLine }}</span><span aria-hidden="true" class="ms">chevron_right</span>
+      </router-link>
+
+      <!-- ▆▆▆▆ 2. Hero ▆▆▆▆ -->
+      <section :class="{ '-photo': heroPhoto }" class="md-hero" :aria-label="t('medio.home.heroLabel', 'Deals')">
+        <img v-if="heroPhoto" :src="heroPhoto" alt="" class="md-hero__photo" fetchpriority="high" />
+        <div class="md-hero__txt">
+          <span class="md-tag">{{ t("medio.home.dealsTag", "Deals") }}</span>
+          <h1 class="md-hero__h">{{ t("medio.home.heroH", "Big savings on the tech you love") }}</h1>
+          <p v-if="heroLine" class="md-hero__p">{{ heroLine }}</p>
+          <router-link :to="dealsTo" class="md-btn -white">{{ t("medio.home.shopDeals", "Shop deals") }}</router-link>
+        </div>
+        <div v-if="!heroPhoto" class="md-hero__stage">
+          <router-link v-for="p in heroDeals" :key="p.id" :to="productTo(p)" class="md-hero__pick">
+            <span class="md-hero__img"><img :src="pic(p)" :srcset="srcset(p)" alt="" sizes="(max-width: 760px) 30vw, 200px" @error="dropSrcset" /></span>
+            <span class="md-hero__tag">
+              <u-price :amount="price(p).now" :currency="currency" />
+              <b class="md-sale-t">{{ t("medio.card.save", "Save {amount}", { amount: whole(price(p).save) }) }}</b>
+            </span>
           </router-link>
-        </template>
-        <template v-else>
-          <span v-for="n in 9" :key="'s' + n" aria-hidden="true" class="md-cat -skeleton"><span class="md-cat__tile"></span><span class="md-cat__t"></span></span>
-        </template>
-      </div>
-      <button v-show="!cats_start" aria-label="Scroll categories back" class="md-arrow -l" type="button" @click="nudgeCats(-1)"><span class="ms">chevron_left</span></button>
-      <button v-show="!cats_end" aria-label="More categories" class="md-arrow -r" type="button" @click="nudgeCats(1)"><span class="ms">chevron_right</span></button>
-    </section>
+          <template v-if="!heroDeals.length">
+            <span v-for="n in 3" :key="n" aria-hidden="true" class="md-hero__pick -skel"><span class="md-hero__img"></span></span>
+          </template>
+        </div>
+      </section>
 
-    <!-- ▆▆▆▆ 2. Promo cards and offer pills ▆▆▆▆ -->
-    <section aria-label="Shop the highlights" class="md-wrap md-promos">
-      <div class="md-promos__row">
-        <router-link v-for="pc in promoCards" :key="pc.key" :to="pc.to" class="md-promo">
-          <medio-slot :place="pc.slot" class="md-promo__ph" eager />
-          <span class="md-promo__tx">
-            <b>{{ pc.title }}</b>
-            <small>{{ pc.line }}</small>
-          </span>
-        </router-link>
-      </div>
-      <nav v-if="offerCats.length" aria-label="Offers by category" class="md-offers">
-        <router-link v-for="c in offerCats" :key="c.id" :to="offersTo(c)" class="md-pill">{{ c.title || c.name }} offers</router-link>
-      </nav>
-    </section>
+      <!-- ▆▆▆▆ 3. Shop deals: round category tiles ▆▆▆▆ -->
+      <section class="md-sec" :aria-label="t('medio.home.shopDealsH', 'Shop deals')">
+        <h2 class="md-title">{{ t("medio.home.shopDealsH", "Shop deals") }}</h2>
+        <medio-scroller :label="t('medio.home.shopDealsH', 'Shop deals')" :watch-key="cats.length" class="md-rounds">
+          <router-link :to="dealsTo" class="md-round-tile -all" role="listitem">
+            <span class="md-round-tile__disc"><span class="ms">sell</span></span>
+            <span class="md-round-tile__t">{{ t("medio.home.allDeals", "All deals") }}</span>
+            <small v-if="bestSave > 0" class="md-sale-t">{{ t("medio.header.upTo", "Up to {amount} off", { amount: whole(bestSave) }) }}</small>
+          </router-link>
+          <router-link v-for="c in roundCats" :key="c.cat.id" :to="catTo(c.cat)" class="md-round-tile" role="listitem">
+            <span class="md-round-tile__disc"><img v-if="c.pick" :src="pic(c.pick, true)" alt="" loading="lazy" /></span>
+            <span class="md-round-tile__t">{{ c.cat.title || c.cat.name }}</span>
+            <small :class="{ 'md-sale-t': c.save > 0 }">{{ c.line }}</small>
+          </router-link>
+        </medio-scroller>
+      </section>
 
-    <!-- ▆▆▆▆ 3. The deal strip ▆▆▆▆ -->
-    <div v-if="deals.length" class="md-wrap">
-      <router-link :to="dealsTo" class="md-gstrip">
-        <span class="ms">verified</span>
-        <b v-if="dealsUntil">Deal prices locked until {{ dealsUntil }}</b>
-        <b v-else>Today’s deals across the store</b>
-        <span class="md-gstrip__go">See all deals<span class="ms">chevron_right</span></span>
-      </router-link>
-    </div>
-
-    <!-- ▆▆▆▆ 4. Shop the latest tech ▆▆▆▆ -->
-    <section v-if="latest.length" aria-labelledby="md-latest-h" class="md-sec md-wrap">
-      <header class="md-head"><h2 id="md-latest-h">Shop the latest tech</h2></header>
-      <div class="md-tiles4">
-        <router-link v-for="c in latest" :key="c.id" :to="catTo(c)" class="md-ptile">
-          <medio-photo
-            :alt="c.title || c.name"
-            :photo="tilePhoto(c)"
-            :products="inCategory(c).slice(0, 3)"
-            class="md-ptile__ph"
-            sizes="(max-width: 900px) 46vw, 330px"
-          />
-          <b class="md-ptile__t">{{ c.title || c.name }}</b>
-          <span class="md-ptile__l">{{ line(c) }}</span>
-          <span class="md-ptile__go">Shop now<span class="ms">chevron_right</span></span>
-        </router-link>
-      </div>
-    </section>
-
-    <!-- ▆▆▆▆ 5. The wide banner ▆▆▆▆ -->
-    <section v-if="banner" class="md-sec md-wrap">
-      <router-link :to="catTo(banner.cat)" class="md-banner">
-        <span class="md-banner__tx">
-          <small>{{ banner.cat.title || banner.cat.name }} deals</small>
-          <b>Up to {{ banner.off }}% off <span>{{ banner.cat.title || banner.cat.name }}</span></b>
-          <span v-if="banner.cat.description" class="md-banner__p">{{ banner.cat.description }}</span>
-          <span class="md-btn">Shop now</span>
-        </span>
-        <medio-photo
-          :alt="banner.cat.title || banner.cat.name"
-          :photo="photoOf(banner.cat, 'wide')"
-          :products="inCategory(banner.cat).slice(0, 4)"
-          class="md-banner__ph"
-          sizes="(max-width: 900px) 100vw, 760px"
-        />
-      </router-link>
-    </section>
-
-    <!-- ▆▆▆▆ 6. Popular products ▆▆▆▆ -->
-    <medio-rail :more-to="dealsTo" :products="ready ? popular : null" class="md-wrap" more-label="See all deals" :title="`Popular products on ${shopTitle}`" @quick-buy="quickBuy" />
-
-    <!-- ▆▆▆▆ 7. The compare banner ▆▆▆▆ -->
-    <section class="md-sec md-wrap">
-      <router-link :to="compareTo" class="md-redband">
-        <span class="md-redband__tx">
-          <b>Compare up to 4 products, side by side</b>
-          <span>Line up prices, specs and colours in one table, then pick the one that fits.</span>
-          <span class="md-btn -white">Start comparing</span>
-        </span>
-        <medio-slot class="md-redband__ph" place="banner-compare" />
-      </router-link>
-    </section>
-
-    <!-- ▆▆▆▆ 8. Trending now ▆▆▆▆ -->
-    <section v-if="trending.length" aria-labelledby="md-trend-h" class="md-sec md-wrap">
-      <header class="md-head"><h2 id="md-trend-h">Trending now</h2></header>
-      <div class="md-tiles4">
-        <router-link v-for="t in trending" :key="t.tag" :to="tagTo(t.tag)" class="md-ptile">
-          <medio-slot :alt="tagTitle(t.tag)" :place="trendSlot(t.tag)" class="md-ptile__ph" />
-          <b class="md-ptile__t">{{ tagTitle(t.tag) }}</b>
-          <span class="md-ptile__l">{{ t.line }}</span>
-          <span class="md-ptile__go">Shop now<span class="ms">chevron_right</span></span>
-        </router-link>
-      </div>
-    </section>
-
-    <!-- ▆▆▆▆ 9. Brands ▆▆▆▆ -->
-    <section v-if="brands.length >= 4" aria-labelledby="md-brands-h" class="md-sec md-wrap">
-      <header class="md-head"><h2 id="md-brands-h">Explore our brands</h2></header>
-      <div class="md-tiles4">
-        <router-link v-for="b in brands.slice(0, 4)" :key="b" :to="brandTo(b)" class="md-ptile -brand">
-          <medio-slot :alt="b" :place="brandSlot(b)" class="md-ptile__ph" />
-          <b class="md-ptile__t">{{ b }}</b>
-          <span class="md-ptile__l">{{ brandLine(b) }}</span>
-        </router-link>
-      </div>
-    </section>
-
-    <!-- ▆▆▆▆ 10. There's even more ▆▆▆▆ -->
-    <section aria-labelledby="md-more-h" class="md-sec md-wrap">
-      <header class="md-head"><h2 id="md-more-h">There’s even more to {{ shopTitle }}</h2></header>
-      <div class="md-tiles4">
-        <router-link v-for="s in services" :key="s.key" :to="s.to" class="md-ptile -service">
-          <medio-slot :alt="s.title" :place="s.slot" class="md-ptile__ph" />
-          <b class="md-ptile__t">{{ s.title }}</b>
-          <span class="md-ptile__l">{{ s.line }}</span>
-        </router-link>
-      </div>
-    </section>
-
-    <!-- ▆▆▆▆ 11. More deals ▆▆▆▆ -->
-    <medio-rail
-      v-if="!ready || moreDeals.length"
-      :more-to="dealsTo"
-      :products="ready ? moreDeals : null"
-      class="md-wrap"
-      more-label="See all deals"
-      title="More deals"
-      @quick-buy="quickBuy"
-    />
-
-    <!-- ▆▆▆▆ 12. Need a hand? ▆▆▆▆ -->
-    <section class="md-sec md-wrap">
-      <div class="md-help">
-        <div class="md-help__tx">
-          <h2>Need a hand?</h2>
-          <p>Questions about an order, a return or which one to choose? Our answers are a click away, and so are we.</p>
-          <div class="md-help__acts">
-            <router-link :to="faqTo" class="md-pill">Help &amp; FAQ</router-link>
-            <router-link :to="contactTo" class="md-pill -line">Contact us</router-link>
+      <!-- ▆▆▆▆ 4. Promo tiles ▆▆▆▆ -->
+      <section v-if="promos.tall" class="md-sec md-promos" :aria-label="t('medio.home.offers', 'Offers')">
+        <div class="md-promos__top">
+          <router-link :to="catTo(promos.tall.cat)" class="md-ptile -tall">
+            <medio-photo :alt="promos.tall.cat.title" :photo="promos.tall.photo" :products="inCategory(promos.tall.cat)" sizes="(max-width: 760px) 92vw, 520px" />
+            <span class="md-ptile__txt"><b v-html="promoHtml(promos.tall)"></b><small>{{ t("medio.home.shopNow", "Shop now") }}<span class="ms">chevron_right</span></small></span>
+          </router-link>
+          <div class="md-promos__grid">
+            <router-link v-for="p in promos.grid" :key="p.cat.id" :to="catTo(p.cat)" class="md-ptile">
+              <medio-photo :alt="p.cat.title" :photo="p.photo" :products="inCategory(p.cat)" sizes="(max-width: 760px) 46vw, 420px" />
+              <span class="md-ptile__txt"><b v-html="promoHtml(p)"></b><small>{{ t("medio.home.shopNow", "Shop now") }}<span class="ms">chevron_right</span></small></span>
+            </router-link>
           </div>
         </div>
-        <medio-slot class="md-help__ph" place="help-desk" />
-      </div>
-    </section>
+        <div v-if="promos.wide.length === 2" class="md-promos__wide">
+          <router-link v-for="p in promos.wide" :key="p.cat.id" :to="catTo(p.cat)" class="md-ptile -wide">
+            <medio-photo :alt="p.cat.title" :photo="p.photo" :products="inCategory(p.cat)" sizes="(max-width: 760px) 92vw, 690px" />
+            <span class="md-ptile__txt"><b v-html="promoHtml(p)"></b><small>{{ t("medio.home.shopNow", "Shop now") }}<span class="ms">chevron_right</span></small></span>
+          </router-link>
+        </div>
+      </section>
 
-    <!-- ▆▆▆▆ 13. Tips and guides (the owner's rule: articles last) ▆▆▆▆ -->
-    <section v-if="posts.length" aria-labelledby="md-blog-h" class="md-sec md-wrap">
-      <header class="md-head">
-        <h2 id="md-blog-h">Tips and guides</h2>
-        <router-link :to="blogTo" class="md-more">All guides<span class="ms">chevron_right</span></router-link>
-      </header>
-      <div class="md-tiles4">
-        <router-link v-for="a in posts" :key="a.id" :to="postTo(a)" class="md-ptile -post">
-          <span class="md-ptile__ph -post">
-            <img
-              v-if="a.image"
-              :alt="a.title"
-              :src="postImage(a)"
-              :srcset="postSrcset(a)"
-              loading="lazy"
-              sizes="(max-width: 900px) 46vw, 330px"
-              @error="dropSrcset"
-            />
-          </span>
-          <time :datetime="a.created_at" class="md-ptile__d">{{ dateParts(a.created_at).full }}</time>
-          <b class="md-ptile__t">{{ a.title }}</b>
-        </router-link>
-      </div>
-    </section>
+      <!-- ▆▆▆▆ 5. The latest from <brand> ▆▆▆▆ -->
+      <section v-if="latest.items.length === 3" class="md-sec" :aria-label="latestTitle">
+        <h2 class="md-title">{{ latestTitle }}</h2>
+        <div class="md-latest">
+          <router-link v-for="(p, i) in latest.items" :key="p.id" :class="{ '-dark': i === 0 }" :to="productTo(p)" class="md-latest__tile">
+            <span class="md-latest__txt">
+              <small>{{ latest.brand }} · {{ catName(p.category_id) }}</small>
+              <b>{{ p.title }}</b>
+              <em>{{ t("medio.home.shopNow", "Shop now") }}<span class="ms">chevron_right</span></em>
+            </span>
+            <span class="md-latest__img"><img :src="pic(p)" :srcset="srcset(p)" alt="" loading="lazy" sizes="180px" @error="dropSrcset" /></span>
+          </router-link>
+        </div>
+      </section>
 
-    <!-- ▆▆▆▆ About the shop ▆▆▆▆ -->
-    <section :aria-label="`About ${shopTitle}`" class="md-sec md-wrap md-seo">
-      <h2>About {{ shopTitle }}</h2>
-      <div :class="{ '-open': seo_open }" class="md-seo__body">
-        <p>{{ seoLede }}</p>
-        <p v-if="cats.length">
-          Shop
-          <template v-for="(c, i) in cats" :key="c.id"
-            ><router-link :to="catTo(c)">{{ (c.title || c.name).toLowerCase() }}</router-link
-            >{{ i < cats.length - 2 ? ", " : i === cats.length - 2 ? " and " : "" }}</template
-          >, with every deal showing the day it ends and every price checked at the cart.
-        </p>
-        <p>
-          Compare up to four products side by side, save the ones you like to your wishlist, and track any order from your account. Need help choosing?
-          Our guides and our team are here.
-        </p>
-      </div>
-      <button :aria-expanded="seo_open ? 'true' : 'false'" class="md-seo__more" type="button" @click="seo_open = !seo_open">
-        {{ seo_open ? "Read less" : "Read more" }}<span class="ms">{{ seo_open ? "expand_less" : "expand_more" }}</span>
-      </button>
-    </section>
+      <!-- ▆▆▆▆ 6. Deals from our top brands ▆▆▆▆ -->
+      <section v-if="brandDeals.length >= 3" class="md-sec" :aria-label="t('medio.home.brandsH', 'Deals from our top brands')">
+        <h2 class="md-title">{{ t("medio.home.brandsH", "Deals from our top brands") }}</h2>
+        <medio-scroller :label="t('medio.home.brandsH', 'Deals from our top brands')" :watch-key="brandDeals.length" class="md-brands">
+          <router-link v-for="b in brandDeals" :key="b.brand" :to="brandDealsTo(b.brand)" class="md-brandcard" role="listitem">
+            <b class="md-brandcard__w">{{ b.brand }}</b>
+            <span class="md-brandcard__img"><img :src="pic(b.top, true)" alt="" loading="lazy" /></span>
+            <span class="md-pill -line">{{ t("medio.home.shopBrandDeals", "Shop {brand} deals", { brand: b.brand }) }}</span>
+          </router-link>
+        </medio-scroller>
+      </section>
+
+      <!-- ▆▆▆▆ 7. Deals: dark cards ▆▆▆▆ -->
+      <section v-if="dealCards.length" class="md-sec" :aria-label="t('medio.home.dealsH', 'Deals')">
+        <header class="md-head -center">
+          <h2 class="md-title">{{ t("medio.home.dealsH", "Deals") }}</h2>
+          <router-link :to="dealsTo" class="md-more">{{ t("medio.home.seeAllDeals", "See all deals") }}<span class="ms">chevron_right</span></router-link>
+        </header>
+        <medio-scroller :label="t('medio.home.dealsH', 'Deals')" :watch-key="dealCards.length" class="md-darkdeals" edge>
+          <router-link v-for="p in dealCards" :key="p.id" :to="productTo(p)" class="md-dcard" role="listitem">
+            <span class="md-dcard__img"><img :src="pic(p)" :srcset="srcset(p)" alt="" loading="lazy" sizes="(max-width: 760px) 70vw, 300px" @error="dropSrcset" /></span>
+            <span class="md-dcard__t">
+              <b class="md-dcard__save">{{ t("medio.card.save", "Save {amount}", { amount: whole(price(p).save) }) }}</b>
+              {{ t("medio.home.onProduct", "on {name}", { name: p.title }) }}
+            </span>
+            <span class="md-dcard__l">
+              {{ t("medio.home.wasLine", "Was {amount}", { amount: full(price(p).was) }) }}<template v-if="ends(p)"> · <medio-deal-clock :end="ends(p)" mode="bare" /></template>
+            </span>
+          </router-link>
+        </medio-scroller>
+      </section>
+
+      <!-- ▆▆▆▆ 8. Product rails from the shop's tags ▆▆▆▆ -->
+      <medio-rail
+        v-if="bestTag"
+        :more-to="tagTo(bestTag)"
+        :products="ready ? best : null"
+        :title="t('medio.home.bestH', 'Best sellers')"
+        @quick-buy="quickBuy"
+      />
+      <medio-rail
+        :more-to="newTag ? tagTo(newTag) : newestTo"
+        :products="ready ? fresh : null"
+        :title="t('medio.home.newH', 'Just arrived')"
+        @quick-buy="quickBuy"
+      />
+      <medio-rail
+        v-if="popTags.length"
+        :more-to="tagTo(popTag)"
+        :products="ready ? popList : null"
+        :title="t('medio.home.popH', 'Popular picks')"
+        @quick-buy="quickBuy"
+      >
+        <template #head>
+          <div :aria-label="t('medio.home.popH', 'Popular picks')" class="md-tabs" role="tablist">
+            <button
+              v-for="tg in popTags"
+              :key="tg"
+              :aria-selected="tg === popTag ? 'true' : 'false'"
+              :class="{ '-on': tg === popTag }"
+              class="md-tab"
+              role="tab"
+              type="button"
+              @click="pop_tag = tg"
+            >
+              {{ tagTitle(tg) }}
+            </button>
+          </div>
+        </template>
+      </medio-rail>
+
+      <!-- ▆▆▆▆ 9. Discover our amazing offers ▆▆▆▆ -->
+      <section v-if="offers.length === 4" class="md-sec" :aria-label="t('medio.home.discoverH', 'Discover our amazing offers')">
+        <h2 class="md-title">{{ t("medio.home.discoverH", "Discover our amazing offers") }}</h2>
+        <div class="md-offers">
+          <router-link v-for="p in offers" :key="p.id" :to="productTo(p)" class="md-ocard">
+            <span class="md-ocard__img"><img :src="pic(p)" :srcset="srcset(p)" alt="" loading="lazy" sizes="(max-width: 760px) 46vw, 300px" @error="dropSrcset" /></span>
+            <span class="md-ocard__t">{{ t("medio.home.saveOn", "Save {amount} on {name}", { amount: whole(price(p).save), name: p.title }) }}</span>
+            <span class="md-ocard__l md-sale-t">{{ t("medio.home.nowWas", "Now {now}, was {was}", { now: full(price(p).now), was: full(price(p).was) }) }}</span>
+          </router-link>
+        </div>
+      </section>
+
+      <!-- ▆▆▆▆ 10. Why shop with … ▆▆▆▆ -->
+      <section class="md-sec" :aria-label="t('medio.home.whyH', 'Why shop with {name}', { name: shopTitle })">
+        <h2 class="md-title">{{ t("medio.home.whyH", "Why shop with {name}", { name: shopTitle }) }}</h2>
+        <div class="md-why">
+          <router-link v-for="w in why" :key="w.key" :class="'-' + w.tint" :to="w.to" class="md-why__tile">
+            <span class="md-why__txt"><b>{{ w.title }}</b><small>{{ w.line }}</small></span>
+            <medio-slot :place="w.slot" class="md-why__img" />
+          </router-link>
+        </div>
+      </section>
+
+      <!-- ▆▆▆▆ 11. Guides (the last section) ▆▆▆▆ -->
+      <section v-if="posts.length" class="md-sec" :aria-label="t('medio.home.guidesH', 'Guides & inspiration')">
+        <header class="md-head -center">
+          <h2 class="md-title">{{ t("medio.home.guidesH", "Guides & inspiration") }}</h2>
+          <router-link :to="blogTo" class="md-more">{{ t("medio.home.allGuides", "All guides") }}<span class="ms">chevron_right</span></router-link>
+        </header>
+        <div class="md-posts">
+          <router-link v-for="a in posts" :key="a.id" :to="postTo(a)" class="md-post">
+            <span class="md-post__img"><img v-if="a.image" :src="postImage(a)" :srcset="postSrcset(a)" alt="" loading="lazy" sizes="(max-width: 760px) 92vw, 340px" @error="dropSrcset" /></span>
+            <time :datetime="a.created_at">{{ postDate(a) }}</time>
+            <b class="md-post__t">{{ a.title }}</b>
+            <span v-if="a.description" class="md-post__p">{{ a.description }}</span>
+          </router-link>
+        </div>
+      </section>
+
+      <!-- ▆▆▆▆ 12. The note ▆▆▆▆ -->
+      <p class="md-note">
+        {{ t("medio.home.note", "Prices shown include any discount. Each deal ends on the date shown with it. Ways to pay are shown at checkout.") }}
+      </p>
+    </div>
 
     <kalio-quick-buy v-model="sheet" :product="picked" />
   </div>
@@ -248,15 +238,16 @@ import CurrencyMixin from "@selldone/components-vue/mixin/currency/CurrencyMixin
 import MedioRail from "./MedioRail.vue";
 import MedioPhoto from "./MedioPhoto.vue";
 import MedioSlot from "./MedioSlot.vue";
+import MedioScroller from "./MedioScroller.vue";
+import MedioDealClock from "./MedioDealClock.vue";
 import KalioQuickBuy from "../kalio/KalioQuickBuy.vue";
-import { aisleRoute, aisles, catalogueRoute, dealsRoute, dropSrcset, photoSrcset } from "../kalio/kalio-catalog";
-import { dateParts, journalPage, journalRoute, postRoute } from "../kalio/pages/kalio-journal";
-import { brandSlot, trendSlot } from "./medio-photos";
+import { aisleRoute, aisles, catalogueRoute, dealsRoute, dropSrcset, photoSrcset, productSrcset } from "../kalio/kalio-catalog";
+import { journalPage, journalRoute, postRoute } from "../kalio/pages/kalio-journal";
+import { SLOTS, slotSrc } from "./medio-photos";
 import {
-  brandRoute,
   brandsOf,
   catalogue,
-  categoryLine,
+  dealEnd,
   dealsEndDate,
   dealsOf,
   isBestSellerTag,
@@ -264,16 +255,15 @@ import {
   mixByCategory,
   moneyOf,
   moneyText,
-  percentOff,
   photoOf,
-  shortDate,
   tagged,
   tagTitle,
 } from "./medio";
+import { formatDate, t } from "../kalio/i18n/kalio-i18n";
 
 export default {
   name: "MedioHome",
-  components: { MedioRail, MedioPhoto, MedioSlot, KalioQuickBuy },
+  components: { MedioRail, MedioPhoto, MedioSlot, MedioScroller, MedioDealClock, KalioQuickBuy },
   mixins: [CurrencyMixin],
   inject: ["$shop"],
 
@@ -285,9 +275,7 @@ export default {
     posts: [],
     sheet: false,
     picked: null,
-    seo_open: false,
-    cats_start: true,
-    cats_end: false,
+    pop_tag: null,
   }),
 
   computed: {
@@ -300,27 +288,124 @@ export default {
     dealsTo() {
       return dealsRoute();
     },
+    newestTo() {
+      return catalogueRoute({ sort: "newest" });
+    },
     blogTo() {
       return journalRoute();
     },
-    compareTo() {
-      return { name: window.$storefront.routes.COMPARISON_PAGE };
+    r() {
+      return window.$storefront.routes;
     },
-    faqTo() {
-      return this.$router.hasRoute("ShopFAQ") ? { name: "ShopFAQ" } : { name: window.$storefront.routes.SHOP_CONTACT_US };
-    },
-    contactTo() {
-      return { name: window.$storefront.routes.SHOP_CONTACT_US };
-    },
-    withProducts() {
-      const ids = new Set(this.products.map((p) => p.category_id));
-      return this.cats.filter((c) => ids.has(c.id));
+    heroPhoto() {
+      return slotSrc(SLOTS["hero-main"]);
     },
     deals() {
       return dealsOf(this.$shop, this.products);
     },
     dealsUntil() {
-      return shortDate(dealsEndDate(this.$shop, this.products));
+      const d = dealsEndDate(this.$shop, this.products);
+      return d ? formatDate(d) : "";
+    },
+    bestSave() {
+      return Math.max(0, ...this.deals.map((p) => this.price(p).save));
+    },
+    campaignLine() {
+      if (this.bestSave > 0 && this.dealsUntil)
+        return t("medio.home.campaign", "Save up to {amount} across the store · deals end {date}", { amount: this.whole(this.bestSave), date: this.dealsUntil });
+      if (this.bestSave > 0) return t("medio.home.campaignNoDate", "Save up to {amount} across the store", { amount: this.whole(this.bestSave) });
+      return t("medio.home.campaignNone", "Shop the latest tech across the store");
+    },
+    /* The three biggest savings (in money), from three categories. */
+    heroDeals() {
+      const bySave = [...this.deals].sort((a, b) => this.price(b).save - this.price(a).save);
+      const seen = new Set();
+      const out = [];
+      for (const p of bySave) {
+        if (seen.has(p.category_id)) continue;
+        seen.add(p.category_id);
+        out.push(p);
+        if (out.length === 3) break;
+      }
+      return out;
+    },
+    heroLine() {
+      const top = this.heroDeals[0];
+      if (!top) return "";
+      const cat = this.catName(top.category_id);
+      return t("medio.home.heroP", "Save up to {amount} on {category}", { amount: this.whole(this.price(top).save), category: cat.toLowerCase() });
+    },
+    /* Every category with its best deal's packshot and saving line. */
+    roundCats() {
+      return this.cats
+        .map((c) => {
+          const mine = this.inCategory(c);
+          if (!mine.length) return null;
+          const deals = dealsOf(this.$shop, mine);
+          const pick = deals[0] || mine.find((p) => p.quantity > 0) || mine[0];
+          const save = Math.max(0, ...mine.map((p) => this.price(p).save));
+          const from = Math.min(...mine.map((p) => this.price(p).now));
+          return {
+            cat: c,
+            pick,
+            save,
+            line: save > 0 ? t("medio.header.upTo", "Up to {amount} off", { amount: this.whole(save) }) : t("medio.home.from", "From {amount}", { amount: this.full(from) }),
+          };
+        })
+        .filter(Boolean);
+    },
+    /* Promo tiles: the categories with the owner's photos, the biggest
+       saving first; one tall (portrait), four (square), two wide. A shop
+       without the photos gets the same tiles as collages of each category's
+       own products. */
+    promos() {
+      const withSave = this.roundCats.slice().sort((a, b) => b.save - a.save);
+      const used = new Set();
+      const take = (shape, n) => {
+        const list = withSave.filter((c) => !used.has(c.cat.id) && photoOf(c.cat, shape));
+        const rest = withSave.filter((c) => !used.has(c.cat.id) && !list.includes(c));
+        const out = [...list, ...rest].slice(0, n).map((c) => ({ ...c, photo: photoOf(c.cat, shape) }));
+        out.forEach((c) => used.add(c.cat.id));
+        return out;
+      };
+      if (this.roundCats.length < 7) return { tall: null, grid: [], wide: [] };
+      const tall = take("portrait", 1)[0];
+      const grid = take("square", 4);
+      const wide = take("wide", 2);
+      return { tall, grid, wide };
+    },
+    /* The brand with the most products and its three newest. */
+    latest() {
+      const brand = brandsOf(this.products)[0];
+      if (!brand) return { brand: null, items: [] };
+      const items = this.products
+        .filter((p) => p.brand === brand && p.quantity > 0)
+        .sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")) || b.id - a.id);
+      return { brand, items: mixByCategory(items, 3) };
+    },
+    latestTitle() {
+      return t("medio.home.latestH", "The latest from {brand}", { brand: this.latest.brand || "" });
+    },
+    /* Brands with deals, the most deals first, each with its best deal. */
+    brandDeals() {
+      const n = new Map();
+      for (const p of this.deals) {
+        if (!p.brand) continue;
+        if (!n.has(p.brand)) n.set(p.brand, []);
+        n.get(p.brand).push(p);
+      }
+      return [...n.entries()]
+        .sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]))
+        .slice(0, 10)
+        .map(([brand, list]) => ({ brand, top: list[0] }));
+    },
+    /* The dark Deals cards: the biggest savings not in the hero. */
+    dealCards() {
+      const hero = new Set(this.heroDeals.map((p) => p.id));
+      return mixByCategory(
+        [...this.deals].filter((p) => !hero.has(p.id)).sort((a, b) => this.price(b).save - this.price(a).save),
+        10,
+      );
     },
     bestTag() {
       return [...this.tags.keys()].find(isBestSellerTag) || null;
@@ -328,118 +413,52 @@ export default {
     newTag() {
       return [...this.tags.keys()].find(isNewTag) || null;
     },
-
-    /* ── 2. Promo cards: deals, new, best sellers ── */
-    promoCards() {
-      const save = Math.max(0, ...this.deals.map((p) => moneyOf(this.$shop, p, null, this.currency).save));
-      return [
-        {
-          key: "deals",
-          slot: "promo-deals",
-          title: "Today’s deals",
-          line: save > 0 ? `Up to ${this.money(Math.round(save), true)} off today` : "Fresh prices across the store",
-          to: this.dealsTo,
-        },
-        { key: "new", slot: "promo-new", title: "New arrivals", line: `Just landed at ${this.shopTitle}`, to: this.newTag ? this.tagTo(this.newTag) : catalogueRoute({ sort: "newest" }) },
-        { key: "best", slot: "promo-best", title: "Best sellers", line: "What everyone’s buying", to: this.bestTag ? this.tagTo(this.bestTag) : catalogueRoute({ sort: "bestselling" }) },
-      ];
+    best() {
+      const list = this.bestTag ? this.tags.get(this.bestTag) || [] : [];
+      return mixByCategory(list.filter((p) => p.icon), 12);
     },
-    /* The four categories with the most deals. */
-    offerCats() {
-      const n = new Map();
-      for (const p of this.deals) n.set(p.category_id, (n.get(p.category_id) || 0) + 1);
-      return this.cats
-        .filter((c) => n.has(c.id))
-        .sort((a, b) => n.get(b.id) - n.get(a.id))
-        .slice(0, 4);
+    fresh() {
+      const list = this.newTag
+        ? this.tags.get(this.newTag) || []
+        : [...this.products].sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")));
+      return mixByCategory(list.filter((p) => p.icon), 12);
     },
-
-    /* ── 4. The latest tech: categories with the newest products, photos first ── */
-    latest() {
-      const fresh = new Map();
-      const tagged = this.newTag ? this.tags.get(this.newTag) || [] : [];
-      for (const p of tagged) fresh.set(p.category_id, (fresh.get(p.category_id) || 0) + 1);
-      const withPhoto = (c) => !!this.tilePhoto(c);
-      const list = [...this.withProducts].sort(
-        (a, b) => Number(withPhoto(b)) - Number(withPhoto(a)) || (fresh.get(b.id) || 0) - (fresh.get(a.id) || 0),
-      );
-      return list.slice(0, 4).length === 4 ? list.slice(0, 4) : [];
-    },
-
-    /* ── 5. The wide banner: the biggest saving in a category with a wide photo ── */
-    banner() {
-      let best = null;
-      for (const c of this.withProducts) {
-        const off = Math.max(0, ...this.inCategory(c).map((p) => percentOff(this.$shop, p)));
-        if (!off) continue;
-        const score = off + (photoOf(c, "wide") ? 1000 : 0);
-        if (!best || score > best.score) best = { cat: c, off, score };
-      }
-      return best;
-    },
-
-    /* ── 6. Popular: best sellers first, then deals, mixed by category ── */
-    popular() {
-      const best = this.bestTag ? this.tags.get(this.bestTag) || [] : [];
-      const seen = new Set();
-      const list = [...best, ...this.deals].filter((p) => p.icon && !seen.has(p.id) && seen.add(p.id));
-      return mixByCategory(list, 12);
-    },
-
-    /* ── 8. Trending: the shop's other tags, most used first ── */
-    trending() {
+    /* Every other tag, most used first: one tab each. */
+    popTags() {
       return [...this.tags.entries()]
-        .filter(([t, list]) => !isBestSellerTag(t) && !isNewTag(t) && list.length)
+        .filter(([tg, list]) => !isBestSellerTag(tg) && !isNewTag(tg) && list.length)
         .sort((a, b) => b[1].length - a[1].length)
-        .slice(0, 4)
-        .map(([tag, list]) => {
-          const ids = [...new Set(list.map((p) => p.category_id))];
-          const names = ids
-            .map((id) => this.cats.find((c) => c.id === id))
-            .filter(Boolean)
-            .map((c) => c.title || c.name);
-          const line = names.length > 2 ? `${names.slice(0, 2).join(", ")} and more` : names.join(" and ");
-          return { tag, line };
-        });
+        .slice(0, 6)
+        .map(([tg]) => tg);
     },
-
-    /* ── 9. Brands ── */
-    brands() {
-      return brandsOf(this.products);
+    popTag() {
+      return this.popTags.includes(this.pop_tag) ? this.pop_tag : this.popTags[0];
     },
-
-    /* ── 10. Services ── */
-    services() {
-      const r = window.$storefront.routes;
+    popList() {
+      return mixByCategory((this.tags.get(this.popTag) || []).filter((p) => p.icon), 12);
+    },
+    /* Four more offers, not shown above. */
+    offers() {
+      const shown = new Set([...this.heroDeals, ...this.dealCards].map((p) => p.id));
+      const rest = this.deals.filter((p) => !shown.has(p.id));
+      return mixByCategory(rest.length >= 4 ? rest : this.deals, 4);
+    },
+    why() {
+      const r = this.r;
+      const faq = this.$router.hasRoute("ShopFAQ") ? { name: "ShopFAQ" } : { name: r.SHOP_CONTACT_US };
       return [
-        { key: "track", slot: "service-track", title: "Track an order", line: "See where your parcel is, from our door to yours.", to: { name: r.HISTORY_ORDERS_PHYSICAL } },
-        { key: "compare", slot: "service-compare", title: "Compare products", line: "Put up to four side by side.", to: this.compareTo },
-        { key: "help", slot: "service-help", title: "Help & FAQ", line: "Quick answers on orders, returns and payment.", to: this.faqTo },
-        { key: "contact", slot: "service-contact", title: "Contact us", line: "Talk to our team about anything.", to: this.contactTo },
+        { key: "deals", tint: "lemon", slot: "why-deals", title: t("medio.why.deals", "Real deal end dates"), line: t("medio.why.dealsL", "Every deal shows when it ends, to the second."), to: this.dealsTo },
+        { key: "compare", tint: "pink", slot: "why-compare", title: t("medio.why.compare", "Compare before you buy"), line: t("medio.why.compareL", "Put up to four products side by side."), to: { name: r.COMPARISON_PAGE } },
+        { key: "track", tint: "mint", slot: "why-track", title: t("medio.why.track", "Track every order"), line: t("medio.why.trackL", "See where your parcel is, from our door to yours."), to: { name: r.HISTORY_ORDERS_PHYSICAL } },
+        { key: "returns", tint: "lilac", slot: "why-returns", title: t("medio.why.returns", "Clear returns"), line: t("medio.why.returnsL", "Our delivery and returns terms, in plain words."), to: { name: r.SHOP_PROFILE_PAGE_TERMS } },
+        { key: "help", tint: "peach", slot: "why-help", title: t("medio.why.help", "Help when you need it"), line: t("medio.why.helpL", "Quick answers on orders, delivery and payment."), to: faq },
+        { key: "secure", tint: "sky", slot: "why-secure", title: t("medio.why.secure", "Secure checkout"), line: t("medio.why.secureL", "Your details are protected. Read how we use them."), to: { name: r.SHOP_PROFILE_PAGE_PRIVACY } },
       ];
-    },
-
-    /* ── 11. More deals: the deals not in Popular ── */
-    moreDeals() {
-      const shown = new Set(this.popular.map((p) => p.id));
-      return mixByCategory(
-        this.deals.filter((p) => !shown.has(p.id)),
-        12,
-      );
-    },
-
-    seoLede() {
-      const d = (this.$shop?.description || "").trim();
-      if (d && !/^it['’]s my awesome .* website\.?$/i.test(d)) return d;
-      return `${this.shopTitle} is an online electronics store: the latest tech, honest deals with real end dates, and help when you need it.`;
     },
   },
 
   mounted() {
-    aisles().then((list) => {
-      this.cats = list;
-      this.$nextTick(() => this.measureCats());
-    });
+    aisles().then((list) => (this.cats = list));
     catalogue().then((list) => {
       this.products = list;
       this.ready = true;
@@ -448,56 +467,56 @@ export default {
     journalPage({ page: 1, limit: 8 })
       .then(({ articles }) => (this.posts = articles.slice(0, 4)))
       .catch(() => (this.posts = []));
-    this.onResize = () => this.measureCats();
-    window.addEventListener("resize", this.onResize, { passive: true });
-  },
-
-  beforeUnmount() {
-    window.removeEventListener("resize", this.onResize);
   },
 
   methods: {
-    photoOf,
+    t,
     tagTitle,
-    dateParts,
     dropSrcset,
-    trendSlot,
-    brandSlot,
-    money(n, whole = false) {
-      return moneyText(n, this.currency, whole);
+    price(p) {
+      return moneyOf(this.$shop, p, null, this.currency);
+    },
+    whole(n) {
+      return moneyText(Math.round(n || 0), this.currency, true);
+    },
+    full(n) {
+      return moneyText(n || 0, this.currency, false);
+    },
+    ends(p) {
+      return dealEnd(p, null);
+    },
+    pic(p, thumb = false) {
+      return p?.icon ? window.CDN.GET_SHOP_IMAGE_PATH(p.icon, thumb ? 128 : null) : null;
+    },
+    srcset(p) {
+      return productSrcset(p);
     },
     catTo(c) {
       return aisleRoute(c);
     },
-    offersTo(c) {
-      return { ...aisleRoute(c), query: { filter: JSON.stringify({ only_has_discount: true }) } };
-    },
-    catIcon(c) {
-      return window.CDN.GET_CATEGORY_ICON(c.id, 256);
+    catName(id) {
+      const c = this.cats.find((x) => x.id === id);
+      return c ? c.title || c.name : "";
     },
     inCategory(c) {
       return this.products.filter((p) => p.category_id === c.id);
     },
-    tilePhoto(c) {
-      return photoOf(c, "square") || photoOf(c, "portrait") || photoOf(c, "wide");
-    },
-    line(c) {
-      return categoryLine(this.$shop, this.products, c.id, this.currency, (n) => moneyText(n, this.currency, Math.round(n) === n));
-    },
-    brandLine(b) {
-      const ids = [...new Set(this.products.filter((p) => p.brand === b).map((p) => p.category_id))];
-      return ids
-        .map((id) => this.cats.find((c) => c.id === id))
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((c) => c.title || c.name)
-        .join(" · ");
+    productTo(p) {
+      return { name: this.r.PRODUCT_PAGE, params: { product_id: p.id } };
     },
     tagTo(tag) {
-      return { name: window.$storefront.routes.SHOP_PAGE, query: { search: tag } };
+      return { name: this.r.SHOP_PAGE, query: { search: tag } };
     },
-    brandTo(b) {
-      return brandRoute(b);
+    brandDealsTo(b) {
+      return { name: this.r.SHOP_PAGE, query: { filter: JSON.stringify({ brands: [b], only_has_discount: true }) } };
+    },
+    /* "Up to $400 off <b>headphones</b>" (the saving is the accent). */
+    promoHtml(p) {
+      const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+      const name = esc(p.cat.title || p.cat.name);
+      return p.save > 0
+        ? t("medio.home.promoSave", "<em>Up to {amount} off</em> {name}", { amount: esc(this.whole(p.save)), name })
+        : t("medio.home.promoFrom", "{name} <em>{line}</em>", { name, line: esc(p.line) });
     },
     postTo(a) {
       return postRoute(a);
@@ -508,20 +527,12 @@ export default {
     postSrcset(a) {
       return photoSrcset(this.postImage(a));
     },
+    postDate(a) {
+      return a.created_at ? formatDate(a.created_at) : "";
+    },
     quickBuy(p) {
       this.picked = p;
       this.sheet = true;
-    },
-    measureCats() {
-      const el = this.$refs.cats;
-      if (!el) return;
-      this.cats_start = el.scrollLeft <= 2;
-      this.cats_end = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2;
-    },
-    nudgeCats(d) {
-      const el = this.$refs.cats;
-      if (!el) return;
-      el.scrollBy({ left: d * el.clientWidth * 0.8, behavior: "smooth" });
     },
   },
 };

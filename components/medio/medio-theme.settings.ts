@@ -6,8 +6,8 @@
  * (see themeSwitcher) they are the only theme. After a change: build and
  * upload (bash scripts/release.sh <new-version> desk), see AGENTS.md "Theme".
  *
- * palette        one of: "medio" (Medio: green buttons, red brand; the
- *                default), "cobalt", "plum", "teal", "tangerine"
+ * palette        one of: "medio" (Medio violet, the default), "ocean",
+ *                "emerald", "ruby", "copper"
  * brandColor     any colour, "#RRGGBB"; when set it replaces `palette` (the
  *                colour is made readable automatically: buttons, links, dark mode)
  * mode           "light" | "dark"

@@ -1,32 +1,30 @@
 <!--
   Medio — a deal's countdown.
-
   It is handed the deal's own end (medio.ts dealEnd: Selldone's PriceHelper
   rule, the chosen variant's dates when that variant has its own pricing)
   and counts on the page's one shared ticker (medio.ts tick), so a grid of
   cards never runs one interval each, and only this small piece re-renders
   every second. A deal with no end date, or one that has ended, shows
   nothing.
-
     line   — the quiet line on product cards: "Ends in 364d 23:15:07"
-    strip  — the navy strip in the header: "Ends in 364d 23:15:07"
-    blocks — the Deal of the Day: "Ends in" over days, hrs, min and sec
+    bare   — just the time ("364d 23:15:07"), inside a sentence of its own
+    blocks — the product page: days, hrs, min and sec
 -->
 <template>
   <span v-if="left && mode === 'line'" :title="title" class="md-cd">
-    <span class="ms">schedule</span><span class="md-cd__w">Ends in </span><b>{{ left.text }}</b>
+    <span class="ms">schedule</span><span class="md-cd__w">{{ t("medio.clock.endsIn", "Ends in") }} </span><b>{{ left.text }}</b>
   </span>
-  <span v-else-if="left && mode === 'strip'" :title="title" class="md-strip__clock">Ends in <b>{{ left.text }}</b></span>
+  <b v-else-if="left && mode === 'bare'" :title="title" class="md-cd-bare">{{ left.text }}</b>
   <div v-else-if="left && mode === 'blocks'" :title="title" class="md-cd-blocks">
-    <em>Ends in</em>
     <div aria-live="off" class="md-count" :class="{ '-days': left.d > 0 }">
-      <span v-if="left.d"><b>{{ left.d }}</b>{{ left.d === 1 ? "day" : "days" }}</span><span><b>{{ left.h }}</b>hrs</span><span><b>{{ left.m }}</b>min</span><span><b>{{ left.s }}</b>sec</span>
+      <span v-if="left.d"><b>{{ left.d }}</b>{{ left.d === 1 ? t("medio.clock.day", "day") : t("medio.clock.days", "days") }}</span><span><b>{{ left.h }}</b>{{ t("medio.clock.hrs", "hrs") }}</span><span><b>{{ left.m }}</b>{{ t("medio.clock.min", "min") }}</span><span><b>{{ left.s }}</b>{{ t("medio.clock.sec", "sec") }}</span>
     </div>
   </div>
 </template>
 
 <script>
 import { startClock, tick, timeLeft } from "./medio";
+import { formatDate, t } from "../kalio/i18n/kalio-i18n";
 
 export default {
   name: "MedioDealClock",
@@ -40,11 +38,12 @@ export default {
       return timeLeft(this.end, tick.now);
     },
     title() {
-      return this.end ? `Deal ends ${this.end.toLocaleString()}` : null;
+      return this.end ? t("medio.clock.title", "Deal ends {date}", { date: formatDate(this.end, { dateStyle: "medium", timeStyle: "short" }) }) : null;
     },
   },
   mounted() {
     startClock();
   },
+  methods: { t },
 };
 </script>

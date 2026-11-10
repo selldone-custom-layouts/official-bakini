@@ -57,8 +57,13 @@ let aislesRead: Promise<any[]> | null = null;
 /** The shop's root categories, in the merchant's order. */
 export function aisles(): Promise<any[]> {
   if (!aislesRead) {
-    aislesRead = window.$storefront.products
-      .list(null, 0, 1, { categories_only: true, categories_count: 48 })
+    /* Tried up to four times (SYNC §16): a 429 on the first read left the
+       phone menu empty for the whole visit. */
+    const read = (tries: number): Promise<any> =>
+      window.$storefront.products
+        .list(null, 0, 1, { categories_only: true, categories_count: 48 })
+        .catch((e: any) => (tries > 1 ? new Promise((ok) => setTimeout(ok, 700 * (5 - tries))).then(() => read(tries - 1)) : Promise.reject(e)));
+    aislesRead = read(4)
       .then(({ folders }: any) =>
         (folders || [])
           .filter((folder: any) => folder && folder.id)

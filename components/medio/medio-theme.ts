@@ -1,31 +1,40 @@
 /*
- * Medio — the theme switcher's config (the header's "Theme" action; the
- * owner's rules of 9 November 2026: colour palettes, a custom colour and
- * Light / Dark, a click changes the whole site; at the top right of the
- * header; the same shared package in every Layout, components/theme-switcher/).
+ * Medio — the theme switcher's config (the footer's Theme row; the owner's
+ * rules: colour palettes, a custom colour and Light / Dark, a click changes
+ * the whole site; the same shared package in every Layout,
+ * components/theme-switcher/).
  *
- * Medio paints with two colours: the buy colour (`primary`: every "Add to
- * cart", Checkout and chosen state) and the brand colour (`brand`: the logo
- * tile, links, accents, the deal badge, a saving's words). Medio's own
- * palette is green buttons and a red brand; every other palette, a custom
- * colour and a merchant's brand colour use one hue for both.
+ * Medio paints every action with one colour, the palette's `primary` (deep
+ * violet by default): buttons, the search button, links, chosen states. The
+ * old two-colour names (--md-buy*, --md-brand*) both carry it, so the shared
+ * Kalio pieces follow too. Savings stay magenta in every palette (a fixed
+ * sale colour, like a price tag), the campaign tags stay black.
  *
- * This file is everything Medio-specific: the palettes, which Medio variables
- * each palette value feeds (the Kalio base reads Medio's: --k-green is
- * var(--md-blue), which is var(--md-buy), in kalio-tokens.scss and
- * medio-theme.scss), the dark token set, and Vuetify's dark surfaces.
  * storefront.ts calls bootThemeSwitcher(MEDIO_THEME, vuetify) before
  * mounting, so the chosen theme paints first, with no flash. The merchant's
  * choice is in medio-theme.settings.ts.
  *
- * Contrast (WCAG 2.1, measured 10 November 2026). White on each light
- * primary: Medio green #007a3d 5.45, cobalt 6.70, plum 6.98, teal 5.47,
- * tangerine 5.53; white on Medio red #c8102e 5.88. White on each dark
- * primary 5.17 or more, each 3:1 or more against the dark card #1b1d21;
- * each dark "text" colour on that card 7.4 or more.
+ * Contrast (WCAG 2.1, measured 11 November 2026 with paletteFromColor and the
+ * surfaces below). White on each light primary: Medio violet #5a2ed0 7.67,
+ * ocean 6.70, emerald 6.24, ruby 6.83, copper 6.10. White on each dark
+ * primary 5.08 or more, each 3.3:1 or more against the dark card #1b1a23;
+ * each dark "text" colour on that card 7.98 or more.
  */
 import type { ThemeSwitcherConfig } from "../theme-switcher/theme-switcher";
 import { THEME_SETTINGS } from "./medio-theme.settings";
+
+/* One palette: the light and dark values, with the old buy/brand names
+   pointing at the same colour. */
+function pal(id: string, name: string, light: Record<string, string>, dark: Record<string, string>) {
+  const both = (v: Record<string, string>) => ({
+    ...v,
+    brand: v.primary,
+    brandDeep: v.deep,
+    brandSoft: v.soft,
+    brandText: v.text,
+  });
+  return { id, name, light: both(light), dark: both(dark) };
+}
 
 export const MEDIO_THEME: ThemeSwitcherConfig = {
   /* The merchant's choice: medio-theme.settings.ts, the one file to edit. */
@@ -35,7 +44,7 @@ export const MEDIO_THEME: ThemeSwitcherConfig = {
      shop must not see the switcher. With themeSwitcher "showcase" it shows
      only on these shops (window.shop.id, else <meta name="shop-name">). */
   showcaseShops: [
-    { id: 15549, name: "digini-hzgablru" }, // Digini: Digito, Besti, Medio, Senso
+    { id: 15549, name: "digini-hzgablru" }, // Digini: Digito, Besti, Argon, Senso, Medio
     { id: 15645, name: "molino" }, // Molino: Molino, Tario, Walio, Dino, Valero
   ],
 
@@ -43,73 +52,42 @@ export const MEDIO_THEME: ThemeSwitcherConfig = {
   darkClass: "md-dark",
 
   palettes: [
-    {
-      id: "medio",
-      name: "Medio",
-      light: {
-        primary: "#007a3d", deep: "#00602f", soft: "#e6f2eb", onPrimary: "#ffffff", text: "#007a3d",
-        brand: "#c8102e", brandDeep: "#a50d25", brandSoft: "#fdecee", brandText: "#c8102e",
-      },
-      dark: {
-        primary: "#007a3d", deep: "#00602f", soft: "#12301f", onPrimary: "#ffffff", text: "#6fd39b",
-        brand: "#d42114", brandDeep: "#b01b10", brandSoft: "#3a1519", brandText: "#ff8a96",
-      },
-    },
-    {
-      id: "cobalt",
-      name: "Cobalt",
-      light: {
-        primary: "#1d4ed8", deep: "#1e40af", soft: "#e8efff", onPrimary: "#ffffff", text: "#1d4ed8",
-        brand: "#1d4ed8", brandDeep: "#1e40af", brandSoft: "#e8efff", brandText: "#1d4ed8",
-      },
-      dark: {
-        primary: "#2563eb", deep: "#1d4ed8", soft: "#17264a", onPrimary: "#ffffff", text: "#93b4ff",
-        brand: "#2563eb", brandDeep: "#1d4ed8", brandSoft: "#17264a", brandText: "#93b4ff",
-      },
-    },
-    {
-      id: "plum",
-      name: "Plum",
-      light: {
-        primary: "#7e22ce", deep: "#6b21a8", soft: "#f3e8ff", onPrimary: "#ffffff", text: "#7e22ce",
-        brand: "#7e22ce", brandDeep: "#6b21a8", brandSoft: "#f3e8ff", brandText: "#7e22ce",
-      },
-      dark: {
-        primary: "#9333ea", deep: "#7e22ce", soft: "#2c1a45", onPrimary: "#ffffff", text: "#d0aaff",
-        brand: "#9333ea", brandDeep: "#7e22ce", brandSoft: "#2c1a45", brandText: "#d0aaff",
-      },
-    },
-    {
-      id: "teal",
-      name: "Teal",
-      light: {
-        primary: "#0f766e", deep: "#115e59", soft: "#e2f5f2", onPrimary: "#ffffff", text: "#0f766e",
-        brand: "#0f766e", brandDeep: "#115e59", brandSoft: "#e2f5f2", brandText: "#0f766e",
-      },
-      dark: {
-        primary: "#0f766e", deep: "#115e59", soft: "#0f322f", onPrimary: "#ffffff", text: "#5eead4",
-        brand: "#0f766e", brandDeep: "#115e59", brandSoft: "#0f322f", brandText: "#5eead4",
-      },
-    },
-    {
-      id: "tangerine",
-      name: "Tangerine",
-      light: {
-        primary: "#b4450a", deep: "#923808", soft: "#fdf0e3", onPrimary: "#ffffff", text: "#b4450a",
-        brand: "#b4450a", brandDeep: "#923808", brandSoft: "#fdf0e3", brandText: "#b4450a",
-      },
-      dark: {
-        primary: "#c2410c", deep: "#9a3412", soft: "#3a2212", onPrimary: "#ffffff", text: "#fdba74",
-        brand: "#c2410c", brandDeep: "#9a3412", brandSoft: "#3a2212", brandText: "#fdba74",
-      },
-    },
+    pal(
+      "medio",
+      "Medio violet",
+      { primary: "#5a2ed0", deep: "#4a06b8", soft: "#efeaff", onPrimary: "#ffffff", text: "#5a2ed0" },
+      { primary: "#7250f0", deep: "#653edf", soft: "#2b274f", onPrimary: "#ffffff", text: "#ada7ff" },
+    ),
+    pal(
+      "ocean",
+      "Ocean",
+      { primary: "#0a5ab4", deep: "#004794", soft: "#e7f1ff", onPrimary: "#ffffff", text: "#0a5ab4" },
+      { primary: "#256dc9", deep: "#115eb8", soft: "#142e50", onPrimary: "#ffffff", text: "#7bb3ff" },
+    ),
+    pal(
+      "emerald",
+      "Emerald",
+      { primary: "#0b6e52", deep: "#005840", soft: "#dbf8eb", onPrimary: "#ffffff", text: "#0b6e52" },
+      { primary: "#227b5f", deep: "#076c50", soft: "#003727", onPrimary: "#ffffff", text: "#6dc1a1" },
+    ),
+    pal(
+      "ruby",
+      "Ruby",
+      { primary: "#b3123f", deep: "#940030", soft: "#ffeaeb", onPrimary: "#ffffff", text: "#b3123f" },
+      { primary: "#cb3252", deep: "#b91c44", soft: "#4b1d23", onPrimary: "#ffffff", text: "#ff919c" },
+    ),
+    pal(
+      "copper",
+      "Copper",
+      { primary: "#a2470d", deep: "#863700", soft: "#ffece3", onPrimary: "#ffffff", text: "#a2470d" },
+      { primary: "#b0541f", deep: "#a04509", soft: "#49210b", onPrimary: "#ffffff", text: "#fb9766" },
+    ),
   ],
 
-  /* Palette value -> the variables that carry it. --md-head (the logo tile)
-     keeps the light brand colour in both modes, with --md-on-head words;
-     --md-on-brand is the words on a buy button (dark on a light merchant
-     brand, textOnBrand "auto"). The inherited --md-blue* names read --md-buy*
-     (medio-theme.scss). */
+  /* Palette value -> the variables that carry it. --md-head (the round logo,
+     the hub's campaign strip) keeps the light primary in both modes, with
+     --md-on-head words; --md-on-brand is the words on a button (dark on a
+     light merchant brand, textOnBrand "auto"). */
   tokens: {
     "--md-buy": "primary",
     "--md-buy-d": "deep",
@@ -132,39 +110,42 @@ export const MEDIO_THEME: ThemeSwitcherConfig = {
   /* While dark (removed on light). Packshot tiles (--md-photo, --k-well,
      --k-tint) stay white, so a white packshot keeps its edge hidden. */
   dark: {
-    "--md-bg": "#121315",
-    "--md-surface": "#1b1d21",
-    "--md-page": "#232529",
-    "--md-tile": "#2a2d32",
-    "--md-line": "#33363c",
-    "--md-line-2": "#464a52",
-    "--md-hover-line": "#5a5f68",
-    "--md-deco": "#7d828b",
-    "--md-ink": "#ececee",
-    "--md-ink-2": "#d4d6da",
-    "--md-brand-ink": "#ececee",
-    "--md-muted": "#a8acb3",
-    "--md-soft": "#9a9fa7",
-    "--md-off-bg": "#33363c",
-    "--md-off-ink": "#b9bdc4",
-    "--md-pill": "#ececee",
-    "--md-on-pill": "#121315",
+    "--md-bg": "#121118",
+    "--md-surface": "#1b1a23",
+    "--md-page": "#24232e",
+    "--md-tile": "#2a2935",
+    "--md-line": "#34333f",
+    "--md-line-2": "#4a4856",
+    "--md-hover-line": "#5e5c6b",
+    "--md-deco": "#827f90",
+    "--md-ink": "#efedf5",
+    "--md-ink-2": "#d8d5e2",
+    "--md-brand-ink": "#efedf5",
+    "--md-muted": "#aeaabb",
+    "--md-soft": "#a19dae",
+    "--md-off-bg": "#34333f",
+    "--md-off-ink": "#bdb9c8",
+    "--md-pill": "#efedf5",
+    "--md-on-pill": "#121118",
     "--md-pill-hover": "#ffffff",
-    "--md-dark-card": "#232529",
-    "--md-ph-c0": "#26292e",
-    "--md-ph-c1": "#33363c",
-    "--md-ph-c2": "#a8acb3",
-    "--md-red-t": "#ff8a96",
+    "--md-dark-card": "#26213a",
+    "--md-strip": "#0b0a10",
+    "--md-ph-c0": "#26252f",
+    "--md-ph-c1": "#33323d",
+    "--md-ph-c2": "#aeaabb",
+    "--md-red-t": "#ff7ab8",
+    "--md-sale-t": "#ff7ab8",
     "--md-green-t": "#6fd39b",
     "--md-warn-t": "#ffb366",
     "--md-yellow-l": "#3a3312",
+    "--md-note": "#262141",
     "--md-sw-edge": "rgba(255, 255, 255, 0.55)",
     "--md-shine": "rgba(255, 255, 255, 0.07)",
     "--md-pop-shadow": "rgba(0, 0, 0, 0.6)",
-    "--k-line-soft": "#2a2d32",
-    "--k-coral-soft": "#3a1519",
-    "--k-star-off": "#7d828b",
-    "--k-plain": "#1b1d21",
+    "--k-line-soft": "#2a2935",
+    "--k-coral-soft": "#3a1529",
+    "--k-star-off": "#827f90",
+    "--k-plain": "#1b1a23",
     "--k-shadow": "0 10px 28px -14px rgba(0, 0, 0, 0.7)",
   },
 
@@ -173,36 +154,35 @@ export const MEDIO_THEME: ThemeSwitcherConfig = {
     dark: "dark",
     paletteColors: { primary: "primary", "on-primary": "onPrimary" },
     darkColors: {
-      background: "#121315",
-      surface: "#1b1d21",
-      "surface-bright": "#232529",
-      "surface-variant": "#33363c",
-      "on-background": "#ececee",
-      "on-surface": "#ececee",
-      "on-surface-variant": "#d4d6da",
+      background: "#121118",
+      surface: "#1b1a23",
+      "surface-bright": "#24232e",
+      "surface-variant": "#34333f",
+      "on-background": "#efedf5",
+      "on-surface": "#efedf5",
+      "on-surface-variant": "#d8d5e2",
       "on-primary": "#ffffff",
-      secondary: "#ececee",
-      "on-secondary": "#121315",
-      error: "#ff8a96",
-      info: "#93b4ff",
+      secondary: "#efedf5",
+      "on-secondary": "#121118",
+      error: "#ff8a9e",
+      info: "#ada7ff",
       success: "#6fd39b",
       warning: "#ffb366",
     },
   },
 
   metaThemeColor: "light.brand",
-  ui: { ink: "var(--md-ink)", muted: "var(--md-muted)", line: "var(--md-line)", surface: "var(--md-surface)", font: '"Barlow", system-ui, sans-serif' },
+  ui: { ink: "var(--md-ink)", muted: "var(--md-muted)", line: "var(--md-line)", surface: "var(--md-surface)", font: '"Outfit", system-ui, sans-serif' },
   labels: { theme: "Theme", palettes: "Colour", mode: "Light or dark", modeTitle: "Mode", light: "Light", dark: "Dark", custom: "Custom colour", adjusted: "Adjusted for readability", brand: "Brand colour" },
 
-  /* "Custom colour" (the owner, 9 November 2026): any colour, made readable by
-     paletteFromColor(), and used for both the buy colour and the brand. The
-     header is white, so white on the light primary needs only 4.5:1; 5 keeps
-     a margin for the green info strip's smaller words. */
+  /* "Custom colour" (the owner, 9 November 2026): any colour, made readable
+     by paletteFromColor(). The header is white, so white on the light primary
+     needs 4.5:1; 5 keeps a margin for the small words on the hub's strip. */
   custom: {
     headerContrast: 5,
-    darkSurfaces: ["#121315", "#1b1d21", "#232529"],
-    lightSurfaces: ["#ffffff", "#f2f2f2"],
-    darkText: "#1a1a1a",
+    darkSurfaces: ["#121118", "#1b1a23", "#24232e"],
+    lightSurfaces: ["#ffffff", "#f4f3f7"],
+    darkText: "#1c1b22",
     extras: (v) => ({
       brand: v.primary,
       brandDeep: v.deep,

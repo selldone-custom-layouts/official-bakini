@@ -77,7 +77,7 @@ $photo: var(--md-photo);
   background: $surface;
   box-shadow: inset 0 0 0 1px $line;
   color: $ink !important;
-  font: 700 13.5px "Barlow", sans-serif;
+  font: 700 13.5px "Outfit", sans-serif;
   white-space: nowrap;
   cursor: pointer;
 
@@ -113,7 +113,7 @@ $photo: var(--md-photo);
 .w-shop {
   max-width: var(--md-max) !important;
   padding-inline: var(--md-pad) !important;
-  font-family: "Barlow", system-ui, sans-serif;
+  font-family: "Outfit", system-ui, sans-serif;
 }
 
 .w-shop__cols {
@@ -138,7 +138,7 @@ $photo: var(--md-photo);
     h1 {
       margin: 0;
       color: $ink;
-      font: 800 30px/1.15 "Barlow", sans-serif !important;
+      font: 800 30px/1.15 "Outfit", sans-serif !important;
       letter-spacing: -0.025em !important;
     }
 
@@ -265,7 +265,7 @@ $photo: var(--md-photo);
   border: 1px solid $line;
   border-radius: 10px;
   background: $surface;
-  font-family: "Barlow", sans-serif;
+  font-family: "Outfit", sans-serif;
 
   &__hd {
     border-bottom: 1px solid $line !important;
@@ -328,7 +328,7 @@ $photo: var(--md-photo);
     border: 0;
     background: none;
     color: $blue-t;
-    font: 700 13.5px "Barlow", sans-serif;
+    font: 700 13.5px "Outfit", sans-serif;
     text-align: start;
     cursor: pointer;
 
@@ -367,7 +367,7 @@ $photo: var(--md-photo);
       border: 0;
       outline: 0;
       background: transparent;
-      font: 600 13.5px "Barlow", sans-serif;
+      font: 600 13.5px "Outfit", sans-serif;
       color: $ink;
     }
 
@@ -461,7 +461,7 @@ $photo: var(--md-photo);
   height: 38px !important;
   border: 1px solid $line !important;
   border-radius: 6px !important;
-  font-family: "Barlow", sans-serif;
+  font-family: "Outfit", sans-serif;
   font-size: 13.5px !important;
   white-space: nowrap;
 
@@ -473,7 +473,7 @@ $photo: var(--md-photo);
 .t-dd {
   border: 1px solid $line;
   border-radius: 10px !important;
-  font-family: "Barlow", sans-serif;
+  font-family: "Outfit", sans-serif;
 
   &__opt.-on,
   &__opt:hover {
@@ -483,7 +483,7 @@ $photo: var(--md-photo);
 }
 
 .w-split button {
-  font-family: "Barlow", sans-serif;
+  font-family: "Outfit", sans-serif;
 }
 
 .t-keep__list a:hover {
@@ -567,889 +567,12 @@ $photo: var(--md-photo);
 /* load more and empty states in the listing */
 .t-listing .s--products-listing-load-more,
 .t-listing .v-btn {
-  font-family: "Barlow", sans-serif !important;
-}
-
-/* ━━━━━━━━━━━━━━━━━━━━━ Product page ━━━━━━━━━━━━━━━━━━━━━ */
-.md-product {
-  font-family: "Barlow", system-ui, sans-serif;
-  text-align: start;
-  background: $surface;
-}
-
-.v-application:has(.md-pdp:not(.-quick)),
-.s--shop:has(.md-pdp:not(.-quick)),
-.v-main:has(.md-pdp:not(.-quick)) {
-  overflow: clip !important;
-}
-
-.md-pdp {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) 320px;
-  gap: 32px;
-  align-items: start;
-
-  &__media {
-    position: sticky;
-    top: 16px;
-    padding: 12px;
-    border: 1px solid $line;
-    border-radius: 10px;
-    background: $surface;
-    min-width: 0;
-
-    .s--product-images {
-      background: $surface !important;
-    }
-
-    /* The picture takes the card's width and the thumbnails are one row
-       under it (:vertical="false"): with many pictures the side column ran
-       far longer than the picture. A whole number of thumbnails fits the
-       row (7, or 5 on a phone) and the rest scroll in behind Selldone's
-       fade. Selldone's margins, hover scale and 600px cap are reset. */
-    .s--product-images {
-      display: flex !important;
-      flex-direction: column-reverse !important;
-      gap: 10px;
-    }
-
-    .gallery-top {
-      width: 100% !important;
-      border-radius: 8px;
-      background: $photo !important; /* a packshot keeps its white tile in dark mode */
-    }
-
-    .gallery-thumbs {
-      width: 100% !important;
-      height: auto !important;
-      max-height: none !important;
-      margin: 0 !important;
-
-      > .--scroll {
-        container-type: inline-size;
-      }
-
-      .gallery-thumbs-wrap {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: flex-start !important;
-        gap: 8px !important;
-        width: auto !important;
-        height: auto !important;
-
-        > * {
-          --n: 7;
-          flex: none !important;
-          width: calc((100cqw - (var(--n) - 1) * 8px) / var(--n)) !important;
-          height: auto !important;
-          aspect-ratio: 1;
-          margin: 0 !important;
-          border: 0 !important;
-          border-radius: 8px !important;
-          overflow: hidden;
-
-          @media (max-width: 599px) {
-            --n: 5;
-          }
-        }
-      }
-
-      .-slide,
-      .-slide:hover {
-        width: 100% !important;
-        height: 100% !important;
-        margin: 0 !important;
-        padding: 4px;
-        transform: none !important;
-        border: 1px solid $line !important;
-        border-radius: 8px !important;
-        background: $photo !important;
-      }
-    }
-  }
-
-  &__info {
-    min-width: 0;
-  }
-
-  &__title {
-    margin: 6px 0 8px !important;
-    color: $ink;
-    font: 800 26px/1.2 "Barlow", sans-serif !important;
-    letter-spacing: -0.02em !important;
-    text-wrap: pretty;
-  }
-
-  &__meta {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 6px 16px;
-    color: $muted;
-    font-size: 13px;
-  }
-
-  &__rate {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: $blue-t !important;
-    font-weight: 600;
-
-    b {
-      color: $ink;
-    }
-
-    .k-stars {
-      --k-star: 14px;
-    }
-
-    &.-none {
-      color: $muted !important;
-      font-weight: 500;
-    }
-  }
-
-  &__warn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin: 10px 0 0;
-    color: var(--md-warn-t, #a14a00);
-    font-size: 13.5px;
-  }
-
-  &__choice {
-    margin-top: 20px;
-    padding-top: 18px;
-    border-top: 1px solid $line;
-  }
-
-  &__more:empty {
-    display: none;
-  }
-
-  &__specs {
-    margin-top: 22px;
-    padding-top: 18px;
-    border-top: 1px solid $line;
-
-    h2 {
-      margin: 0 0 10px;
-      font: 800 17px "Barlow", sans-serif !important;
-    }
-
-    dl {
-      display: grid;
-      grid-template-columns: minmax(110px, 0.8fr) minmax(0, 1.2fr);
-      margin: 0 0 10px;
-      font-size: 13.5px;
-    }
-
-    dt,
-    dd {
-      padding: 8px 0;
-      border-bottom: 1px solid var(--md-line);
-    }
-
-    dt {
-      color: $muted;
-      padding-right: 12px;
-    }
-
-    dd {
-      margin: 0;
-      font-weight: 600;
-    }
-  }
-
-  &__buy {
-    position: sticky;
-    top: 16px;
-    min-width: 0;
-  }
-
-  &__ask {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin: 12px 4px 0;
-    color: $muted;
-    font-size: 13px;
-
-    .ms {
-      font-size: 18px;
-    }
-
-    a {
-      color: $blue-t !important;
-      font-weight: 700;
-    }
-  }
-
-  &__note {
-    grid-column: 1 / -1;
-  }
-
-  &.-quick {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 24px;
-
-    .md-pdp__media {
-      position: static;
-      grid-row: span 2;
-    }
-
-    .md-pdp__info,
-    .md-pdp__buy {
-      grid-column: 2;
-    }
-
-    .md-pdp__buy {
-      position: static;
-    }
-  }
-}
-
-.md-vtiles {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-
-  &.-text .md-vtile {
-    width: auto;
-    min-width: 92px;
-    padding: 10px 14px;
-  }
-}
-
-.md-vtile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  width: 110px;
-  padding: 8px 8px 10px;
-  border: 1px solid $line;
-  border-radius: 8px;
-  background: $surface;
-  color: $ink;
-  font: 600 12.5px "Barlow", sans-serif;
-  cursor: pointer;
-  text-align: center;
-
-  /* the packshot's own white tile (in dark mode too) */
-  &__ph {
-    display: grid;
-    place-items: center;
-    border-radius: 6px;
-    background: $photo;
-  }
-
-  img {
-    width: 64px;
-    height: 64px;
-    object-fit: contain;
-  }
-
-  &__l {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    i {
-      width: 12px;
-      height: 12px;
-      flex: none;
-      border-radius: 50%;
-      box-shadow: inset 0 0 0 1px var(--md-sw-edge);
-    }
-  }
-
-  small {
-    color: $muted;
-    font-size: 12px;
-    font-weight: 700;
-
-    &.-out {
-      color: $red-t;
-    }
-  }
-
-  &:hover {
-    border-color: $blue-t;
-  }
-
-  &.-on {
-    border-color: $blue-t;
-    box-shadow: inset 0 0 0 1px $blue-t;
-    background: var(--md-blue-l);
-  }
-
-  &.-out {
-    opacity: 0.6;
-  }
-}
-
-.md-buybox {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 18px;
-  border: 1px solid $line;
-  border-radius: 10px;
-  background: $surface;
-
-  .md-price {
-    margin-top: 0;
-  }
-
-  &__facts {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin: 4px 0 2px;
-    padding: 10px 0;
-    border-top: 1px solid var(--md-line);
-    border-bottom: 1px solid var(--md-line);
-    list-style: none;
-    font-size: 13.5px;
-
-    li {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-
-      .ms {
-        font-size: 19px;
-        color: $muted;
-      }
-
-      &.-ok {
-        color: $green-t;
-        font-weight: 700;
-
-        .ms {
-          color: $green-t;
-        }
-      }
-
-      &.-no {
-        color: $red-t;
-        font-weight: 700;
-
-        .ms {
-          color: $red-t;
-        }
-      }
-    }
-  }
-
-  /* The deal's end on Selldone's countdown (UCountDown), drawn as Medio's
-     navy blocks: white numbers, the label above in sale red. */
-  &__deal {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    padding: 10px 12px 12px;
-    border-radius: 8px;
-    background: $page;
-
-    .vuejs-countdown {
-      display: flex;
-      gap: 6px;
-      margin: 0;
-      list-style: none;
-
-      li {
-        flex: 1 1 0;
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 0 !important;
-        padding: 5px 0 4px;
-        border-radius: 6px;
-        background: $navy;
-        color: #fff;
-
-        &::after {
-          content: none !important;
-        }
-      }
-
-      .digit {
-        color: #fff;
-        font: 800 18px/1.15 "Barlow", system-ui, sans-serif !important;
-        font-variant-numeric: tabular-nums;
-      }
-
-      .text {
-        color: #fff;
-        opacity: 0.85;
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-      }
-    }
-  }
-
-  &__dealt {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: $red-t;
-    font-size: 13px;
-    font-weight: 700;
-
-    .ms {
-      font-size: 18px;
-    }
-  }
-
-  &__acts {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-
-    .md-btn {
-      height: 40px;
-      padding: 0 10px;
-      font-size: 13.5px;
-    }
-
-    .md-btn.-on {
-      background: $blue-l;
-    }
-  }
-
-  &__full {
-    justify-content: center;
-    margin-top: 2px;
-  }
-
-  /* Selldone's buy button, in Medio's blue */
-  &__add {
-    .v-btn,
-    button.v-btn {
-      width: 100% !important;
-      min-width: 0 !important;
-      height: 46px !important;
-      border-radius: 6px !important;
-      background: $blue !important;
-      color: var(--md-on-brand) !important;
-      box-shadow: none !important;
-      font: 700 15px "Barlow", sans-serif !important;
-      letter-spacing: 0 !important;
-      text-transform: none !important;
-
-      &:hover {
-        background: $blue-d !important;
-      }
-
-      .v-icon {
-        color: var(--md-on-brand) !important;
-      }
-    }
-  }
-}
-
-/* in the cart: − n + and Checkout */
-.k-basket-line {
-  font-family: "Barlow", sans-serif;
-
-  &__cap {
-    color: $green-t !important;
-    font-weight: 700 !important;
-
-    i {
-      background: $green !important;
-    }
-  }
-
-  &__qty {
-    border: 1px solid $line !important;
-    border-radius: 6px !important;
-
-    button:hover {
-      color: $blue-t !important;
-      background: $blue-l !important;
-    }
-  }
-
-  &__go {
-    border-radius: 6px !important;
-    background: $blue !important;
-    color: var(--md-on-brand) !important;
-
-    &:hover {
-      background: $blue-d !important;
-    }
-  }
-}
-
-.md-pills {
-  display: flex;
-  gap: 6px;
-  margin-top: 28px;
-  padding: 6px;
-  border: 1px solid $line;
-  border-radius: 10px;
-  overflow-x: auto;
-  scrollbar-width: none;
-
-  a {
-    display: inline-flex;
-    align-items: center;
-    height: 36px;
-    padding: 0 16px;
-    border-radius: 6px;
-    color: $ink !important;
-    font-weight: 700;
-    font-size: 14px;
-    white-space: nowrap;
-
-    &:hover {
-      background: $blue-l;
-      color: $blue-t !important;
-    }
-  }
-}
-
-.md-specs__cols {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  align-items: start;
-}
-
-.md-specs__col {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.md-spec {
-  width: 100%;
-  border: 1px solid $line;
-  border-radius: 10px;
-  border-collapse: separate;
-  border-spacing: 0;
-  overflow: hidden;
-  font-size: 13.5px;
-
-  caption {
-    padding: 12px 14px;
-    caption-side: top;
-    border: 1px solid $line;
-    border-bottom: 0;
-    border-radius: 10px 10px 0 0;
-    background: $page;
-    color: $ink;
-    font-weight: 800;
-    font-size: 14px;
-    text-align: start;
-  }
-
-  th,
-  td {
-    padding: 10px 14px;
-    border-top: 1px solid var(--md-line);
-    text-align: start;
-    vertical-align: top;
-  }
-
-  tr:first-child th,
-  tr:first-child td {
-    border-top: 0;
-  }
-
-  th {
-    width: 42%;
-    color: $muted;
-    font-weight: 500;
-  }
-
-  td {
-    font-weight: 600;
-  }
-}
-
-.md-spec:has(caption) {
-  border-top: 0;
-  border-radius: 0 0 10px 10px;
-}
-
-.md-about {
-  max-width: 980px;
-  margin-inline: auto;
-}
-
-.md-ship__ways {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 12px;
-  margin: 0 0 12px;
-  padding: 0;
-  list-style: none;
-
-  li {
-    display: flex;
-    gap: 10px;
-    padding: 14px;
-    border: 1px solid $line;
-    border-radius: 10px;
-    font-size: 14px;
-
-    .ms {
-      color: $blue-t;
-    }
-  }
-}
-
-.md-block:empty {
-  display: none;
-}
-
-/* Frequently bought together */
-.md-together__box {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 260px;
-  align-items: center;
-  gap: 24px;
-  padding: 20px;
-  border: 1px solid $line;
-  border-radius: 10px;
-}
-
-.md-together__row {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  min-width: 0;
-}
-
-.md-together__plus {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  margin-top: 60px;
-  flex: none;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1px $line;
-  color: $muted;
-
-  .ms {
-    font-size: 18px;
-  }
-}
-
-.md-together__it {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 170px;
-  min-width: 0;
-
-  &.-off {
-    opacity: 0.55;
-  }
-}
-
-.md-together__img {
-  display: grid;
-  place-items: center;
-  aspect-ratio: 1;
-  border: 1px solid $line;
-  border-radius: 8px;
-  background: $photo; /* a packshot keeps its white tile in dark mode */
-
-  img {
-    width: 80%;
-    height: 80%;
-    object-fit: contain;
-  }
-}
-
-.md-together__pick {
-  display: flex;
-  gap: 8px;
-  font-size: 13px;
-  line-height: 1.35;
-  cursor: pointer;
-
-  input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  i {
-    display: grid;
-    place-items: center;
-    flex: none;
-    width: 18px;
-    height: 18px;
-    margin-top: 1px;
-    border-radius: 4px;
-    box-shadow: inset 0 0 0 1.5px var(--md-line-2);
-
-    .ms {
-      font-size: 14px;
-      color: var(--md-on-brand); /* the tick sits on the brand colour once on */
-      opacity: 0;
-    }
-  }
-
-  input:checked + i {
-    background: $blue;
-    box-shadow: none;
-
-    .ms {
-      opacity: 1;
-    }
-  }
-
-  > span {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-}
-
-.md-together__price,
-.md-together__price .u--price {
-  font-size: 15px !important;
-  font-weight: 800 !important;
-}
-
-.md-together__sum {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding-left: 24px;
-  border-left: 1px solid $line;
-
-  small {
-    color: $muted;
-    font-size: 13px;
-  }
-
-  .md-btn {
-    margin-top: 6px;
-  }
-}
-
-.md-together__total,
-.md-together__total * {
-  font-size: 26px !important;
-  font-weight: 800 !important;
-}
-
-/* reviews in Medio's dress */
-.md-reviews {
-  .k-reviews__summary,
-  .k-rv__summary {
-    border-color: $line !important;
-  }
-
-  .v-btn {
-    border-radius: 6px !important;
-    box-shadow: none !important;
-    text-transform: none !important;
-    letter-spacing: 0 !important;
-  }
-}
-
-@media (max-width: 1279px) {
-  .md-pdp {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-
-    &__media {
-      grid-row: span 2;
-    }
-
-    &__buy {
-      grid-column: 2;
-      position: static;
-    }
-  }
-}
-
-@media (max-width: 899px) {
-  .md-pdp {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 18px;
-
-    &__media,
-    &__buy {
-      position: static;
-      grid-row: auto;
-      grid-column: auto;
-    }
-
-    &__title {
-      font-size: 21px !important;
-    }
-
-    &.-quick {
-      grid-template-columns: minmax(0, 1fr);
-
-      .md-pdp__info,
-      .md-pdp__buy {
-        grid-column: auto;
-      }
-
-      .md-pdp__media {
-        grid-row: auto;
-      }
-    }
-  }
-
-  .md-vtile {
-    width: calc(33.333% - 7px);
-  }
-
-  .md-specs__cols {
-    grid-template-columns: 1fr;
-  }
-
-  .md-together__box {
-    grid-template-columns: 1fr;
-    padding: 14px;
-  }
-
-  .md-together__row {
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .md-together__it {
-    width: 128px;
-    flex: none;
-  }
-
-  .md-together__plus {
-    margin-top: 46px;
-  }
-
-  .md-together__sum {
-    padding: 14px 0 0;
-    border-left: 0;
-    border-top: 1px solid $line;
-  }
+  font-family: "Outfit", sans-serif !important;
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━ 404 ━━━━━━━━━━━━━━━━━━━━━ */
 .md-404 {
-  font-family: "Barlow", system-ui, sans-serif;
+  font-family: "Outfit", system-ui, sans-serif;
   text-align: start;
 
   &__panel {
@@ -1468,7 +591,7 @@ $photo: var(--md-photo);
 
   &__big {
     color: var(--md-brand-ink);
-    font: 900 132px/1 "Barlow", sans-serif;
+    font: 900 132px/1 "Outfit", sans-serif;
     letter-spacing: -0.06em;
 
     em {
@@ -1480,7 +603,7 @@ $photo: var(--md-photo);
   &__txt {
     h1 {
       margin: 0 0 8px;
-      font: 800 32px "Barlow", sans-serif !important;
+      font: 800 32px "Outfit", sans-serif !important;
       letter-spacing: -0.02em !important;
     }
 
@@ -1585,18 +708,18 @@ $photo: var(--md-photo);
 }
 
 .k-signin__title {
-  font-family: "Barlow", sans-serif !important;
+  font-family: "Outfit", sans-serif !important;
   font-weight: 800 !important;
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━ Contact us ━━━━━━━━━━━━━━━━━━━━━ */
 .md-contact {
-  font-family: "Barlow", system-ui, sans-serif;
+  font-family: "Outfit", system-ui, sans-serif;
   text-align: start;
 
   &__h {
     margin: 4px 0 6px;
-    font: 800 32px "Barlow", sans-serif !important;
+    font: 800 32px "Outfit", sans-serif !important;
     letter-spacing: -0.025em !important;
   }
 
@@ -1619,7 +742,7 @@ $photo: var(--md-photo);
 
     h2 {
       margin: 0 0 18px;
-      font: 800 20px "Barlow", sans-serif !important;
+      font: 800 20px "Outfit", sans-serif !important;
     }
   }
 
@@ -1740,7 +863,7 @@ $photo: var(--md-photo);
     border-radius: 6px;
     background: $surface;
     color: $ink;
-    font: 500 15px "Barlow", sans-serif;
+    font: 500 15px "Outfit", sans-serif;
     outline: 0;
     appearance: auto;
 
@@ -1790,7 +913,7 @@ $photo: var(--md-photo);
 
 /* ━━━━━━━━━━━━━━━━━━━━━ Cart drawer (design C) in Medio's dress ━━━━━━━━━━━━━━━━━━━━━ */
 .k-bdrawer {
-  font-family: "Barlow", sans-serif;
+  font-family: "Outfit", sans-serif;
 
   &__receipt {
     border: 1px solid $line !important;
@@ -1820,7 +943,7 @@ $photo: var(--md-photo);
 
 /* ━━━━━━━━━━━━━━━━━━━━━ Quick-buy sheet ━━━━━━━━━━━━━━━━━━━━━ */
 .k-quickbuy {
-  font-family: "Barlow", sans-serif;
+  font-family: "Outfit", sans-serif;
 
   .k-quickbuy__bar .k-more {
     color: $blue-t !important;
@@ -1857,7 +980,7 @@ $photo: var(--md-photo);
   background: $blue !important;
   box-shadow: none !important;
   color: var(--md-on-brand) !important;
-  font: 700 13.5px "Barlow", sans-serif !important;
+  font: 700 13.5px "Outfit", sans-serif !important;
 
   .v-icon {
     color: var(--md-on-brand) !important;
@@ -1885,7 +1008,7 @@ $photo: var(--md-photo);
 }
 
 .k-cmp {
-  font-family: "Barlow", sans-serif;
+  font-family: "Outfit", sans-serif;
   /* Words on the navy share card are white (the owner's rule for every
      blue or navy surface); its head stays the yellow accent. */
   --c-share-ink: #fff;
@@ -1957,7 +1080,7 @@ $photo: var(--md-photo);
 /* ━━━━━━━━━━━━━━━━━━━━━ Official pages, FAQ: Medio's type and a calm empty card ━━━━━━━━━━━━━━━━━━━━━ */
 .k-official__title,
 .k-faq .k-official__title {
-  font: 800 32px/1.15 "Barlow", sans-serif !important;
+  font: 800 32px/1.15 "Outfit", sans-serif !important;
   letter-spacing: -0.025em !important;
 
   @media (max-width: 899px) {
@@ -1999,7 +1122,7 @@ $photo: var(--md-photo);
 
   h3 {
     margin: 0 0 8px !important;
-    font: 800 22px/1.25 "Barlow", sans-serif !important;
+    font: 800 22px/1.25 "Outfit", sans-serif !important;
   }
 
   p {
@@ -2043,7 +1166,7 @@ $photo: var(--md-photo);
   h2 {
     margin: 0 0 8px !important;
     color: $ink;
-    font: 800 20px/1.25 "Barlow", sans-serif !important;
+    font: 800 20px/1.25 "Outfit", sans-serif !important;
   }
 
   p {

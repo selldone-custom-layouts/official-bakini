@@ -17,7 +17,7 @@
  */
 
 @use "../pages/product/product";
-@use "medio-theme"; // Medio 1.0.9: the theme tokens (palettes, light / dark) everything reads
+@use "medio-theme"; // Medio: the theme tokens (palettes, light / dark) everything reads
 @use "kalio-tokens"; // Kalio: tokens, type and shared pieces
 @use "kalio-platform"; // Kalio: skin for Selldone's own components
 @use "kalio-sections"; // Kalio: the sections Kalio owns outright
@@ -33,7 +33,10 @@
 @use "listing-motion"; // the results grid's loading motion (reusable; components/kalio/listing-motion.ts)
 @use "medio-base"; // Medio: base pieces (buttons, rounds, section heads, empty states, drawers)
 @use "medio-pages"; // Medio: every page after the home, in the same dress
-@use "medio"; // Medio: the catalogue store (header, footer, home, card, filter bar, product page), last
+@use "medio"; // Medio: base pieces, header, footer, menus, cards, rails, the list row
+@use "medio-home"; // Medio: the home page
+@use "medio-shop"; // Medio: the category hub and the results pages
+@use "medio-pdp"; // Medio: the product page, last
 
 // --------------------------------------------------------
 .add-marginal-side-menu-open {

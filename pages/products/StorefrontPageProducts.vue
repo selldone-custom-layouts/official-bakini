@@ -12,129 +12,174 @@
   - Tread carefully, for you're treading on dreams.
   -->
 <!--
-  🍉 This view will be shown in the StorefrontLayout.vue ▶ <router-view> component.
-
-  Header
-  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ Top Shop Menu                      ┃
-  ┃  + <s-storefront-primary-header>   ┃
-  ┃  + <s-storefront-top-menu>         ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-
-  Primary Footer
-  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ Show Vendor Info                   ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-
-  Products Listing
-  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  ┃ ⬜⬜⬜ ┃ 🟨   🟨   🟨   🟨   🟨  ┃
-  ┃ ⬜⬜⬜ ┃ 🟨   ⬛   ⬛   ⬛   ⬛  ┃
-  ┃ ⬜⬜⬜ ┃ ⬛   ⬛   ⬛   ⬛   ⬛  ┃
-  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-
-  -->
+  Medio — the shop page, every category, a search, the deals and "All
+  products" (digini-design/medio-category.html), after a big electronics
+  retailer's results pages:
+    a category: its hub on top (MedioHub), then "All <category>";
+    the others: the breadcrumb and the title;
+    a slim violet promo banner (compare, an honest offer);
+    the Filters panel on the left (MedioFilterPanel; a side sheet on a phone);
+    a toolbar: Sort by, Show 20 / 40 / 60, the item count and List / Grid;
+    the results: LIST rows on a computer (the reference's signature), GRID
+    cards on a phone (MedioCard, drawn inside Selldone's own listing);
+    the loading motion (listing-motion: dimmed cards and "Updating results…").
+  The bare shop page is the home (MedioHome).
+-->
 <template>
   <div>
-    <v-card
-      :flat="isMobile"
-      class="s--shop-card s--shadow-no-padding -hide1720 pb-16"
-    >
+    <v-card :flat="isMobile" class="s--shop-card s--shadow-no-padding -hide1720 pb-16">
       <!-- ▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆ Top Shop Menu ▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆ -->
-      <div
-        :class="{
-          'add-marginal-side-menu-open':
-            show_filter_menu && $vuetify.display.smAndUp,
-        }"
-        style="transition: all 400ms ease"
-      >
+      <div>
         <slot name="header" :center="true"></slot>
       </div>
 
-      <!--
-        One page, four Kalio states. Selldone routes the shop page, every
-        aisle and every seller to this same component, so the home page, the
-        aisle sign and the seller storefront are chosen here by route. The
-        home page stands on its own; the other three hand over to the live
-        listing below, and so does the shop page once a query (search,
-        filter, sort, "All products") asks for the catalogue itself.
-      -->
-
-      <!-- ▆▆▆▆▆▆▆▆ Shop page: the home (design B) ▆▆▆▆▆▆▆▆ -->
-      <!-- Shown on the bare shop page only. Every narrowing action the
-           listing performs travels as a query parameter, so the home page
-           gets out of the way the moment a shopper searches or filters. -->
+      <!-- ▆▆▆▆▆▆▆▆ Shop page: the home ▆▆▆▆▆▆▆▆ -->
       <medio-home v-if="show_home" />
 
-      <!-- ▆▆▆▆▆▆▆▆ Category, search, Deals, All products (Medio) ▆▆▆▆▆▆▆▆ -->
-      <!-- A big catalogue store's results page: the title, a row of filter
-           dropdowns with "All filters" (a side sheet) and the result count,
-           the filters that are on as chips, then the grid, four to a row
-           (two on a phone). No side column. -->
-      <div v-if="!show_home" class="md-wrap md-list">
-        <medio-list-top
-          :aisle="listing_parent"
-          :category-name="category_name"
-          :filter="t_filter"
-          :mode="category_name ? 'aisle' : 'catalogue'"
-          :products="listing_products"
-        />
-        <medio-filter-bar
-          :cats="aisle_list"
-          :current="category_name"
-          :filters="filters_def"
-          :model-value="t_filter"
-          :sort="t_sort"
-          :sort-fallback="search_query ? 'Relevance' : 'Featured'"
-          :total="catalogue_total"
-          @update:model-value="setFilter"
-          @update:sort="setSort"
-        />
-        <!-- While the grid reloads: a small pill under the filter row (absolute,
-             so nothing moves); the cards stay, dimmed (listing-motion). -->
-        <div class="lm-anchor">
-          <transition name="lm-pill">
-            <div v-if="lm.updating" aria-live="polite" class="lm-pill" role="status"><i class="lm-spin" aria-hidden="true"></i>Updating results…</div>
-          </transition>
-        </div>
-        <div v-if="on_chips.length" class="md-chips md-list__on">
-          <button v-for="c in on_chips" :key="c.key" class="md-chip -on" type="button" @click="c.off()">
-            {{ c.label }}<span class="ms">close</span>
-          </button>
-          <button v-if="on_chips.length > 1" class="md-link" type="button" @click="setFilter(null)">Clear all</button>
-        </div>
-        <s-products-listing
-          ref="listing"
-          :key="$route.path"
-          :class="[{ '-catalogue': catalogue }, lm.gridClass()]"
-          :vendor-id="vendor_id"
-          :has-breadcrumb="false"
-          :has-filter="false"
-          class="t-listing w-listing md-grid"
-          load-more
-          route-mode
-          update-route
-          @fetch-products="updateProductsSeo"
-          @lm-state="lm.onState"
-        ></s-products-listing>
-        <!-- First load: skeleton cards in the grid's shape; load more: skeleton
-             cards at the end. -->
-        <div v-if="lm.first || lm.loadingMore" aria-hidden="true" class="lm-skels">
-          <div v-for="n in lm.first ? 8 : 4" :key="n" class="lm-skel"><i class="-img"></i><i class="-t1"></i><i class="-t2"></i><i class="-p"></i><i class="-b"></i></div>
+      <!-- ▆▆▆▆▆▆▆▆ Category, search, Deals, All products ▆▆▆▆▆▆▆▆ -->
+      <div v-if="!show_home" :class="['md-wrap', 'md-list', '-' + view]">
+        <medio-hub v-if="category_name" :key="'hub-' + category_name" :category-name="category_name" part="top" />
+        <nav v-else :aria-label="t('medio.crumbs', 'Breadcrumb')" class="md-crumbs">
+          <router-link :to="{ path: '/' }">{{ t("medio.home", "Home") }}</router-link>
+          <span aria-hidden="true" class="ms md-chev">chevron_right</span>
+          <span aria-current="page" class="md-crumbs__here">{{ crumb }}</span>
+        </nav>
+
+        <div id="md-results" class="md-list__top">
+          <component :is="category_name ? 'h2' : 'h1'" class="md-list__h">{{ heading }}</component>
+          <p v-if="deals_page && dealsUntil" class="md-list__sub">
+            <span class="ms">schedule</span>{{ t("medio.list.dealsEnd", "Every deal here ends {date}, shown on each product", { date: dealsUntil }) }}
+          </p>
         </div>
 
-        <!-- ▆▆▆▆▆▆▆▆ Under the grid ▆▆▆▆▆▆▆▆ -->
-        <medio-row v-if="catalogue && search_query" :limit="12" lazy sort="bestselling" title="Popular right now" />
-        <section v-if="more_aisles.length" class="md-keep">
-          <h2 class="md-keep__h">Keep shopping</h2>
-          <div class="md-keep__list">
-            <router-link v-for="a in more_aisles" :key="a.id" :to="aisleTo(a)" class="md-pill -line">{{ a.title || a.name }}</router-link>
+        <!-- A slim promo banner: an honest offer (compare). -->
+        <router-link :to="compareTo" class="md-lbanner">
+          <span class="ms">compare_arrows</span>
+          <span class="md-lbanner__w">{{ bannerLine }}</span>
+          <span aria-hidden="true" class="ms md-chev">chevron_right</span>
+        </router-link>
+
+        <div class="md-list__grid">
+          <aside v-if="!phone" class="md-list__side">
+            <medio-filter-panel
+              :filters="filters_def"
+              :hide-out="hide_out"
+              :model-value="t_filter"
+              @update:hide-out="setHideOut"
+              @update:model-value="setFilter"
+            />
+          </aside>
+
+          <div class="md-list__main">
+            <!-- The toolbar: sort, page size, the count, List / Grid. -->
+            <div class="md-tbar">
+              <button v-if="phone" class="md-tbar__filters" type="button" @click="sheet_open = true">
+                <span class="ms">tune</span>{{ t("medio.filters.title", "Filters") }}<i v-if="on_count">{{ on_count }}</i>
+              </button>
+              <label class="md-select">
+                <span class="md-select__k">{{ t("medio.list.sortBy", "Sort by") }}:</span>
+                <select :aria-label="t('medio.list.sortBy', 'Sort by')" :value="t_sort || ''" @change="setSort($event.target.value || null)">
+                  <option value="">{{ search_query ? t("medio.sort.relevance", "Best match") : t("medio.sort.featured", "Featured") }}</option>
+                  <option v-for="s in sorts" :key="s.val" :value="s.val">{{ s.name }}</option>
+                </select>
+                <span aria-hidden="true" class="ms">expand_more</span>
+              </label>
+              <label v-if="!phone" class="md-select">
+                <span class="md-select__k">{{ t("medio.list.show", "Show") }}:</span>
+                <select :aria-label="t('medio.list.perPage', 'Products per page')" :value="per_page" @change="setPerPage(Number($event.target.value))">
+                  <option v-for="n in PAGE_SIZES" :key="n" :value="n">{{ n }}</option>
+                </select>
+                <span aria-hidden="true" class="ms">expand_more</span>
+              </label>
+              <transition mode="out-in" name="lm-fade">
+                <span v-if="catalogue_total !== null" :key="catalogue_total" class="md-tbar__count">{{
+                  t("medio.list.items", { one: "{n} item", other: "{n} items" }, { n: catalogue_total })
+                }}</span>
+              </transition>
+              <div v-if="!phone" :aria-label="t('medio.list.view', 'View')" class="md-seg" role="group">
+                <button :aria-pressed="view === 'list' ? 'true' : 'false'" :class="{ '-on': view === 'list' }" type="button" @click="setView('list')">
+                  <span class="ms">view_list</span>{{ t("medio.list.list", "List") }}
+                </button>
+                <button :aria-pressed="view === 'grid' ? 'true' : 'false'" :class="{ '-on': view === 'grid' }" type="button" @click="setView('grid')">
+                  <span class="ms">grid_view</span>{{ t("medio.list.grid", "Grid") }}
+                </button>
+              </div>
+            </div>
+
+            <!-- While the results reload: a small pill (absolute, so nothing
+                 moves); the cards stay, dimmed (listing-motion). -->
+            <div class="lm-anchor">
+              <transition name="lm-pill">
+                <div v-if="lm.updating" aria-live="polite" class="lm-pill" role="status">
+                  <i aria-hidden="true" class="lm-spin"></i>{{ t("medio.list.updating", "Updating results…") }}
+                </div>
+              </transition>
+            </div>
+            <div v-if="on_chips.length" class="md-chips md-list__on">
+              <button v-for="c in on_chips" :key="c.key" class="md-chip -on" type="button" @click="c.off()">
+                {{ c.label }}<span class="ms">close</span>
+              </button>
+              <button v-if="on_chips.length > 1" class="md-link" type="button" @click="setFilter(null)">{{ t("medio.filters.clear", "Clear all") }}</button>
+            </div>
+            <s-products-listing
+              ref="listing"
+              :key="$route.path"
+              :class="[{ '-catalogue': catalogue }, lm.gridClass(), '-' + view]"
+              :has-breadcrumb="false"
+              :has-filter="false"
+              :vendor-id="vendor_id"
+              class="t-listing w-listing md-grid"
+              load-more
+              route-mode
+              update-route
+              @fetch-products="updateProductsSeo"
+              @lm-state="lm.onState"
+            ></s-products-listing>
+            <!-- First load: skeletons in the results' shape; load more: at the end. -->
+            <div v-if="lm.first || lm.loadingMore" :class="'-' + view" aria-hidden="true" class="lm-skels">
+              <div v-for="n in skelCount" :key="n" class="lm-skel"><i class="-img"></i><i class="-t1"></i><i class="-t2"></i><i class="-p"></i><i class="-b"></i></div>
+            </div>
           </div>
-        </section>
+        </div>
+
+        <!-- ▆▆▆▆▆▆▆▆ Under the results ▆▆▆▆▆▆▆▆ -->
+        <medio-hub v-if="category_name && phone" :key="'hubf-' + category_name" :category-name="category_name" part="foot" />
+        <medio-row v-if="catalogue && search_query" :limit="12" :title="t('medio.list.popular', 'Popular right now')" lazy sort="bestselling" />
       </div>
     </v-card>
 
-    <!-- The catalogue's "+" opens Kalio's quick-buy sheet (kalio-listing-quick-buy.ts). -->
+    <!-- The phone's Filters: the same panel in a side sheet (teleported). -->
+    <teleport to="body">
+      <transition name="md-fade">
+        <div v-if="sheet_open" aria-hidden="true" class="md-menu-scrim" @click="sheet_open = false"></div>
+      </transition>
+      <transition name="md-slide">
+        <div
+          v-if="sheet_open"
+          :aria-label="t('medio.filters.title', 'Filters')"
+          :dir="rtl ? 'rtl' : 'ltr'"
+          aria-modal="true"
+          class="md-fsheet"
+          role="dialog"
+          @keydown.esc="sheet_open = false"
+        >
+          <div class="md-fsheet__head">
+            <b>{{ t("medio.filters.title", "Filters") }}</b>
+            <button ref="sheetX" :aria-label="t('medio.basket.close', 'Close')" class="md-x" type="button" @click="sheet_open = false"><span class="ms">close</span></button>
+          </div>
+          <div class="md-fsheet__body">
+            <medio-filter-panel :filters="filters_def" :hide-out="hide_out" :model-value="t_filter" @update:hide-out="setHideOut" @update:model-value="setFilter" />
+          </div>
+          <div class="md-fsheet__foot">
+            <button class="md-btn -block" type="button" @click="sheet_open = false">
+              {{ catalogue_total !== null ? t("medio.filters.showN", { one: "Show {n} result", other: "Show {n} results" }, { n: catalogue_total }) : t("medio.filters.show", "Show results") }}
+            </button>
+          </div>
+        </div>
+      </transition>
+    </teleport>
+
+    <!-- A card's "Choose options" opens Kalio's quick-buy sheet (kalio-listing-quick-buy.ts). -->
     <kalio-quick-buy v-model="quick_open" :product="quick_pick" />
   </div>
 </template>
@@ -143,104 +188,143 @@
 import SProductsListing from "@selldone/components-vue/storefront/products/listing/SProductsListing.vue";
 import TemplateMixin from "@selldone/components-vue/mixin/template/TemplateMixin.ts";
 import MedioHome from "../../components/medio/MedioHome.vue";
-import MedioListTop from "../../components/medio/shop/MedioListTop.vue";
-import MedioFilterBar from "../../components/medio/shop/MedioFilterBar.vue";
+import MedioHub from "../../components/medio/shop/MedioHub.vue";
+import MedioFilterPanel from "../../components/medio/shop/MedioFilterPanel.vue";
 import MedioRow from "../../components/medio/MedioRow.vue";
-import { fromRoute } from "../../components/walio/shop/walio-filters";
-import { colourName } from "../../components/medio/medio";
-import { aisleRoute, aisles, countProducts, offers, vendors } from "../../components/kalio/kalio-catalog";
-import {StorefrontSeo} from "../../helpers/StorefrontSeo";
+import { SORTS, countOn, fromRoute } from "../../components/walio/shop/walio-filters";
+import { catalogue, colourName, dealsEndDate, setView, viewMode } from "../../components/medio/medio";
+import { PAGE_SIZES, perPage } from "../../components/medio/medio-listing";
+import { aisles } from "../../components/kalio/kalio-catalog";
+import { StorefrontSeo } from "../../helpers/StorefrontSeo";
 import KalioQuickBuy from "../../components/kalio/KalioQuickBuy.vue";
 import { hostQuickBuy } from "../../components/kalio/kalio-listing-quick-buy";
 import { quickAdd } from "../../components/kalio/kalio-basket";
 import "../../components/kalio/kalio-card-basket"; // a card in the basket shows − n +
 import { listingMotion } from "../../components/kalio/listing-motion";
+import { isRtl } from "../../components/region-switcher/region";
+import { formatDate, t } from "../../components/kalio/i18n/kalio-i18n";
 
 export default {
   name: "StorefrontPageProducts",
   components: {
     SProductsListing,
     MedioHome,
-    MedioListTop,
-    MedioFilterBar,
+    MedioHub,
+    MedioFilterPanel,
     MedioRow,
     KalioQuickBuy,
   },
   mixins: [TemplateMixin],
+  inject: ["$shop"],
 
-  /**
-   * ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-   *  🔷 Data
-   * ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-   */
   data: () => ({
-    vendor_id: null /*Show only for this vendor! */,
+    vendor_id: null as any /* Selldone routes seller pages here too (no seller UI in Medio). */,
     seoNavigation: StorefrontSeo.captureNavigation(),
-    catalogue_total: null /* The listing's total, for the aisle and catalogue headers. */,
-    quick_open: false /* Kalio's quick-buy sheet, for the listing's "+". */,
-    quick_pick: null,
-    listing_parent: null /* The aisle's record, as the listing read it. */,
-    listing_products: [],
-    t_filter: null /* The filter the listing has (the bar shows it). */,
-    t_sort: null,
-    on_sale: null,
-    sold_by: null,
-    sold_by_list: [],
-    aisle_list: [],
-    lm: listingMotion() /* the grid's loading motion */,
+    catalogue_total: null as number | null /* The listing's total, for the toolbar. */,
+    quick_open: false /* Kalio's quick-buy sheet, for a card's "Choose options". */,
+    quick_pick: null as any,
+    listing_parent: null as any,
+    t_filter: null as any /* The filter the listing has (the panel shows it). */,
+    t_sort: null as any,
+    hide_out: false,
+    aisle_list: [] as any[],
+    products: [] as any[],
+    sheet_open: false,
+    phone: typeof window !== "undefined" ? window.innerWidth < 900 : false,
+    PAGE_SIZES,
+    lm: listingMotion() /* the results' loading motion */,
   }),
-  /**
-   * ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-   *  🔷 Compute Section
-   * ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-   */
+
   computed: {
     shop_theme() {
       return this.getShop()?.theme;
     },
-    show_filter_menu() {
-      return this.$store.getters.getShowFilterMenu;
-    },
-
     category_name() {
       return this.$route.params?.category_name || null;
     },
-
     search_query() {
       return String(this.$route.query?.search || "").trim();
     },
-
-    /* Selldone's filter record: the aisle's own, or the shop's on the catalogue. */
+    rtl() {
+      return isRtl();
+    },
+    view() {
+      return viewMode();
+    },
+    per_page() {
+      return perPage.n;
+    },
+    skelCount() {
+      const list = this.view === "list";
+      return this.lm.first ? (list ? 3 : 8) : list ? 2 : 4;
+    },
+    sorts() {
+      const words: Record<string, string> = {
+        bestselling: t("medio.sort.best", "Best sellers"),
+        newest: t("medio.sort.newest", "Newest"),
+        cheapest: t("medio.sort.low", "Price: low to high"),
+        most_expensive: t("medio.sort.high", "Price: high to low"),
+        most_popular: t("medio.sort.liked", "Most liked"),
+        most_visited: t("medio.sort.viewed", "Most viewed"),
+      };
+      return SORTS.map((s) => ({ val: s.val, name: words[s.val] || s.name }));
+    },
+    /* Selldone's filter record: the category's own, or the shop's on the catalogue. */
     filters_def() {
       if (this.category_name) return this.listing_parent?.filters || null;
       return this.getShop()?.filters || null;
     },
-
-    seller_tab() {
-      if (this.t_filter?.only_has_discount) return "deals";
-      if (this.t_sort === "newest") return "new";
-      return "shop";
+    on_count() {
+      return countOn(this.t_filter) + (this.hide_out ? 1 : 0);
     },
-
-    /* "in Dairy & Eggs", "for “milk”", "from Mason". */
-    where_line() {
-      if (this.vendor_id) return "from this seller";
-      if (this.category_name) return `in ${this.listing_parent?.title || this.category_name}`;
-      if (this.search_query) return `for “${this.search_query}”`;
-      return "";
+    category() {
+      return this.aisle_list.find((a) => a.name === this.category_name) || null;
+    },
+    compareTo() {
+      return { name: window.$storefront.routes.COMPARISON_PAGE };
+    },
+    deals_page() {
+      return !!this.t_filter?.only_has_discount && !this.search_query && !this.category_name;
+    },
+    dealsUntil() {
+      const d = dealsEndDate(this.$shop, this.products);
+      return d ? formatDate(d) : "";
+    },
+    crumb() {
+      if (this.search_query) return t("medio.list.search", "Search");
+      if (this.deals_page) return t("medio.list.deals", "Deals");
+      return t("medio.list.all", "All products");
+    },
+    heading() {
+      if (this.category_name) {
+        const name = this.category?.title || this.listing_parent?.title || this.category_name;
+        if (this.search_query) return t("medio.list.resultsIn", "Results for “{q}” in {name}", { q: this.search_query, name });
+        return t("medio.list.allIn", "All {name}", { name: String(name).toLowerCase() });
+      }
+      if (this.search_query) return t("medio.list.resultsFor", "Results for “{q}”", { q: this.search_query });
+      if (this.deals_page) return t("medio.list.dealsH", "Deals");
+      return t("medio.list.allH", "All products");
+    },
+    bannerLine() {
+      if (this.deals_page) return t("medio.list.bannerDeals", "Found a few deals you like? Compare up to 4 side by side");
+      if (this.category_name) {
+        const name = String(this.category?.title || this.category_name || "").toLowerCase();
+        return t("medio.list.bannerCat", "Not sure which {name} to pick? Compare up to 4 side by side", { name });
+      }
+      return t("medio.list.banner", "Not sure which to pick? Compare up to 4 products side by side");
     },
 
     /* The narrowing choices that are on, each with its own way off. */
     on_chips() {
       const f = this.t_filter;
       if (!f) return [];
-      const out = [];
+      const out: any[] = [];
       const next = () => JSON.parse(JSON.stringify(f));
-      if (f.only_has_discount) out.push({ key: "sale", label: "On sale", off: () => this.setFilter({ ...next(), only_has_discount: false }) });
-      if (f.prices && Object.keys(f.prices).length) out.push({ key: "price", label: "Price", off: () => this.setFilter({ ...next(), prices: null }) });
+      if (f.only_has_discount) out.push({ key: "sale", label: t("medio.filters.onSale", "On sale"), off: () => this.setFilter({ ...next(), only_has_discount: false }) });
+      if (f.prices && Object.keys(f.prices).length) out.push({ key: "price", label: t("medio.filters.priceChip", "Price"), off: () => this.setFilter({ ...next(), prices: null }) });
       for (const b of f.brands || []) out.push({ key: "b" + b, label: b, off: () => this.setFilter({ ...next(), brands: (f.brands || []).filter((x) => x !== b) }) });
       for (const [k, vals] of Object.entries(f.selected_spec || {}))
-        for (const v of vals || [])
+        for (const v of (vals as any[]) || [])
           out.push({
             key: "s" + k + v,
             label: String(v).split("|")[0],
@@ -251,10 +335,10 @@ export default {
             },
           });
       for (const [k, vals] of Object.entries(f.selected_variants || {}))
-        for (const v of vals || [])
+        for (const v of (vals as any[]) || [])
           out.push({
             key: "v" + k + v,
-            label: k === "colors" ? colourName(v) || "Colour" : String(v).split("|")[0],
+            label: k === "colors" ? colourName(String(v).split("|")[0]) || t("medio.filters.colour", "Colour") : String(v).split("|")[0],
             off: () => {
               const n = next();
               n.selected_variants[k] = (n.selected_variants[k] || []).filter((x) => x !== v);
@@ -263,49 +347,23 @@ export default {
           });
       return out;
     },
-    more_aisles() {
-      return this.aisle_list.filter((a) => a.name !== this.category_name).slice(0, 12);
-    },
 
-    /* The shop page asked for the catalogue itself (no aisle, no seller). */
+    /* The shop page asked for the catalogue itself (no category). */
     catalogue() {
-      return (
-        String(this.$route.name || "").startsWith(window.$storefront.routes.SHOP_PAGE) &&
-        !this.vendor_id &&
-        !this.show_home
-      );
+      return String(this.$route.name || "").startsWith(window.$storefront.routes.SHOP_PAGE) && !this.vendor_id && !this.show_home;
     },
-
     show_home() {
-      return (
-        String(this.$route.name || "").startsWith(window.$storefront.routes.SHOP_PAGE) &&
-        !this.vendor_id &&
-        !Object.keys(this.$route.query || {}).length
-      );
+      return String(this.$route.name || "").startsWith(window.$storefront.routes.SHOP_PAGE) && !this.vendor_id && !Object.keys(this.$route.query || {}).length;
     },
   },
 
-  /**
-   * ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-   *  🔷 Watch Section
-   * ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-   */
   watch: {
-    /* Layout default: on a grocery shelf "add to basket" belongs on the card.
-       The listing shows Quick Buy only when the shop theme sets hover_actions.
-       A merchant who has set it either way is respected; one who never
-       touched it gets the grocery default. A watcher, not a one-shot write in
-       created(): the storefront swaps in a fresh shop object when it refreshes
-       the shop, and that swap silently discarded the earlier write. */
+    /* The results show Medio's own cards; Selldone's Insta view (a photo
+       wall without names or buttons) is never the starting view. */
     shop_theme: {
       handler(theme) {
         if (!theme) return;
         if (theme.hover_actions === undefined) theme.hover_actions = true;
-        /* Insta is a photo wall: the name and price only on hover, and no
-           "+" below a laptop. As a starting view it hid a grocery card's
-           name, so the shelf starts on the normal grid. A shopper who picks
-           Insta from the toolbar still gets it, and keeps it: the listing
-           reads their saved choice before the theme. */
         for (const device of ["mobile", "tablet", "pc"]) {
           if (theme[device] === "insta") theme[device] = "normal";
         }
@@ -314,39 +372,26 @@ export default {
     },
     "$route.path"() {
       this.seoNavigation = StorefrontSeo.captureNavigation();
-      /* A new aisle or seller starts without a count until its listing reads. */
       this.catalogue_total = null;
       this.listing_parent = null;
-      this.listing_products = [];
+      this.sheet_open = false;
       this.$nextTick(() => this.readRoute());
     },
     "$route.query.filter"() {
       this.t_filter = fromRoute(this.$route.query);
-      this.readOnSale();
     },
-    "$route.query.search"() {
-      this.readOnSale();
+    "$route.query.only_available"(v) {
+      this.hide_out = v === "true" || v === true;
     },
-    /* The router reuses this one component for the catalogue root, every
-       aisle and every seller, so created() runs only for the first of them:
-       a shopper who clicked a seller on the market front kept vendor_id null
-       and landed on the whole catalogue under a seller URL. The id is read
-       again whenever the route record changes. Within one record it stays as
-       upstream intends — sticky while the listing rewrites the query. */
     "$route.name"() {
       this.vendor_id = this.vendorIdFromRoute();
     },
-    /* One seller to another is the same record with a new param. */
-    "$route.params.vendor_id"() {
-      this.vendor_id = this.vendorIdFromRoute();
+    sheet_open(open) {
+      document.documentElement.style.overflow = open ? "hidden" : "";
+      if (open) this.$nextTick(() => (this.$refs.sheetX as any)?.focus());
     },
   },
 
-  /**
-   * ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-   *  🔷 Component Lifecycle
-   * ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-   */
   created() {
     this.releaseQuickBuy = hostQuickBuy((product) =>
       quickAdd(this, product, (picked) => {
@@ -354,97 +399,65 @@ export default {
         this.quick_open = true;
       }),
     );
-
-    // ━━━━━━━ Initialize by query ━━━━━━━
-
-    /*First load keep vendor ID to show products for this vendor.*/
     this.vendor_id = this.vendorIdFromRoute();
-
-    this.setPageTitle(); // Set Page Title!
+    this.setPageTitle();
     this.readRoute();
     aisles().then((list) => (this.aisle_list = list));
+    catalogue().then((list) => (this.products = list));
+  },
+  mounted() {
+    this.onResize = () => (this.phone = window.innerWidth < 900);
+    window.addEventListener("resize", this.onResize, { passive: true });
+    this.onKey = (e) => {
+      if (e.key === "Escape" && this.sheet_open) this.sheet_open = false;
+    };
+    document.addEventListener("keydown", this.onKey);
   },
   beforeUnmount() {
     this.releaseQuickBuy?.();
+    window.removeEventListener("resize", this.onResize);
+    document.removeEventListener("keydown", this.onKey);
+    if (this.sheet_open) document.documentElement.style.overflow = "";
   },
 
   methods: {
+    t,
     vendorIdFromRoute() {
-      return this.$route.params?.vendor_id
-        ? this.$route.params?.vendor_id
-        : this.$route.query?.vendor_id || null;
+      return this.$route.params?.vendor_id ? this.$route.params?.vendor_id : this.$route.query?.vendor_id || null;
     },
     updateProductsSeo(data) {
       this.catalogue_total = typeof data?.total === "number" ? data.total : null;
+      const l: any = this.$refs.listing;
+      if (l && typeof l.only_available === "boolean") this.hide_out = l.only_available;
       if (data?.parent !== undefined) this.listing_parent = data.parent && data.parent.id ? data.parent : null;
-      this.listing_products = data?.products || [];
       StorefrontSeo.updateProducts(data, this.getShop(), this.seoNavigation);
     },
-
-    /* ── Walio's filter bar talks to the listing directly ── */
     readRoute() {
       this.t_filter = fromRoute(this.$route.query);
       this.t_sort = this.$route.query?.sort || null;
-      this.readOnSale();
-      this.readSoldBy();
+      const a = this.$route.query?.only_available;
+      this.hide_out = a === "true" || a === true;
     },
     setFilter(filter) {
       this.t_filter = filter;
-      this.$refs.listing?.setFilter(filter);
+      (this.$refs.listing as any)?.setFilter(filter);
     },
     setSort(sort) {
       this.t_sort = sort;
-      if (this.$refs.listing) this.$refs.listing.sort = sort;
+      if (this.$refs.listing) (this.$refs.listing as any).sort = sort;
     },
-    pickType(key, value) {
-      if (!key) return;
-      const now = this.t_filter?.selected_spec?.[key] || [];
-      const next = JSON.parse(JSON.stringify(this.t_filter || {}));
-      next.selected_spec = { ...(next.selected_spec || {}), [key]: now.includes(value) ? now.filter((v) => v !== value) : [value] };
-      this.setFilter(next);
+    /* Selldone's own switch (only_available): its watcher reads again and
+       keeps the choice in the address. */
+    setHideOut(on) {
+      this.hide_out = !!on;
+      if (this.$refs.listing) (this.$refs.listing as any).only_available = !!on;
     },
-    sellerTab(tab) {
-      const next = JSON.parse(JSON.stringify(this.t_filter || {}));
-      next.only_has_discount = tab === "deals";
-      this.setFilter(next);
-      if (tab === "new") this.setSort("newest");
-      else if (this.t_sort === "newest") this.setSort("bestselling");
-      this.$nextTick(() => document.querySelector(".t-sall")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    setPerPage(n) {
+      perPage.n = n;
+      (this.$refs.listing as any)?.fetchData?.(false);
     },
-    aisleTo(aisle) {
-      return aisleRoute(aisle);
-    },
-    /* How many of this aisle (or search, or seller) are on offer. */
-    readOnSale() {
-      this.on_sale = null;
-      if (this.show_home) return;
-      const dir = this.category_name;
-      const key = this.$route.fullPath;
-      /* Counted with whatever else is picked, so "1 result · 1 on sale". */
-      const options = { filter: JSON.stringify({ ...(this.t_filter || {}), only_has_discount: true }) };
-      if (this.vendor_id) options.vendor_id = this.vendor_id;
-      if (this.search_query) options.search = this.search_query;
-      countProducts(dir, options).then((n) => {
-        if (key === this.$route.fullPath) this.on_sale = n;
-      });
-    },
-    /* "Sold by Mason and Alina": the sellers with a product in this aisle. */
-    readSoldBy() {
-      this.sold_by = null;
-      this.sold_by_list = [];
-      const dir = this.category_name;
-      if (!dir || this.vendor_id) return;
-      Promise.all([offers(), vendors(), aisles()]).then(([{ shelfOf }, list, all]) => {
-        if (dir !== this.category_name) return;
-        const aisle = all.find((a) => a.name === dir);
-        if (!aisle) return;
-        const names = list
-          .filter((v) => (shelfOf.get(v.id) || []).some((p) => p.category_id === aisle.id))
-          .map((v) => v.name);
-        if (!names.length) return;
-        this.sold_by = "Sold by " + (names.length > 2 ? `${names.length} sellers` : names.join(" and "));
-        this.sold_by_list = names;
-      });
+    setView(mode) {
+      setView(mode);
     },
   },
 };

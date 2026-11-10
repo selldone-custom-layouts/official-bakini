@@ -67,10 +67,21 @@ export function withPhoto(list: any[], shape: Shape): any[] {
 
 let catalogueRead: Promise<any[]> | null = null;
 
+/* Shared reads are tried again (SYNC §16): one 429 from Selldone on the
+   first read left a menu or a home empty for the whole visit. Up to four
+   tries, a short pause between them. */
+export function withRetry<T>(read: () => Promise<T>, tries = 4, pause = 700): Promise<T> {
+  return read().catch((e: any) => {
+    if (tries <= 1) throw e;
+    return new Promise<T>((ok, no) => setTimeout(() => withRetry(read, tries - 1, pause * 1.6).then(ok, no), pause));
+  });
+}
+
 export function catalogue(): Promise<any[]> {
   if (!catalogueRead) {
-    catalogueRead = window.axios
-      .get(window.XAPI.GET_PRODUCTS_LIST(window.$storefront.name), { params: { offset: 0, limit: 250 } })
+    catalogueRead = withRetry(() =>
+      window.axios.get(window.XAPI.GET_PRODUCTS_LIST(window.$storefront.name), { params: { offset: 0, limit: 250 } }),
+    )
       .then(({ data }: any) => (data?.products || []).filter((p: any) => p && p.id && p.icon))
       .catch(() => {
         catalogueRead = null;
@@ -101,8 +112,7 @@ function byTags(tags: string[]): Promise<any[]> {
   params.set("offset", "0");
   params.set("limit", "250");
   for (const t of tags) params.append("tags[]", t);
-  return window.axios
-    .get(`${window.XAPI.GET_PRODUCTS(window.$storefront.name)}?${params.toString()}`)
+  return withRetry(() => window.axios.get(`${window.XAPI.GET_PRODUCTS(window.$storefront.name)}?${params.toString()}`))
     .then(({ data }: any) => data?.products || [])
     .catch(() => []);
 }
@@ -456,4 +466,68 @@ export function dealsEndDate(shop: any, list: any[]): Date | null {
 export function shortDate(d: Date | null): string {
   if (!d) return "";
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+
+/* ━━━━━━━━━━━━ Medio: the listing's view (List or Grid) ━━━━━━━━━━━━
+   The results page's toggle. List is the desktop default (the reference
+   site's signature row: picture, spec bullets, price column); Grid is the
+   phone's. A shopper's pick is kept in this browser (a convenience only). */
+const VIEW_KEY = "medio:view";
+function storedView(): "list" | "grid" | null {
+  try {
+    const v = localStorage.getItem(VIEW_KEY);
+    return v === "list" || v === "grid" ? v : null;
+  } catch {
+    return null;
+  }
+}
+export const listingView = reactive<{ picked: "list" | "grid" | null; phone: boolean }>({
+  picked: typeof window !== "undefined" ? storedView() : null,
+  phone: typeof window !== "undefined" ? window.innerWidth < 760 : false,
+});
+if (typeof window !== "undefined") {
+  window.addEventListener("resize", () => (listingView.phone = window.innerWidth < 760), { passive: true });
+}
+export function viewMode(): "list" | "grid" {
+  if (listingView.phone) return "grid";
+  return listingView.picked || "list";
+}
+export function setView(mode: "list" | "grid"): void {
+  listingView.picked = mode;
+  try {
+    localStorage.setItem(VIEW_KEY, mode);
+  } catch {
+    /* private window */
+  }
+}
+
+/* ━━━━━━━━━━━━ Medio: delivery words from the shop's own ways ━━━━━━━━━━━━ */
+
+/** What the shop's enabled delivery ways allow: delivery to an address,
+    and collection (a pickup way). Honest lines only. */
+export function deliveryKinds(shop: any): { delivery: boolean; collect: boolean } {
+  const ways = (shop?.transportations || []).filter((t: any) => t && t.enable);
+  return {
+    delivery: ways.some((t: any) => t.type !== "Pickup"),
+    collect: ways.some((t: any) => t.type === "Pickup"),
+  };
+}
+
+/* ━━━━━━━━━━━━ Medio: a category's tags and brands (the hub) ━━━━━━━━━━━━ */
+
+/** The live tags used by a category's products, most used first. */
+export function tagsIn(map: Map<string, any[]>, categoryId: number): { tag: string; n: number; products: any[] }[] {
+  const out: { tag: string; n: number; products: any[] }[] = [];
+  for (const [tag, list] of map.entries()) {
+    const mine = list.filter((p) => p.category_id === categoryId);
+    if (mine.length) out.push({ tag, n: mine.length, products: mine });
+  }
+  return out.sort((a, b) => b.n - a.n || a.tag.localeCompare(b.tag));
+}
+
+/** A product's packshot, for round tiles and wells (Selldone keeps the
+    original and a 128px thumbnail). */
+export function packshot(product: any, thumb = false): string | null {
+  return product?.icon ? window.CDN.GET_SHOP_IMAGE_PATH(product.icon, thumb ? 128 : null) : null;
 }

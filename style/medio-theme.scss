@@ -1,99 +1,114 @@
 /* ▆▆▆▆▆▆▆▆▆▆▆▆▆▆ Medio — the theme tokens ▆▆▆▆▆▆▆▆▆▆▆▆▆▆
 
-   Every colour Medio paints comes from these tokens: medio.scss and
-   medio-pages.scss read them through their $variables, and Kalio's tokens
-   read them (kalio-tokens.scss: --k-green is var(--md-blue), which is the
-   buy colour).
+   Every colour Medio paints comes from these tokens: medio*.scss read them
+   through their $variables, and Kalio's tokens read them (kalio-tokens.scss:
+   --k-green is var(--md-blue), which is the action colour).
 
-   Medio is a bright catalogue store: white page, light-grey section grounds,
-   a green buy colour (every "Add to cart" and Checkout), a red brand colour
-   (the logo tile, links, accents, a saving's words), near-black pills for
-   quick links, Barlow type.
+   Medio is a big electronics retailer's site: a light grey page, white
+   rounded cards, ONE deep violet for every action (buttons, the round search
+   button, links, chosen states), hot magenta for savings and the campaign
+   strip, black pills for campaign tags, a dark slate footer, Outfit type.
 
-   The values here are Medio's designed default: Medio red, light. The shared
-   theme switcher (components/theme-switcher/, config medio-theme.ts) writes a
-   palette's values and the dark set inline on <html>, and puts the class
-   "md-dark" on it while dark, before the app mounts; it does that only on
-   Medio's own showcase shop unless medio-theme.settings.ts says otherwise.
+   The values here are Medio's designed default: Medio violet, light. The
+   shared theme switcher (components/theme-switcher/, config medio-theme.ts)
+   writes a palette's values and the dark set inline on <html>, and puts the
+   class "md-dark" on it while dark, before the app mounts; it does that only
+   on Medio's own showcase shop unless medio-theme.settings.ts says otherwise.
    The build step (tools/postcss-dark-tokens.mjs, vite.config.ts) gives every
    remaining fixed colour a dark value under html.md-dark. */
 
 :root {
   --md-max: 1440px;
   --md-pad: 32px;
-  --md-r: 10px;
-  --md-r-s: 8px;
+  --md-r: 14px;
+  --md-r-s: 10px;
+  --md-font: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   /* The palette (the switcher rewrites these inline). */
-  --md-buy: #007a3d; /* every buy button: "Add to cart", Checkout */
-  --md-buy-d: #00602f; /* its hover */
-  --md-buy-l: #e6f2eb; /* a light wash of it */
-  --md-buy-t: #007a3d; /* it as words */
-  --md-buy-rgb: 0, 122, 61;
-  --md-brand: #c8102e; /* the logo tile, the deal badge, accents */
-  --md-brand-d: #a50d25;
-  --md-brand-l: #fdecee;
-  --md-brand-t: #c8102e; /* links and accent words */
-  --md-brand-rgb: 200, 16, 46;
-  --md-head: #c8102e; /* the logo tile (the light brand in both modes) */
-  --md-head-d: #a50d25;
+  --md-buy: #5a2ed0; /* every action: buttons, the search button, chosen states */
+  --md-buy-d: #4a06b8; /* its hover */
+  --md-buy-l: #efeaff; /* a light wash of it */
+  --md-buy-t: #5a2ed0; /* it as words */
+  --md-buy-rgb: 90, 46, 208;
+  --md-brand: #5a2ed0;
+  --md-brand-d: #4a06b8;
+  --md-brand-l: #efeaff;
+  --md-brand-t: #5a2ed0; /* links and accent words */
+  --md-brand-rgb: 90, 46, 208;
+  --md-head: #5a2ed0; /* the round logo, the hub's strip (the light primary in both modes) */
+  --md-head-d: #4a06b8;
   --md-on-head: #ffffff;
   --md-on-head-rgb: 255, 255, 255;
-  --md-on-brand: #ffffff; /* words on a buy button */
+  --md-on-brand: #ffffff; /* words on a button */
   --md-on-brand-rgb: 255, 255, 255;
 
   /* The inherited names (Kalio, Walio and Besti pieces read these). */
   --md-blue: var(--md-buy);
   --md-blue-d: var(--md-buy-d);
   --md-blue-l: var(--md-buy-l);
-  --md-blue-t: var(--md-brand-t); /* the accent as words: links are the brand colour */
+  --md-blue-t: var(--md-brand-t);
   --md-blue-rgb: var(--md-buy-rgb);
-  --md-navy: #1f1f1f; /* dark bands (promo cards, the share card) */
-  --md-navy-2: #2e2e2e;
+  --md-navy: #1d1830; /* dark bands and cards */
+  --md-navy-2: #2a2340;
   --md-pop: #ffffff;
-  --md-brand-ink: var(--md-ink); /* brand names, the 404's digits */
+  --md-brand-ink: var(--md-ink);
 
-  /* Quick links: near-black pills (light pills in dark mode). */
-  --md-pill: #1a1a1a;
+  /* Campaign tags: black pills (light pills in dark mode). */
+  --md-pill: #141414;
   --md-on-pill: #ffffff;
-  --md-pill-hover: #3a3a3a;
+  --md-pill-hover: #33313c;
 
-  /* Fixed accents */
+  /* Fixed accents: savings are magenta in every palette. */
+  --md-sale: #c40c63; /* the campaign strip, "% off" fills (white words 5.87:1) */
+  --md-sale-solid: #c40c63;
+  --md-sale-t: #c40c63; /* a saving as words */
+  --md-sale-l: #fde7f1;
   --md-yellow: #ffd91a;
-  --md-on-yellow: #1a1a1a;
+  --md-on-yellow: #1c1b22;
   --md-yellow-l: #fff6c2;
-  --md-red: #c8102e; /* sale red: the deal badge (white words) */
-  --md-red-solid: #c8102e; /* fixed red fills under white words */
-  --md-red-t: #c8102e; /* a saving as words (sale red in every palette) */
-  --md-new: #1d4fc4; /* the "New" badge */
-  --md-green: #007a3d;
-  --md-green-t: #007a3d;
+  --md-red: #c40c63; /* the deal badge (white words) */
+  --md-red-solid: #c40c63;
+  --md-red-t: #c40c63;
+  --md-new: #5a2ed0;
+  --md-green: #0f7b3e;
+  --md-green-t: #0f7b3e;
   --md-warn-t: #a14a00;
-  --md-promo: #7a0c1e; /* the dark red promo band (white words, 10:1) */
-  --md-dark-card: #1f1f1f; /* the dark promo cards */
+  --md-promo: #2b1470; /* the hero's deep violet (white words) */
+  --md-dark-card: #1d1830; /* the dark "Deals" cards */
+  --md-strip: #1c1b22; /* the top message strip */
+  --md-slate: #26333a; /* the footer */
+  --md-note: #efeaff; /* the small lilac note box */
 
   /* Grounds, lines and words */
-  --md-bg: #ffffff;
-  --md-surface: #ffffff;
-  --md-page: #f2f2f2; /* section grounds */
-  --md-tile: #efefef; /* category tiles */
-  --md-line: #dedede;
-  --md-line-2: #c4c4c4;
-  --md-hover-line: #a8a8a8;
-  --md-deco: #8a8a8a; /* separators and empty stars: 3:1 on the ground */
-  --md-ink: #1a1a1a;
-  --md-ink-2: #333333;
-  --md-muted: #5c5c5c;
-  --md-soft: #6b6b6b;
-  --md-off-bg: #e8e8e8;
-  --md-off-ink: #4f4f4f;
+  --md-bg: #f4f3f7; /* the page: light grey with a hint of violet */
+  --md-surface: #ffffff; /* cards */
+  --md-page: #efeef3; /* grey cards and grounds inside a white card */
+  --md-tile: #efeef3;
+  --md-line: #e2e0e8;
+  --md-line-2: #c9c6d2;
+  --md-hover-line: #a9a5b5;
+  --md-deco: #8a8696; /* separators and empty stars: 3:1 on the ground */
+  --md-ink: #1c1b22;
+  --md-ink-2: #3a3844;
+  --md-muted: #5f5c6b;
+  --md-soft: #6b6878;
+  --md-off-bg: #e8e7ee;
+  --md-off-ink: #4f4c5a;
   --md-photo: #ffffff; /* a packshot's tile: white in both modes */
-  --md-ph-c0: #e9ecef; /* a photo slot waiting for its photo */
-  --md-ph-c1: #dde1e6;
-  --md-ph-c2: #5c5c5c;
+  --md-ph-c0: #ecebf2; /* a photo slot waiting for its photo */
+  --md-ph-c1: #e0deea;
+  --md-ph-c2: #5f5c6b;
   --md-sw-edge: rgba(15, 23, 41, 0.34); /* a swatch disc's edge */
   --md-shine: rgba(255, 255, 255, 0.7); /* a skeleton's shimmer */
-  --md-pop-shadow: rgba(0, 0, 0, 0.35);
+  --md-pop-shadow: rgba(0, 0, 0, 0.18);
+
+  /* Pastel tiles (Why shop with Medio, buying guides) */
+  --md-p-lemon: #fff1c4;
+  --md-p-pink: #ffe1ee;
+  --md-p-mint: #d6f2ec;
+  --md-p-lilac: #e7e0fd;
+  --md-p-peach: #ffe5d4;
+  --md-p-sky: #dbeeff;
 }
 
 @media (max-width: 899px) {
@@ -103,15 +118,25 @@
 }
 
 /* Dark (html.md-dark, medio-theme.ts sets the grounds and words): Vuetify's
-   dark theme on Medio's grounds. */
+   dark theme on Medio's grounds. Pastels turn into the dark end of their own
+   hue (the owner's rule of 10 Nov 2026: no light words on a fixed light tint). */
+html.md-dark {
+  --md-p-lemon: color-mix(in oklab, #ffd84a 16%, #1b1a23);
+  --md-p-pink: color-mix(in oklab, #ff6fae 16%, #1b1a23);
+  --md-p-mint: color-mix(in oklab, #3fd1b0 16%, #1b1a23);
+  --md-p-lilac: color-mix(in oklab, #9d84ff 18%, #1b1a23);
+  --md-p-peach: color-mix(in oklab, #ff9a5c 16%, #1b1a23);
+  --md-p-sky: color-mix(in oklab, #5fb0ff 16%, #1b1a23);
+}
+
 html.md-dark,
 html.md-dark .v-theme--dark {
-  --v-theme-background: 18, 19, 21 !important;
-  --v-theme-on-background: 236, 236, 238 !important;
-  --v-theme-surface: 27, 29, 33 !important;
-  --v-theme-on-surface: 236, 236, 238 !important;
-  --v-theme-surface-variant: 51, 54, 60 !important;
-  --v-theme-on-surface-variant: 236, 236, 238 !important;
+  --v-theme-background: 18, 17, 24 !important;
+  --v-theme-on-background: 239, 237, 245 !important;
+  --v-theme-surface: 27, 26, 35 !important;
+  --v-theme-on-surface: 239, 237, 245 !important;
+  --v-theme-surface-variant: 52, 51, 63 !important;
+  --v-theme-on-surface-variant: 239, 237, 245 !important;
 }
 
 /* The page's own ground under the app (overscroll, the moment before the app

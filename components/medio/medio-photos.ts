@@ -2,22 +2,23 @@
  * Medio — the photo slots (the one registry).
  *
  * Every lifestyle photo slot on Medio's pages that is not a category's own
- * photo (those are assets/medio/<shape>-<category slug>.webp, see medio.ts
- * photoOf) is listed here: slot → file name, its size and where it shows.
+ * photo (those are assets/medio/<shape>-<category slug>.webp, the owner's
+ * textless category photos, see medio.ts photoOf) is listed here: slot →
+ * file name, its size and where it shows.
  *
  * A slot uses assets/photos/<file> when that file exists at build time
  * (import.meta.glob lists only the files that are there). Until then it
- * draws a calm placeholder of the same shape with the file's name in it, so
- * the page still looks intentional and the owner can see which file goes
- * where. To add the photos: put the WebP files in assets/photos/, build and
- * release. No code change. The prompts that make them are in
- * digini-design/codex-photos-medio.md.
+ * draws a calm tinted placeholder of the same shape with a photo icon and
+ * the file's name in it (MedioSlot.vue), so the page still looks
+ * intentional and the owner can see which file goes where. To add the
+ * photos: put the WebP files in assets/photos/, build and release. No code
+ * change. The prompts that make them are in digini-design/codex-photos-medio.md.
  *
- * Two kinds of slot follow the shop's live data and so take a name part:
- *  - trend-<tag>.webp: one per product tag in "Trending now" (wireless,
- *    portable, 4k, gaming today; a new tag looks for its own file);
- *  - brand-<brand>.webp: one per brand in "Explore our brands" (the four
- *    brands with the most products).
+ * One kind of slot follows the shop's live data and so takes a name part:
+ *  - choose-<tag>.webp: one per product tag in a category hub's "Can't
+ *    decide?" chooser (wireless, portable, 4k, gaming today, reused from
+ *    Argon's Codex set; a new tag looks for its own file and shows a
+ *    placeholder until it is there).
  */
 
 const FILES = import.meta.glob("../../assets/photos/*.webp", {
@@ -39,18 +40,19 @@ export interface Slot {
 
 /** The fixed slots. */
 export const SLOTS: Record<string, Slot> = {
-  "promo-deals": { file: "promo-deals.webp", ratio: 3 / 2, where: "Home: the first promo card, Today's deals" },
-  "promo-new": { file: "promo-new.webp", ratio: 3 / 2, where: "Home: the second promo card, New arrivals" },
-  "promo-best": { file: "promo-best.webp", ratio: 3 / 2, where: "Home: the third promo card, Best sellers" },
-  "banner-compare": { file: "banner-compare.webp", ratio: 16 / 9, where: "Home: the dark red compare banner, right side" },
-  "service-track": { file: "service-track.webp", ratio: 1, where: "Home: There's even more, Track an order" },
-  "service-compare": { file: "service-compare.webp", ratio: 1, where: "Home: There's even more, Compare products" },
-  "service-help": { file: "service-help.webp", ratio: 1, where: "Home: There's even more, Help & FAQ" },
-  "service-contact": { file: "service-contact.webp", ratio: 1, where: "Home: There's even more, Contact us" },
-  "help-desk": { file: "help-desk.webp", ratio: 3 / 2, where: "Home: the Need a hand? block" },
+  "hero-main": { file: "hero-main.webp", ratio: 5 / 2, where: "Home: the big hero banner (2400×960)" },
+  "why-deals": { file: "why-deals.webp", ratio: 1, where: "Home: Why shop with Medio, real deal end dates (800×800)" },
+  "why-compare": { file: "why-compare.webp", ratio: 1, where: "Home: Why shop with Medio, compare (800×800)" },
+  "why-track": { file: "why-track.webp", ratio: 1, where: "Home: Why shop with Medio, track every order (800×800)" },
+  "why-returns": { file: "why-returns.webp", ratio: 1, where: "Home: Why shop with Medio, returns (800×800)" },
+  "why-help": { file: "why-help.webp", ratio: 1, where: "Home: Why shop with Medio, help and support (800×800)" },
+  "why-secure": { file: "why-secure.webp", ratio: 1, where: "Home: Why shop with Medio, secure checkout (800×800)" },
+  "help-hero": { file: "help-hero.webp", ratio: 15 / 4, where: "Help & Support (FAQ): the banner (2400×640)" },
+  "about-hero": { file: "about-hero.webp", ratio: 8 / 3, where: "About us: the banner (2400×900)" },
+  notfound: { file: "notfound.webp", ratio: 4 / 3, where: "404 page: the picture (1200×900)" },
 };
 
-/** A slot name made from live data ("4K" → "4k", "Coonooo" → "coonooo"). */
+/** A slot name made from live data ("4K" → "4k"). */
 export function slug(text: string): string {
   return String(text || "")
     .toLowerCase()
@@ -58,14 +60,9 @@ export function slug(text: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-/** A tag's "Trending now" slot. */
-export function trendSlot(tag: string): Slot {
-  return { file: `trend-${slug(tag)}.webp`, ratio: 3 / 2, where: `Home: Trending now, ${tag}` };
-}
-
-/** A brand's "Explore our brands" slot. */
-export function brandSlot(brand: string): Slot {
-  return { file: `brand-${slug(brand)}.webp`, ratio: 1, where: `Home: Explore our brands, ${brand}` };
+/** A tag's "Can't decide?" slot. */
+export function chooseSlot(tag: string): Slot {
+  return { file: `choose-${slug(tag)}.webp`, ratio: 3 / 2, where: `Category hub: Can't decide?, ${tag} (1200×800)` };
 }
 
 /** The photo's address when the file is in the build, else null (placeholder). */

@@ -2,7 +2,7 @@
   Medio — one photo slot (medio-photos.ts): the photo when its file is in
   assets/photos/, else a calm placeholder of the same shape with a photo icon
   and the file's name, so the owner can see which file goes where.
-  `place` is a slot name from SLOTS or a Slot object (trend / brand slots).
+  `place` is a slot name from SLOTS or a Slot object (the chooser's choose-<tag> slots).
 -->
 <template>
   <div :class="{ '-empty': !src }" :style="{ '--ratio': String(info.ratio) }" class="md-slot">

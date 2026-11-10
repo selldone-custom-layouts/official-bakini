@@ -14,95 +14,104 @@
 
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <!--
-    Medio — product page (digini-design/medio-product.html), after a big
-    catalogue store's: the breadcrumb of the category, then two columns on a
-    light-grey ground (MedioProductOverview): the gallery card with About
-    this product, the specifications, delivery and reviews under it on the
-    left; the stacked buy cards on the right, in view while the left
-    scrolls. Then "Customers also viewed" and "More in <category>".
+    Medio — the product page (digini-design/medio-product.html), after a big
+    electronics retailer's: the breadcrumb of the category; the overview
+    (MedioProductOverview: the name, the gallery and key specs on the left,
+    the sticky buy card on the right); "Buy together and save"; four
+    accordions (Product information, Specifications, Reviews, Delivery &
+    returns); then "We recommend" and "More like this" rails.
   -->
   <div class="s--product k-product md-product">
     <div style="order: 0">
       <div class="s--product-section-info md-wrap">
         <slot name="header" :center="true"></slot>
-        <nav aria-label="Breadcrumb" class="md-crumbs">
-          <router-link :to="{ path: '/' }">Home</router-link>
+        <nav :aria-label="t('medio.crumbs', 'Breadcrumb')" class="md-crumbs">
+          <router-link :to="{ path: '/' }">{{ t("medio.home", "Home") }}</router-link>
           <template v-if="product && product.category">
-            <span aria-hidden="true" class="ms">chevron_right</span>
-            <router-link
-              :to="{ name: window.$storefront.routes.SHOP_CATEGORY_PAGE, params: { category_name: product.category.name } }"
-              >{{ product.category.title || product.category.name }}</router-link
-            >
+            <span aria-hidden="true" class="ms md-chev">chevron_right</span>
+            <router-link :to="{ name: window.$storefront.routes.SHOP_CATEGORY_PAGE, params: { category_name: product.category.name } }">{{
+              product.category.title || product.category.name
+            }}</router-link>
           </template>
           <template v-if="product">
-            <span aria-hidden="true" class="ms">chevron_right</span>
+            <span aria-hidden="true" class="ms md-chev">chevron_right</span>
             <span aria-current="page" class="md-crumbs__here">{{ product.title }}</span>
           </template>
           <span class="md-crumbs__tools">
             <s-product-admin-button v-if="$vuetify.display.mdAndUp"></s-product-admin-button>
           </span>
         </nav>
-
-        <medio-product-overview v-if="product" can-buy show-cover>
-          <template #below>
-            <!-- About this product -->
-            <section id="md-about" aria-labelledby="md-about-h" class="md-pcard md-about">
-              <h2 id="md-about-h" class="md-pcard__h -big">About this product</h2>
-              <ul v-if="features.length" class="md-about__bullets">
-                <li v-for="f in features" :key="f.key"><b>{{ f.key }}:</b> {{ f.value }}</li>
-              </ul>
-              <p v-if="product.title_en && product.title_en !== product.title" class="md-about__en">{{ product.title_en }}</p>
-              <s-product-article v-if="article" class="k-prose" hide-title></s-product-article>
-              <p v-else-if="aboutLine" class="md-about__p">{{ aboutLine }}</p>
-            </section>
-
-            <!-- Specifications, in the shop's own groups -->
-            <section v-if="spec_groups.length" id="md-specs" aria-labelledby="md-specs-h" class="md-pcard md-specs">
-              <h2 id="md-specs-h" class="md-pcard__h -big">Specifications</h2>
-              <table v-for="g in spec_groups" :key="g.title" class="md-spec">
-                <caption v-if="spec_groups.length > 1 || g.title">{{ g.title }}</caption>
-                <tbody>
-                  <tr v-for="r in g.rows" :key="r.key">
-                    <th scope="row">{{ r.key }}</th>
-                    <td>{{ r.value }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
-
-            <!-- Delivery and returns -->
-            <section class="md-pcard md-ship">
-              <h2 class="md-pcard__h -big">Delivery and returns</h2>
-              <ul v-if="ways.length" class="md-ship__ways">
-                <li v-for="w in ways" :key="w.key">
-                  <span class="ms">{{ w.icon === "storefront" ? "storefront" : "local_shipping" }}</span>
-                  <span
-                    ><b>{{ w.word }}</b> {{ w.line }}.
-                    <template v-if="w.free">Free.</template>
-                    <template v-else-if="w.freeOver">Free on orders over {{ moneyFrom(w.freeOver, w.currency, { short: "auto" }) }}.</template>
-                  </span>
-                </li>
-              </ul>
-              <p v-else class="md-about__p">Delivery options and their prices show at checkout, for your address.</p>
-              <s-product-shipping class="md-block"></s-product-shipping>
-              <s-product-warranty class="md-block"></s-product-warranty>
-              <s-product-guide class="md-block"></s-product-guide>
-              <router-link :to="{ name: window.$storefront.routes.SHOP_PROFILE_PAGE_TERMS }" class="md-link">Returns and terms<span class="ms">chevron_right</span></router-link>
-            </section>
-
-            <!-- Reviews -->
-            <section id="md-reviews" aria-labelledby="md-reviews-h" class="md-pcard md-reviews k-reviews">
-              <h2 id="md-reviews-h" class="md-pcard__h -big">Reviews</h2>
-              <kalio-reviews></kalio-reviews>
-            </section>
-          </template>
-        </medio-product-overview>
+        <medio-product-overview v-if="product" :related="related || []" can-buy show-cover @open="openPanel" />
         <s-product-overview-loading v-else />
         <u-loading-progress v-if="busy"></u-loading-progress>
       </div>
     </div>
 
     <template v-if="product">
+      <div class="md-wrap" style="order: 1">
+        <medio-together :product="product" />
+
+        <!-- ▆▆▆▆ Accordions ▆▆▆▆ -->
+        <div class="md-acc">
+          <section v-for="sec in panels" :id="'md-' + sec.key" :key="sec.key" :class="{ '-open': open[sec.key] }" class="md-acc__sec">
+            <h2 class="md-acc__h">
+              <button :aria-controls="'md-acc-' + sec.key" :aria-expanded="open[sec.key] ? 'true' : 'false'" type="button" @click="toggle(sec.key)">
+                {{ sec.title }}<span aria-hidden="true" class="ms">{{ open[sec.key] ? "expand_less" : "expand_more" }}</span>
+              </button>
+            </h2>
+            <div v-show="open[sec.key]" :id="'md-acc-' + sec.key" class="md-acc__b">
+              <!-- Product information -->
+              <template v-if="sec.key === 'info'">
+                <p class="md-acc__code">{{ t("medio.pdp.code", "Product code {code}", { code: String(product.sku || product.id) }) }}</p>
+                <ul v-if="features.length" class="md-acc__bullets">
+                  <li v-for="f in features" :key="f.key"><b>{{ f.key }}:</b> {{ f.value }}</li>
+                </ul>
+                <s-product-article v-if="article" class="k-prose" hide-title></s-product-article>
+                <p v-else-if="aboutLine" class="md-acc__p">{{ aboutLine }}</p>
+              </template>
+              <!-- Specifications, in the shop's own groups -->
+              <template v-else-if="sec.key === 'specs'">
+                <table v-for="g in spec_groups" :key="g.title" class="md-spec">
+                  <caption v-if="spec_groups.length > 1 || g.title">{{ g.title }}</caption>
+                  <tbody>
+                    <tr v-for="r in g.rows" :key="r.key">
+                      <th scope="row">{{ r.key }}</th>
+                      <td>{{ r.value }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </template>
+              <!-- Reviews -->
+              <div v-else-if="sec.key === 'reviews'" class="k-reviews md-reviews">
+                <kalio-reviews></kalio-reviews>
+              </div>
+              <!-- Delivery and returns -->
+              <template v-else-if="sec.key === 'delivery'">
+                <ul v-if="ways.length" class="md-acc__ways">
+                  <li v-for="w in ways" :key="w.key">
+                    <span class="ms">{{ w.icon === "storefront" ? "storefront" : "local_shipping" }}</span>
+                    <span>
+                      <b>{{ w.word }}</b> · {{ w.line }}.
+                      <template v-if="w.free"> {{ t("medio.pdp.free", "Free") }}.</template>
+                      <template v-else-if="w.freeOver">
+                        {{ t("medio.pdp.freeOverShort", "Free on orders over {amount}", { amount: moneyFrom(w.freeOver, w.currency, { short: "auto" }) }) }}.</template
+                      >
+                    </span>
+                  </li>
+                </ul>
+                <p v-else class="md-acc__p">{{ t("medio.pdp.deliveryAtCheckout", "Delivery options and prices are shown at checkout") }}</p>
+                <s-product-shipping class="md-block"></s-product-shipping>
+                <s-product-warranty class="md-block"></s-product-warranty>
+                <s-product-guide class="md-block"></s-product-guide>
+                <router-link :to="{ name: window.$storefront.routes.SHOP_PROFILE_PAGE_TERMS }" class="md-link"
+                  >{{ t("medio.pdp.returnsTerms", "Returns and terms") }}<span class="ms md-chev">chevron_right</span></router-link
+                >
+              </template>
+            </div>
+          </section>
+        </div>
+      </div>
+
       <div :style="{ order: getOrder('offer') }">
         <s-product-offers class="s--product-section md-wrap md-block"></s-product-offers>
       </div>
@@ -118,11 +127,10 @@
       <div :style="{ order: getOrder('page') }">
         <s-product-landing></s-product-landing>
       </div>
-
-      <!-- Customers also viewed, more in the category -->
+      <!-- We recommend (related, from other departments) and More like this (same category) -->
       <div :style="{ order: getOrder('related-products') }">
         <div id="md-related">
-          <medio-rail v-if="related === null || related.length" :products="related" class="md-wrap" title="Customers also viewed" @quick-buy="quickBuy" />
+          <medio-rail v-if="related === null || related.length" :products="related" :title="t('medio.pdp.recommend', 'We recommend')" class="md-wrap" @quick-buy="quickBuy" />
         </div>
         <medio-row
           v-if="product.category"
@@ -130,13 +138,14 @@
           :dir="product.category.name"
           :exclude="product.id"
           :more-to="{ name: window.$storefront.routes.SHOP_CATEGORY_PAGE, params: { category_name: product.category.name } }"
-          :title="'More in ' + (product.category.title || product.category.name)"
+          :title="t('medio.pdp.moreLike', 'More like this')"
           class="md-wrap"
           lazy
           sort="bestselling"
         />
       </div>
     </template>
+
     <kalio-quick-buy v-model="sheet" :product="picked" />
   </div>
 </template>
@@ -151,6 +160,8 @@ import KalioQuickBuy from "../../components/kalio/KalioQuickBuy.vue";
 import { specGroups, specRows } from "../../components/medio/product/medio-spec";
 import { catalogue, mixByCategory, rememberViewed, tagged } from "../../components/medio/medio";
 import MedioRow from "../../components/medio/MedioRow.vue";
+import MedioTogether from "../../components/medio/product/MedioTogether.vue";
+import { t } from "../../components/kalio/i18n/kalio-i18n";
 import { waysOf } from "../../components/walio/walio-home";
 import { EventBus } from "@selldone/components-vue/utils/events/EventBus.ts";
 import SProductOverviewLoading from "@selldone/components-vue/storefront/product/overview/loading/SProductOverviewLoading.vue";
@@ -204,6 +215,7 @@ export default {
     MedioProductOverview,
     MedioRail,
     MedioRow,
+    MedioTogether,
     KalioQuickBuy,
 
   },
@@ -239,6 +251,7 @@ export default {
 
       article_type: Article.Types.Product,
       related: null,
+      open: { info: true, specs: false, reviews: false, delivery: false },
       sheet: false,
       picked: null,
     };
@@ -275,6 +288,13 @@ export default {
     },
     ways() {
       return waysOf(this.$shop);
+    },
+    panels() {
+      const out = [{ key: "info", title: t("medio.pdp.info", "Product information") }];
+      if (this.spec_groups.length) out.push({ key: "specs", title: t("medio.pdp.specs", "Specifications") });
+      out.push({ key: "reviews", title: t("medio.pdp.reviews", "Reviews") });
+      out.push({ key: "delivery", title: t("medio.pdp.deliveryReturns", "Delivery & returns") });
+      return out;
     },
     tabs() {
       return [
@@ -346,7 +366,16 @@ export default {
   },
 
   methods: {
+    t,
     moneyFrom,
+    toggle(key) {
+      this.open = { ...this.open, [key]: !this.open[key] };
+    },
+    /* A row in the buy card opens its accordion and brings it into view. */
+    openPanel(key) {
+      this.open = { ...this.open, [key]: true };
+      this.$nextTick(() => document.getElementById("md-" + key)?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    },
     jump(id) {
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
     },
@@ -379,6 +408,7 @@ export default {
             out.push(p);
           }
       this.related = mixByCategory(out, 12);
+      this.open = { info: true, specs: false, reviews: false, delivery: false };
     },
     askToSignIn() {
       EventBus.$emit("need-login", true);
