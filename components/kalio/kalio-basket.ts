@@ -268,7 +268,7 @@ export async function reorder(vm: any, items: any[]): Promise<{ added: number; f
 
 /* ━━━━━━━━━━━━ Medio: a card adds the colour picked on it ━━━━━━━━━━━━
    Medio's cards show a product's colour swatches; a tap picks that variant
-   and "Add to cart" puts that colour in the cart, then reads "− n +" for it.
+   and "Add to basket" puts that colour in the basket, then reads "− n +" for it.
    The same queue as every other count (stepTo), keyed by product and
    variant, so quick taps add up here too. */
 
@@ -278,7 +278,7 @@ export function pendingLineFor(product: any, variantId: any): any {
   return key in wanted ? { product_id: product.id, variant_id: variantId || null, count: 0, pending: true } : null;
 }
 
-/** Add one of this variant (the cart's line for it, or a new one). */
+/** Add one of this variant (the basket's line for it, or a new one). */
 export function addVariant(vm: any, product: any, variant: any): Promise<any> {
   if (!mayBuy(vm)) return Promise.resolve(null);
   const ref = variant ? { id: variant.id } : null;
@@ -305,7 +305,7 @@ export function addVariant(vm: any, product: any, variant: any): Promise<any> {
 }
 
 /** Medio's product page: put `count` of a product (or one variant) in the
- *  cart at once (its quantity menu, then Add to cart). A line already in the
+ *  cart at once (its quantity menu, then Add to basket). A line already in the
  *  cart grows by `count`; the same queue as every stepper, so a quick second
  *  tap is never lost. */
 export function addCount(vm: any, product: any, variant: any, count: number): Promise<any> {

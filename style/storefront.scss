@@ -36,7 +36,8 @@
 @use "medio"; // Medio: base pieces, header, footer, menus, cards, rails, the list row
 @use "medio-home"; // Medio: the home page
 @use "medio-shop"; // Medio: the category hub and the results pages
-@use "medio-pdp"; // Medio: the product page, last
+@use "medio-pdp"; // Medio: the product page
+@use "medio-dress"; // Medio: the 404, Help & Support and the shared pages' touches, last
 
 // --------------------------------------------------------
 .add-marginal-side-menu-open {

@@ -570,84 +570,6 @@ $photo: var(--md-photo);
   font-family: "Outfit", sans-serif !important;
 }
 
-/* ━━━━━━━━━━━━━━━━━━━━━ 404 ━━━━━━━━━━━━━━━━━━━━━ */
-.md-404 {
-  font-family: "Outfit", system-ui, sans-serif;
-  text-align: start;
-
-  &__panel {
-    margin-top: 18px;
-  }
-
-  &__in {
-    display: grid;
-    grid-template-columns: 300px minmax(0, 1fr);
-    align-items: center;
-    gap: 40px;
-    padding: 44px 48px;
-    border: 1px solid $line;
-    border-radius: 14px;
-  }
-
-  &__big {
-    color: var(--md-brand-ink);
-    font: 900 132px/1 "Outfit", sans-serif;
-    letter-spacing: -0.06em;
-
-    em {
-      font-style: normal;
-      color: $blue-t;
-    }
-  }
-
-  &__txt {
-    h1 {
-      margin: 0 0 8px;
-      font: 800 32px "Outfit", sans-serif !important;
-      letter-spacing: -0.02em !important;
-    }
-
-    p {
-      margin: 0 0 18px;
-      color: $muted;
-      font-size: 15px;
-    }
-
-    .md-search {
-      max-width: 560px;
-    }
-  }
-
-  &__links {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 16px;
-
-    > span {
-      font-weight: 700;
-      font-size: 13.5px;
-      margin-right: 4px;
-    }
-  }
-
-  @media (max-width: 899px) {
-    &__in {
-      grid-template-columns: 1fr;
-      gap: 8px;
-      padding: 24px 18px;
-    }
-
-    &__big {
-      font-size: 84px;
-    }
-
-    &__txt h1 {
-      font-size: 24px !important;
-    }
-  }
-}
 
 .md-depts.-one {
   grid-template-rows: auto;
@@ -1073,7 +995,7 @@ $photo: var(--md-photo);
   border-radius: 12px !important;
 
   .k-journal__eyebrow {
-    color: #ffd91a !important;
+    color: #d8ccff !important;
   }
 }
 

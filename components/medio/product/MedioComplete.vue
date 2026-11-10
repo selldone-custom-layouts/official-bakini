@@ -2,7 +2,7 @@
   Medio — "Complete your purchase with…" on the product page: this product,
   a "+", one more from the shop (the merchant's own cross-sell when there
   is one, else another product from the same category), the two together
-  and "Add both to cart". A colour or capacity product goes in with the
+  and "Add both to basket". A colour or capacity product goes in with the
   choice shown (this page's chosen variant; the other's first in stock).
   The button itself says when both are in; nothing pops up.
 -->
@@ -25,8 +25,8 @@
     <div class="md-complete__foot">
       <span class="md-complete__total">Both for <u-price :amount="total" :currency="currency" /></span>
       <button :disabled="adding || soldOut" class="md-btn" type="button" @click="addBoth">
-        <template v-if="done"><span class="ms">check</span>Both in your cart</template>
-        <template v-else>Add both to cart</template>
+        <template v-if="done"><span class="ms">check</span>Both in your basket</template>
+        <template v-else>Add both to basket</template>
       </button>
     </div>
   </section>

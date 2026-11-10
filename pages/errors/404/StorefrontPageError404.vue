@@ -5,62 +5,67 @@
   - Web: https://selldone.com
   -->
 <template>
-  <!-- Medio 404: a friendly panel with a large 404 (the 0 in the brand
-       colour), a search, quick ways out; then every category as a tile
-       (the home's tiles) and today's deals. -->
-  <div class="md-404">
-    <section class="md-404__panel md-wrap">
-      <div class="md-404__in">
-        <span aria-hidden="true" class="md-404__big">4<em>0</em>4</span>
-        <div class="md-404__txt">
-          <h1>We can't find that page</h1>
-          <p>The link may be old, or the page has moved. Try a search or start from a department.</p>
-          <form class="md-search -big" role="search" @submit.prevent="go">
-            <span aria-hidden="true" class="ms md-search__ic">search</span>
-            <input v-model="q" aria-label="Search" enterkeyhint="search" placeholder="What can we help you find?" type="search" />
-            <button aria-label="Search" class="md-search__go" type="submit"><span class="ms">search</span></button>
-          </form>
-          <div class="md-404__links">
-            <span>Or go to</span>
-            <router-link :to="deals" class="md-chip">Today's deals</router-link>
-            <router-link :to="newest" class="md-chip">New arrivals</router-link>
-            <router-link :to="{ name: r.HISTORY_ORDERS_PHYSICAL }" class="md-chip">Track an order</router-link>
-            <router-link :to="{ name: r.SHOP_CONTACT_US }" class="md-chip">Help</router-link>
-          </div>
+  <!-- Medio 404: a white card with a big violet "404", a search and quick
+       ways out (the picture slot notfound.webp beside it); then every
+       category as a round tile in two even rows (an "All products" tile
+       evens them out) and today's deals. Inside the Layout, with the header. -->
+  <div class="md-404 md-wrap">
+    <section class="md-404__card">
+      <div class="md-404__txt">
+        <p aria-hidden="true" class="md-404__big">404</p>
+        <h1>{{ t("medio.nf.h", "We can’t find that page") }}</h1>
+        <p class="md-404__p">{{ t("medio.nf.p", "The link may be old, or the page has moved. Try a search, or start from a category.") }}</p>
+        <form class="md-search" role="search" @submit.prevent="go">
+          <input
+            :aria-label="t('medio.header.searchLabel', 'Search products or brands')"
+            :placeholder="t('medio.nf.ph', 'What can we help you find?')"
+            :value="q"
+            enterkeyhint="search"
+            type="search"
+            @input="q = $event.target.value"
+          />
+          <button :aria-label="t('medio.header.search', 'Search')" class="md-search__go" type="submit"><span class="ms">search</span></button>
+        </form>
+        <div class="md-404__links">
+          <span>{{ t("medio.nf.or", "Or go to") }}</span>
+          <router-link :to="deals" class="md-chip">{{ t("medio.header.allDeals", "All deals") }}</router-link>
+          <router-link :to="newest" class="md-chip">{{ t("medio.header.newIn", "New in") }}</router-link>
+          <router-link :to="{ name: r.HISTORY_ORDERS_PHYSICAL }" class="md-chip">{{ t("medio.header.track", "Track my order") }}</router-link>
+          <router-link :to="help" class="md-chip">{{ t("medio.header.helpSupport", "Help & Support") }}</router-link>
         </div>
       </div>
+      <medio-slot class="md-404__img" place="notfound" />
     </section>
 
-    <section v-if="cats.length" class="md-sec md-wrap">
-      <header class="md-head">
-        <h2>Shop by category</h2>
-        <router-link :to="catalogue" class="md-more">All products<span class="ms">chevron_right</span></router-link>
-      </header>
-      <div class="md-404__cats">
-        <router-link v-for="c in cats.slice(0, 15)" :key="c.id" :to="catTo(c)" class="md-cat">
-          <span class="md-cat__tile"><img v-if="c.icon" :src="icon(c)" alt="" loading="lazy" /><span v-else class="ms">category</span></span>
-          <span class="md-cat__t">{{ c.title || c.name }}</span>
+    <section v-if="cats.length" class="md-sec">
+      <h2 class="md-title">{{ t("medio.nf.cats", "Shop by category") }}</h2>
+      <div :style="{ '--cols': tiles.cols }" class="md-404__cats">
+        <router-link v-for="c in tiles.cats" :key="c.id" :to="catTo(c)" class="md-round-tile">
+          <span class="md-round-tile__disc"><img v-if="c.icon" :src="icon(c)" alt="" loading="lazy" /><span v-else class="ms">category</span></span>
+          <span class="md-round-tile__t">{{ c.title || c.name }}</span>
         </router-link>
-        <!-- Full rows only (the owner's rule): an "All products" tile evens them out. -->
-        <router-link v-if="cats.length % 2 === 1 || cats.length > 15" :to="catalogue" class="md-cat -all">
-          <span class="md-cat__tile"><span class="ms">grid_view</span></span>
-          <span class="md-cat__t">All products</span>
+        <router-link v-if="tiles.all" :to="catalogue" class="md-round-tile -all">
+          <span class="md-round-tile__disc"><span class="ms">grid_view</span></span>
+          <span class="md-round-tile__t">{{ t("medio.header.allProducts", "All products") }}</span>
         </router-link>
       </div>
     </section>
 
-    <medio-row :filter="{ only_has_discount: true }" :limit="12" :more-to="deals" class="md-wrap" more-label="See all deals" title="Today's deals" />
+    <medio-row :filter="{ only_has_discount: true }" :limit="12" :more-label="t('medio.home.seeAllDeals', 'See all deals')" :more-to="deals" :title="t('medio.nf.deals', 'Today’s deals')" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import MedioRow from "../../../components/medio/MedioRow.vue";
+import MedioSlot from "../../../components/medio/MedioSlot.vue";
 import { aisleRoute, aisles, catalogueRoute, dealsRoute } from "../../../components/kalio/kalio-catalog";
+import { catTiles } from "../../../components/medio/medio";
+import { t } from "../../../components/kalio/i18n/kalio-i18n";
 
 export default defineComponent({
   name: "StorefrontPageError404",
-  components: { MedioRow },
+  components: { MedioRow, MedioSlot },
   data: () => ({ q: "", cats: [] as any[] }),
   computed: {
     r(): any {
@@ -75,11 +80,19 @@ export default defineComponent({
     catalogue() {
       return catalogueRoute();
     },
+    help(): any {
+      return this.$router.hasRoute("ShopFAQ") ? { name: "ShopFAQ" } : { name: this.r.SHOP_CONTACT_US };
+    },
+    /* Two even rows (the owner's rule): an odd count gets an "All" tile. */
+    tiles(): any {
+      return catTiles(this.cats);
+    },
   },
   mounted() {
     aisles().then((list) => (this.cats = list));
   },
   methods: {
+    t,
     catTo(c: any) {
       return aisleRoute(c);
     },

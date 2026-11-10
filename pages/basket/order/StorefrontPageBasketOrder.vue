@@ -46,7 +46,7 @@
 
       <!-- Kalio (5 November 2026): an order that cannot be opened says why
            and where to go, where Selldone kept the loading dots and a
-           "Cart not found" toast. -->
+           "Basket not found" toast. -->
       <div v-if="!basket && failed" class="k-order__missing">
         <v-icon size="30">{{ USER() ? "receipt_long" : "lock_outline" }}</v-icon>
         <h1>We can’t open this order</h1>

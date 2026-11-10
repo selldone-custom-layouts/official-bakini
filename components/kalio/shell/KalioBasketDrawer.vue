@@ -50,7 +50,7 @@
             class="k-bdrawer__qty"
             role="group"
           >
-            <button :aria-label="shown(item) > 1 ? 'One fewer' : 'Remove from cart'" type="button" @click="step(item, -1)">
+            <button :aria-label="shown(item) > 1 ? 'One fewer' : 'Remove from basket'" type="button" @click="step(item, -1)">
               <v-icon size="16">{{ shown(item) > 1 ? "remove" : "delete_outline" }}</v-icon>
             </button>
             <output aria-live="polite">{{ shown(item) }}</output>
@@ -118,7 +118,7 @@ export default {
   methods: {
     /* The cart's amounts come in the basket's currency (the server converts it
        after a currency change); money() shows them in the visitor's, so they
-       are right even before the cart comes back. */
+       are right even before the basket comes back. */
     money,
     settling,
 

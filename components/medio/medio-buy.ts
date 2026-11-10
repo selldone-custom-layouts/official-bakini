@@ -1,7 +1,7 @@
 /*
  * Medio — what every buy button shares (the card, the Deal of the Day,
  * "Frequently bought together"): the product's variants, the colour picked
- * on it, its price, whether it can be added, and its count in the cart.
+ * on it, its price, whether it can be added, and its count in the basket.
  *
  * A component using it has `product` (a prop or a computed). A colour
  * product adds the picked colour straight away and counts that colour's

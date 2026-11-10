@@ -358,7 +358,7 @@
            the translated platform string. -->
       <div v-else class="k-basket-empty md-empty -page">
         <span aria-hidden="true" class="md-empty__ic"><span class="ms">shopping_cart</span></span>
-        <h1 class="md-empty__t">Your cart is empty</h1>
+        <h1 class="md-empty__t">Your basket is empty</h1>
         <p class="md-empty__p">Find something you love and it will wait for you here.</p>
         <router-link :to="{ name: window.$storefront.routes.SHOP_PAGE, query: { sort: 'newest' } }" class="md-btn">Continue shopping</router-link>
         <router-link :to="{ name: window.$storefront.routes.SHOP_PAGE, query: { filter: JSON.stringify({ only_has_discount: true }) } }" class="md-btn -line">Shop today's deals</router-link>
@@ -1009,7 +1009,7 @@ export default {
       const delivery = !this.has_delivery || this.isService || (this.is_valid_location && !this.error_message_payment);
       const contact = !!this.user || (this.has_guest_payment && !!this.guest_email && this.guest_email_ok);
       const list = [
-        { key: "cart", label: "Cart", done: true },
+        { key: "cart", label: "Basket", done: true },
         { key: "delivery", label: "Delivery", done: delivery },
         { key: "contact", label: "Contact", done: contact },
         { key: "pay", label: "Review & pay", done: false },
@@ -1421,7 +1421,7 @@ export default {
          code rotates). It saves basket.code, which Selldone no longer sends
          with a guest's cart: nothing was saved, and a guest who had just
          ordered read "We can't open this order" (the owner's buyer test).
-         Pass the device's guest code when the cart has none. */
+         Pass the device's guest code when the basket has none. */
       this.ShowPaymentDialogBasket(
         this.basket.code || (!this.USER() ? StorefrontLocalStorages.GetShopGuestCode() : undefined) /*🥶 Guest*/,
         this.basket,

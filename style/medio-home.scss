@@ -56,7 +56,8 @@ $font: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
   padding: 44px 48px;
   border-radius: 18px;
   overflow: hidden;
-  background:
+  background-color: #3a1aa0; /* under the gradient: what contrast tools read */
+  background-image:
     radial-gradient(circle at 78% 50%, rgba(255, 255, 255, 0.07) 0 22%, transparent 22.2% 30%, rgba(255, 255, 255, 0.05) 30.2% 38%, transparent 38.2%),
     linear-gradient(120deg, #2b1470 0%, var(--md-head) 70%, color-mix(in oklab, var(--md-head) 70%, #c40c63) 100%);
   color: #fff;

@@ -126,7 +126,7 @@ export default {
       const many = this.sellers.length > 1;
       return [
         { t: "Pick and compare", p: "Every department, with full specs and Compare side by side." },
-        { t: "One checkout", p: "One cart and one payment." },
+        { t: "One checkout", p: "One basket and one payment." },
         { t: "We pack it", p: "Your order is packed as soon as it is placed." },
         { t: "Delivered your way", p: ways.length ? `${ways.join(", ").replace(/, ([^,]*)$/, " or $1")}, as you choose at checkout.` : "As you choose at checkout." },
       ].map((st) => ({ ...st, p: st.p.charAt(0).toUpperCase() + st.p.slice(1) }));

@@ -76,7 +76,7 @@
               @click="addAll"
             >
               <v-icon size="20">{{ allIn ? "check" : "add_shopping_cart" }}</v-icon>
-              <template v-if="allIn">All in your cart</template>
+              <template v-if="allIn">All in your basket</template>
               <template v-else>Add all {{ addable.length }} · <u-price :amount="addableTotal" :currency="currency" /></template>
             </button>
           </header>
@@ -225,7 +225,7 @@ export default {
     mailto() {
       return `mailto:?subject=${encodeURIComponent(this.article?.title || "")}&body=${encodeURIComponent(location.href)}`;
     },
-    /* Products "Add all" can put straight in the cart: no choice to make,
+    /* Products "Add all" can put straight in the basket: no choice to make,
        or (Medio) a colour, which goes in as its first colour in stock. */
     addable() {
       return this.list.filter((product) => !hasSizes(product) || this.firstColour(product));

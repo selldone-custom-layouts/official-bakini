@@ -12,7 +12,7 @@
 $walio-blue: var(--md-blue);
 $walio-blue-deep: var(--md-blue-d);
 $walio-navy: var(--md-navy);
-$walio-spark: #ffd91a;
+$walio-spark: #d8ccff; /* Medio: a soft lilac accent (was Walio's yellow) */
 
 h1,
 h2,
@@ -45,7 +45,7 @@ h3 {
       margin-top: 0 !important;
       border-radius: 50% !important;
       background: $walio-spark !important;
-      box-shadow: 0 0 0 3px rgba(255, 217, 26, 0.28);
+      box-shadow: 0 0 0 3px rgba(216, 204, 255, 0.45);
     }
   }
 

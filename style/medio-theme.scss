@@ -63,8 +63,8 @@
   --md-sale-solid: #c40c63;
   --md-sale-t: #c40c63; /* a saving as words */
   --md-sale-l: #fde7f1;
-  --md-yellow: #ffd91a;
-  --md-on-yellow: #1c1b22;
+  --md-yellow: #e7e0fd; /* Medio: the soft lilac accent fill (dark words on it in both modes) */
+  --md-on-yellow: #2b1470;
   --md-yellow-l: #fff6c2;
   --md-red: #c40c63; /* the deal badge (white words) */
   --md-red-solid: #c40c63;
@@ -78,6 +78,7 @@
   --md-strip: #1c1b22; /* the top message strip */
   --md-slate: #26333a; /* the footer */
   --md-note: #efeaff; /* the small lilac note box */
+  --md-chevron: #1c1b22; /* the dark chevron on the white round arrows (white in dark mode too) */
 
   /* Grounds, lines and words */
   --md-bg: #f4f3f7; /* the page: light grey with a hint of violet */
