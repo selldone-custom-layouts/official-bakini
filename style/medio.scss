@@ -576,7 +576,7 @@ html.md-dark .md-badge.-off {
   }
   .ms {
     font-size: 17px;
-    color: var(--md-deco);
+    color: var(--md-muted);
   }
   &__here {
     color: $ink;
@@ -1062,7 +1062,7 @@ html.md-dark .md-search {
     font: 500 14.5px $font;
     .ms {
       font-size: 20px;
-      color: var(--md-deco);
+      color: var(--md-muted);
     }
     &:hover,
     &.-on {
@@ -2055,7 +2055,7 @@ html.md-dark .md-menu__ic.-sale {
     }
   }
   &__chev {
-    color: var(--md-deco) !important;
+    color: var(--md-muted) !important;
   }
   &__buy {
     grid-area: buy;
