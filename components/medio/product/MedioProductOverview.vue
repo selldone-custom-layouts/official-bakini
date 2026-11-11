@@ -88,7 +88,7 @@
           <div v-if="money.save > 0" class="md-was">
             <span class="md-was__t">
               {{ t("medio.card.was", "Was") }} <s><u-price :amount="money.was" :currency="currency" /></s>
-              <template v-if="dealEndsAt"> {{ t("medio.pdp.until", "(until {date})", { date: dateOf(dealEndsAt) }) }}</template>
+              <span v-if="dealEndsAt" class="md-was__until">{{ t("medio.pdp.until", "(until {date})", { date: dateOf(dealEndsAt) }) }}</span>
             </span>
           </div>
           <!-- The deal's own end (the chosen variant's when it has its own

@@ -1207,3 +1207,9 @@ html.md-dark .md-notice {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* "Was $X (until <date>)": a word space before the date (Vue trims a
+   template's leading space). */
+.md-was__until {
+  margin-inline-start: 0.3em;
+}
