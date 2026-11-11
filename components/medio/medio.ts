@@ -70,11 +70,19 @@ let catalogueRead: Promise<any[]> | null = null;
 
 /* Shared reads are tried again (SYNC §16): one 429 from Selldone on the
    first read left a menu or a home empty for the whole visit. Up to four
-   tries, a short pause between them. */
+   tries. Selldone counts requests per minute (x-ratelimit-limit: 100), so
+   after a 429 the pause follows its Retry-After, else 4, 8, 16 seconds
+   (a sub-second retry only spends the next minute's requests too). */
+export function retryPause(e: any, pause: number): number {
+  if (e?.response?.status !== 429) return pause;
+  const after = Number(e.response.headers?.["retry-after"]);
+  return Math.min(20000, after > 0 ? after * 1000 : Math.max(4000, pause));
+}
 export function withRetry<T>(read: () => Promise<T>, tries = 4, pause = 700): Promise<T> {
   return read().catch((e: any) => {
     if (tries <= 1) throw e;
-    return new Promise<T>((ok, no) => setTimeout(() => withRetry(read, tries - 1, pause * 1.6).then(ok, no), pause));
+    const wait = retryPause(e, pause);
+    return new Promise<T>((ok, no) => setTimeout(() => withRetry(read, tries - 1, wait * 2).then(ok, no), wait));
   });
 }
 

@@ -62,7 +62,13 @@ export function aisles(): Promise<any[]> {
     const read = (tries: number): Promise<any> =>
       window.$storefront.products
         .list(null, 0, 1, { categories_only: true, categories_count: 48 })
-        .catch((e: any) => (tries > 1 ? new Promise((ok) => setTimeout(ok, 700 * (5 - tries))).then(() => read(tries - 1)) : Promise.reject(e)));
+        .catch((e: any) => {
+          if (tries <= 1) return Promise.reject(e);
+          /* After a 429, Selldone's Retry-After (else 4, 8, 12 s): its limit is per minute. */
+          const after = Number(e?.response?.headers?.["retry-after"]);
+          const wait = e?.response?.status === 429 ? Math.min(20000, after > 0 ? after * 1000 : 4000 * (5 - tries)) : 700 * (5 - tries);
+          return new Promise((ok) => setTimeout(ok, wait)).then(() => read(tries - 1));
+        });
     aislesRead = read(4)
       .then(({ folders }: any) =>
         (folders || [])
