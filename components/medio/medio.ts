@@ -368,10 +368,9 @@ export function colourName(color: string): string {
 /* An amount already in `currency` (the visitor's, by default), formatted by
    the region switcher's rules, so Medio's words match the pill's choice. */
 export function moneyText(amount: number, currency: string, whole = false): string {
-  const text = formatMoney(amount, currency || currentCurrency(), { short: whole });
-  /* In a right-to-left sentence an amount reads left to right as one piece
-     (LRI … PDI): "500 US$", never "$US 500" (SYNC §21). */
-  return text && isRtl() ? "⁦" + text + "⁩" : text;
+  /* The region package's formatMoney keeps an amount one left-to-right piece
+     in a right-to-left sentence (LRI … PDI): "500 US$", never "$US 500". */
+  return formatMoney(amount, currency || currentCurrency(), { short: whole });
 }
 
 /* ━━━━━━━━━━━━ Deal timers: the deal's own end ━━━━━━━━━━━━

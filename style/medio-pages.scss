@@ -634,6 +634,14 @@ $photo: var(--md-photo);
   font-weight: 800 !important;
 }
 
+/* On a phone the close × sits on the dark brand header (its box is in the
+   white sheet): its own dark disc keeps the white × readable. */
+@media (max-width: 759px) {
+  .k-signin__close {
+    background: var(--md-navy) !important;
+  }
+}
+
 /* ━━━━━━━━━━━━━━━━━━━━━ Contact us ━━━━━━━━━━━━━━━━━━━━━ */
 .md-contact {
   font-family: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", system-ui, sans-serif;
