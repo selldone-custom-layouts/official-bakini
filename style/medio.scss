@@ -2344,3 +2344,12 @@ html.md-dark .md-menu__ic.-sale {
   direction: ltr;
   unicode-bidi: isolate;
 }
+
+/* Joined and Devanagari scripts are never tracked (SYNC §21): letter-spacing
+   breaks Arabic letters apart and Hindi's headline bar. On an Arabic or Hindi
+   page every eyebrow, button, label, link and heading sets solid. */
+:is(:lang(ar), :lang(hi)),
+:is(:lang(ar), :lang(hi)) * {
+  letter-spacing: 0 !important;
+  word-spacing: normal !important;
+}
