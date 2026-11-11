@@ -849,6 +849,13 @@ html.md-dark .md-why__img {
     }
     &__img {
       width: 88px;
+      /* Words stay inside a circle (the owner's rule, 11 Nov 2026): the
+         placeholder's file name ("why-compare.webp") ran out of the 88px
+         circle, so on a phone it shows the photo icon only (the file names
+         are on the computer's 112px circles and in medio-photos.ts). */
+      .md-slot__ph small {
+        display: none;
+      }
     }
   }
   .md-posts {
