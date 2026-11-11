@@ -954,19 +954,9 @@ $photo: var(--md-photo);
   box-shadow: inset 0 0 0 1px var(--c-line) !important;
 }
 
-/* On a phone the picks scroll sideways and the scroller cut the top of each
-   pick's round X, which sat 6px outside the pick: there it sits inside the
-   pick's own corner. */
-@media (max-width: 760px) {
-  .k-cmp .k-cmp__rm {
-    top: 6px !important;
-    right: 6px !important;
-  }
-  [dir="rtl"] .k-cmp .k-cmp__rm {
-    right: auto !important;
-    left: 6px !important;
-  }
-}
+/* The pick's round X sits inside its own corner at every width since
+   11 November 2026 (kalio-compare.scss); the phone-only override that put
+   it there is gone. */
 
 .k-cmp .k-cmp__row.-diff .k-cmp__c {
   background: transparent !important;

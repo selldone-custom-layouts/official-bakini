@@ -3,7 +3,7 @@
   "deploy_path": "",
   "package": "medio-electronics",
   "name": "Medio Electronics",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "storefront": true,
   "backoffice": false,
   "description": "A big electronics retailer's site: a message strip, Shop All / Services / Deals menus and a big rounded search; a hero, round category tiles, promo tiles, brand and dark deal cards, rails from the shop's tags and pastel promise tiles; a category hub over the results; LIST rows with spec bullets and a price column (or a grid); a product page with a key-spec grid, a sticky buy card, add-ons, buy-together and accordions; a side-by-side compare page; a receipt-first basket."
