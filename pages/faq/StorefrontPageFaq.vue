@@ -72,7 +72,7 @@
       <div v-else-if="!busy_fetch" class="md-pcard md-empty md-help__empty">
         <span aria-hidden="true" class="md-empty__ic"><span class="ms">forum</span></span>
         <p class="md-empty__t">{{ t("medio.help.noneT", "No questions here yet") }}</p>
-        <p class="md-empty__p">{{ t("medio.help.noneP", "{name} has not answered any questions here so far. Ask yours, or write to us directly.", { name: shop?.title || "" }) }}</p>
+        <p class="md-empty__p">{{ t("medio.help.noneP", "{name} has not answered any questions here so far. Ask yours, or write to us directly.", { name: iso(shop?.title || "") }) }}</p>
         <router-link :to="{ name: window.$storefront.routes.SHOP_CONTACT_US }" class="md-btn">{{ t("medio.help.contact", "Contact us") }}</router-link>
       </div>
 
@@ -108,7 +108,7 @@
 </template>
 
 <script lang="ts">
-import { withRetry } from "@app-storefront/components/medio/medio";
+import { iso, withRetry } from "@app-storefront/components/medio/medio";
 import NotificationService from "@selldone/components-vue/plugins/notification/NotificationService.ts";
 
 import { throttle } from "lodash-es";
@@ -183,6 +183,7 @@ export default {
     this.fetchFAQTags();
   },
   methods: {
+    iso,
     t,
     /** Kalio: sign in to ask a question. */
     signIn() {

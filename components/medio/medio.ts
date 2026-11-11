@@ -20,7 +20,7 @@
  *    own "<Tag> Items" section without a code change.
  */
 
-import { currentCurrency, formatMoney } from "../region-switcher/region";
+import { currentCurrency, formatMoney, isRtl } from "../region-switcher/region";
 import { reactive } from "vue";
 import { PriceHelper } from "@selldone/core-js";
 import { EventBus } from "@selldone/components-vue/utils/events/EventBus.ts";
@@ -238,15 +238,6 @@ export function mixByCategory(list: any[], n: number): any[] {
   return out;
 }
 
-/** "Up to $90 off" when the category has deals, else "From $6.59". */
-export function categoryLine(shop: any, list: any[], categoryId: number, currency: string, money: (n: number) => string): string {
-  const ps = list.filter((p) => p.category_id === categoryId);
-  if (!ps.length) return "";
-  const best = Math.max(0, ...ps.map((p) => moneyOf(shop, p, null, currency).save));
-  if (best > 0) return `Up to ${money(Math.round(best))} off`;
-  return `From ${money(Math.min(...ps.map((p) => moneyOf(shop, p, null, currency).now)))}`;
-}
-
 /** Brands by how many products carry them. */
 export function brandsOf(list: any[]): string[] {
   const n = new Map<string, number>();
@@ -377,7 +368,10 @@ export function colourName(color: string): string {
 /* An amount already in `currency` (the visitor's, by default), formatted by
    the region switcher's rules, so Medio's words match the pill's choice. */
 export function moneyText(amount: number, currency: string, whole = false): string {
-  return formatMoney(amount, currency || currentCurrency(), { short: whole });
+  const text = formatMoney(amount, currency || currentCurrency(), { short: whole });
+  /* In a right-to-left sentence an amount reads left to right as one piece
+     (LRI … PDI): "500 US$", never "$US 500" (SYNC §21). */
+  return text && isRtl() ? "⁦" + text + "⁩" : text;
 }
 
 /* ━━━━━━━━━━━━ Deal timers: the deal's own end ━━━━━━━━━━━━
@@ -561,4 +555,12 @@ export function wayWords(w: { key: string; word: string; line: string }): { word
     default:
       return { word: w.word, line: w.line };
   }
+}
+
+/* The merchant's words inside a sentence in the visitor's language keep
+   their own direction in a right-to-left language (FSI … PDI, SYNC §21):
+   "على TV 85-Inch" never "على TV -85 Inch". */
+export function iso(s: any): string {
+  const v = s == null ? "" : String(s);
+  return v && isRtl() ? "\u2068" + v + "\u2069" : v;
 }

@@ -174,7 +174,7 @@
         <div v-if="megaCat" class="md-mega__side">
           <div class="md-mega__head">
             <h3>{{ megaCat.title || megaCat.name }}</h3>
-            <router-link :to="catTo(megaCat)" class="md-more">{{ t("medio.header.shopAllIn", "Shop all {name}", { name: megaCat.title || megaCat.name }) }}<span class="ms md-chev">chevron_right</span></router-link>
+            <router-link :to="catTo(megaCat)" class="md-more">{{ t("medio.header.shopAllIn", "Shop all {name}", { name: iso(megaCat.title || megaCat.name) }) }}<span class="ms md-chev">chevron_right</span></router-link>
           </div>
           <p v-if="megaLine" class="md-mega__line">{{ megaLine }}</p>
           <div class="md-mega__picks">
@@ -310,10 +310,10 @@ import KalioBasketDrawer from "../../kalio/shell/KalioBasketDrawer.vue";
 import { aisleRoute, aisles, catalogueRoute, dealsRoute } from "../../kalio/kalio-catalog";
 import { journalRoute } from "../../kalio/pages/kalio-journal";
 import { basketView } from "../../kalio/kalio-basket";
-import { catalogue, dealsEndDate, dealsOf, moneyOf, moneyText } from "../medio";
+import { catalogue, dealsEndDate, dealsOf, iso, moneyOf, moneyText } from "../medio";
 import RegionSwitcherButton from "../../region-switcher/RegionSwitcherButton.vue";
 import RegionSheet from "../../region-switcher/RegionSheet.vue";
-import { currentCurrency, isRtl, money } from "../../region-switcher/region";
+import { currentCurrency, isRtl } from "../../region-switcher/region";
 import { formatDate, t } from "../../kalio/i18n/kalio-i18n";
 
 const STRIP_KEY = "medio:strip-closed";
@@ -379,7 +379,7 @@ export default {
       const bill = b.bill || {};
       const total = typeof bill.price === "number" ? bill.price : b.price;
       if (!(Number(total) > 0)) return "";
-      return money(total, bill.currency || b.currency);
+      return moneyText(total, bill.currency || b.currency);
     },
     r() {
       return window.$storefront.routes;
@@ -573,6 +573,7 @@ export default {
   },
 
   methods: {
+    iso,
     t,
     price(p) {
       return moneyOf(this.$shop, p, null, this.currency);

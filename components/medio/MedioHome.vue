@@ -119,7 +119,7 @@
           <router-link v-for="b in brandDeals" :key="b.brand" :to="brandDealsTo(b.brand)" class="md-brandcard" role="listitem">
             <b class="md-brandcard__w">{{ b.brand }}</b>
             <span class="md-brandcard__img"><img :src="pic(b.top, true)" alt="" loading="lazy" /></span>
-            <span class="md-pill -line">{{ t("medio.home.shopBrandDeals", "Shop {brand} deals", { brand: b.brand }) }}</span>
+            <span class="md-pill -line">{{ t("medio.home.shopBrandDeals", "Shop {brand} deals", { brand: iso(b.brand) }) }}</span>
           </router-link>
         </medio-scroller>
       </section>
@@ -135,7 +135,7 @@
             <span class="md-dcard__img"><img :src="pic(p)" :srcset="srcset(p)" alt="" loading="lazy" sizes="(max-width: 760px) 70vw, 300px" @error="dropSrcset" /></span>
             <span class="md-dcard__t">
               <b class="md-dcard__save">{{ t("medio.card.save", "Save {amount}", { amount: whole(price(p).save) }) }}</b>
-              {{ t("medio.home.onProduct", "on {name}", { name: p.title }) }}
+              {{ t("medio.home.onProduct", "on {name}", { name: iso(p.title) }) }}
             </span>
             <span class="md-dcard__l">
               {{ t("medio.home.wasLine", "Was {amount}", { amount: full(price(p).was) }) }}<template v-if="ends(p)"> · <medio-deal-clock :end="ends(p)" mode="bare" /></template>
@@ -189,15 +189,15 @@
         <div class="md-offers">
           <router-link v-for="p in offers" :key="p.id" :to="productTo(p)" class="md-ocard">
             <span class="md-ocard__img"><img :src="pic(p)" :srcset="srcset(p)" alt="" loading="lazy" sizes="(max-width: 760px) 46vw, 300px" @error="dropSrcset" /></span>
-            <span class="md-ocard__t">{{ t("medio.home.saveOn", "Save {amount} on {name}", { amount: whole(price(p).save), name: p.title }) }}</span>
+            <span class="md-ocard__t">{{ t("medio.home.saveOn", "Save {amount} on {name}", { amount: whole(price(p).save), name: iso(p.title) }) }}</span>
             <span class="md-ocard__l md-sale-t">{{ t("medio.home.nowWas", "Now {now}, was {was}", { now: full(price(p).now), was: full(price(p).was) }) }}</span>
           </router-link>
         </div>
       </section>
 
       <!-- ▆▆▆▆ 10. Why shop with … ▆▆▆▆ -->
-      <section class="md-sec" :aria-label="t('medio.home.whyH', 'Why shop with {name}', { name: shopTitle })">
-        <h2 class="md-title">{{ t("medio.home.whyH", "Why shop with {name}", { name: shopTitle }) }}</h2>
+      <section class="md-sec" :aria-label="t('medio.home.whyH', 'Why shop with {name}', { name: iso(shopTitle) })">
+        <h2 class="md-title">{{ t("medio.home.whyH", "Why shop with {name}", { name: iso(shopTitle) }) }}</h2>
         <div class="md-why">
           <router-link v-for="w in why" :key="w.key" :class="'-' + w.tint" :to="w.to" class="md-why__tile">
             <span class="md-why__txt"><b>{{ w.title }}</b><small>{{ w.line }}</small></span>
@@ -258,6 +258,7 @@ import {
   photoOf,
   tagged,
   tagTitle,
+  iso,
 } from "./medio";
 import { formatDate, t } from "../kalio/i18n/kalio-i18n";
 
@@ -384,7 +385,7 @@ export default {
       return { brand, items: mixByCategory(items, 3) };
     },
     latestTitle() {
-      return t("medio.home.latestH", "The latest from {brand}", { brand: this.latest.brand || "" });
+      return t("medio.home.latestH", "The latest from {brand}", { brand: iso(this.latest.brand || "") });
     },
     /* Brands with deals, the most deals first, each with its best deal. */
     brandDeals() {
@@ -470,6 +471,7 @@ export default {
   },
 
   methods: {
+    iso,
     t,
     tagTitle,
     dropSrcset,
@@ -513,7 +515,7 @@ export default {
     /* "Up to $400 off <b>headphones</b>" (the saving is the accent). */
     promoHtml(p) {
       const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-      const name = esc(p.cat.title || p.cat.name);
+      const name = iso(esc(p.cat.title || p.cat.name));
       return p.save > 0
         ? t("medio.home.promoSave", "<em>Up to {amount} off</em> {name}", { amount: esc(this.whole(p.save)), name })
         : t("medio.home.promoFrom", "{name} <em>{line}</em>", { name, line: esc(p.line) });

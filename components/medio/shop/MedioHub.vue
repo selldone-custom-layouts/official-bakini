@@ -91,7 +91,7 @@
               <router-link v-for="p in topDeals" :key="p.id" :to="productTo(p)" class="md-dcard">
                 <span class="md-dcard__img"><img :src="pic(p)" :srcset="srcset(p)" alt="" loading="lazy" sizes="(max-width: 760px) 44vw, 240px" @error="dropSrcset" /></span>
                 <span class="md-dcard__t">
-                  <template v-if="price(p).save > 0"><b class="md-dcard__save">{{ t("medio.card.save", "Save {amount}", { amount: whole(price(p).save) }) }}</b> {{ t("medio.home.onProduct", "on {name}", { name: p.title }) }}</template>
+                  <template v-if="price(p).save > 0"><b class="md-dcard__save">{{ t("medio.card.save", "Save {amount}", { amount: whole(price(p).save) }) }}</b> {{ t("medio.home.onProduct", "on {name}", { name: iso(p.title) }) }}</template>
                   <template v-else>{{ p.title }}</template>
                 </span>
                 <span class="md-dcard__l">
@@ -104,7 +104,7 @@
 
           <!-- Can't decide? -->
           <section v-if="choices.length >= 2" class="md-hub__sec md-chooser">
-            <h2 class="md-chooser__h">{{ t("medio.hub.chooserH", "Can’t decide? Find the right {name} for you", { name: catWord }) }}</h2>
+            <h2 class="md-chooser__h">{{ t("medio.hub.chooserH", "Can’t decide? Find the right {name} for you", { name: iso(catWord) }) }}</h2>
             <p class="md-chooser__p">{{ t("medio.hub.chooserP", "Pick the one that sounds most like you.") }}</p>
             <div :style="{ '--n': choices.length }" class="md-chooser__grid">
               <router-link v-for="c in choices" :key="c.key" :to="c.to" class="md-choice">
@@ -131,7 +131,7 @@
 
           <!-- Brands -->
           <section v-if="brands.length" class="md-hub__sec">
-            <h2 class="md-title">{{ t("medio.hub.brands", "Brands in {name}", { name: catTitle }) }}</h2>
+            <h2 class="md-title">{{ t("medio.hub.brands", "Brands in {name}", { name: iso(catTitle) }) }}</h2>
             <div class="md-wordmarks">
               <router-link v-for="b in brands" :key="b" :to="brandTo(b)" class="md-wordmark">{{ b }}</router-link>
             </div>
@@ -150,7 +150,7 @@ import MedioDealClock from "../MedioDealClock.vue";
 import { aisleRoute, aisles, dropSrcset, productSrcset } from "../../kalio/kalio-catalog";
 import { journalPage, postRoute } from "../../kalio/pages/kalio-journal";
 import { chooseSlot } from "../medio-photos";
-import { brandsOf, catalogue, dealEnd, dealsEndDate, dealsOf, isBestSellerTag, isNewTag, moneyOf, moneyText, tagged, tagsIn, tagTitle } from "../medio";
+import { iso, brandsOf, catalogue, dealEnd, dealsEndDate, dealsOf, isBestSellerTag, isNewTag, moneyOf, moneyText, tagged, tagsIn, tagTitle } from "../medio";
 import { formatDate, t } from "../../kalio/i18n/kalio-i18n";
 
 export default {
@@ -204,8 +204,8 @@ export default {
     stripLine() {
       const end = dealsEndDate(this.$shop, this.mine);
       if (this.bestSave > 0 && end)
-        return t("medio.hub.strip", "{name} deals end {date} · save up to {amount}", { name: this.catTitle, date: formatDate(end), amount: this.whole(this.bestSave) });
-      if (this.bestSave > 0) return t("medio.hub.stripNoDate", "{name} deals · save up to {amount}", { name: this.catTitle, amount: this.whole(this.bestSave) });
+        return t("medio.hub.strip", "{name} deals end {date} · save up to {amount}", { name: iso(this.catTitle), date: formatDate(end), amount: this.whole(this.bestSave) });
+      if (this.bestSave > 0) return t("medio.hub.stripNoDate", "{name} deals · save up to {amount}", { name: iso(this.catTitle), amount: this.whole(this.bestSave) });
       return t("medio.hub.stripCompare", "Not sure which to pick? Compare up to 4 side by side");
     },
     /* The round carousel: this category first, then the others in the
@@ -232,11 +232,11 @@ export default {
       if (!this.cat) return [];
       const name = this.catTitle;
       const out = [];
-      if (this.deals.length) out.push({ key: "deals", label: t("medio.hub.dealsLink", "{name} deals", { name }), to: this.stripTo });
+      if (this.deals.length) out.push({ key: "deals", label: t("medio.hub.dealsLink", "{name} deals", { name: iso(name) }), to: this.stripTo });
       for (const x of this.catTags.slice(0, 4))
-        out.push({ key: "t" + x.tag, label: t("medio.hub.tagLink", "{tag} {name}", { tag: this.tagWord(x.tag), name: name.toLowerCase() }), to: this.tagTo(x.tag) });
-      for (const b of this.brands.slice(0, 3)) out.push({ key: "b" + b, label: t("medio.hub.brandLink", "{brand} {name}", { brand: b, name: name.toLowerCase() }), to: this.brandTo(b) });
-      out.push({ key: "all", label: t("medio.hub.allLink", "All {name}", { name: name.toLowerCase() }), to: { ...aisleRoute(this.cat), query: { sort: "newest" } } });
+        out.push({ key: "t" + x.tag, label: t("medio.hub.tagLink", "{tag} {name}", { tag: iso(this.tagWord(x.tag)), name: iso(name.toLowerCase()) }), to: this.tagTo(x.tag) });
+      for (const b of this.brands.slice(0, 3)) out.push({ key: "b" + b, label: t("medio.hub.brandLink", "{brand} {name}", { brand: iso(b), name: iso(name.toLowerCase()) }), to: this.brandTo(b) });
+      out.push({ key: "all", label: t("medio.hub.allLink", "All {name}", { name: iso(name.toLowerCase()) }), to: { ...aisleRoute(this.cat), query: { sort: "newest" } } });
       return out;
     },
     posts() {
@@ -281,6 +281,7 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
+    iso,
     t,
     dropSrcset,
     price(p) {

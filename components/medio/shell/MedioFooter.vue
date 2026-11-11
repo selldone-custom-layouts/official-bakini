@@ -75,6 +75,7 @@
 </template>
 
 <script>
+import { iso } from "../medio";
 import ThemeSwitcherRow from "../../theme-switcher/ThemeSwitcherRow.vue";
 import SStorefrontSocialButtons from "@selldone/components-vue/storefront/social/SStorefrontSocialButtons.vue";
 import SFooterSectionGdpr from "@selldone/components-vue/storefront/footer/section/gdpr/SFooterSectionGdpr.vue";
@@ -131,7 +132,7 @@ export default {
         .filter((item) => !item.to.name || this.$router.hasRoute(item.to.name))
         .filter((item) => !skip.has(item.to.name) && item.to.path !== "/" && item.to.name !== r.SHOP_PAGE)
         .slice(0, 3);
-      return items.length ? items : [{ name: t("medio.footer.aboutShop", "About {name}", { name: this.shopTitle }), to: { name: r.SHOP_PROFILE_PAGE_ABOUT_US } }];
+      return items.length ? items : [{ name: t("medio.footer.aboutShop", "About {name}", { name: iso(this.shopTitle) }), to: { name: r.SHOP_PROFILE_PAGE_ABOUT_US } }];
     },
   },
 
@@ -140,6 +141,7 @@ export default {
   },
 
   methods: {
+    iso,
     t,
     catTo: aisleRoute,
     signIn() {

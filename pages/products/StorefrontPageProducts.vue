@@ -192,7 +192,7 @@ import MedioHub from "../../components/medio/shop/MedioHub.vue";
 import MedioFilterPanel from "../../components/medio/shop/MedioFilterPanel.vue";
 import MedioRow from "../../components/medio/MedioRow.vue";
 import { SORTS, countOn, fromRoute } from "../../components/walio/shop/walio-filters";
-import { catalogue, colourName, dealsEndDate, setView, viewMode } from "../../components/medio/medio";
+import { catalogue, colourName, iso, dealsEndDate, setView, viewMode } from "../../components/medio/medio";
 import { PAGE_SIZES, perPage } from "../../components/medio/medio-listing";
 import { aisles } from "../../components/kalio/kalio-catalog";
 import { StorefrontSeo } from "../../helpers/StorefrontSeo";
@@ -298,8 +298,8 @@ export default {
     heading() {
       if (this.category_name) {
         const name = this.category?.title || this.listing_parent?.title || this.category_name;
-        if (this.search_query) return t("medio.list.resultsIn", "Results for “{q}” in {name}", { q: this.search_query, name });
-        return t("medio.list.allIn", "All {name}", { name: String(name).toLowerCase() });
+        if (this.search_query) return t("medio.list.resultsIn", "Results for “{q}” in {name}", { q: iso(this.search_query), name: iso(name) });
+        return t("medio.list.allIn", "All {name}", { name: iso(String(name).toLowerCase()) });
       }
       if (this.search_query) return t("medio.list.resultsFor", "Results for “{q}”", { q: this.search_query });
       if (this.deals_page) return t("medio.list.dealsH", "Deals");
@@ -309,7 +309,7 @@ export default {
       if (this.deals_page) return t("medio.list.bannerDeals", "Found a few deals you like? Compare up to 4 side by side");
       if (this.category_name) {
         const name = String(this.category?.title || this.category_name || "").toLowerCase();
-        return t("medio.list.bannerCat", "Not sure which {name} to pick? Compare up to 4 side by side", { name });
+        return t("medio.list.bannerCat", "Not sure which {name} to pick? Compare up to 4 side by side", { name: iso(name) });
       }
       return t("medio.list.banner", "Not sure which to pick? Compare up to 4 products side by side");
     },
@@ -421,6 +421,7 @@ export default {
   },
 
   methods: {
+    iso,
     t,
     vendorIdFromRoute() {
       return this.$route.params?.vendor_id ? this.$route.params?.vendor_id : this.$route.query?.vendor_id || null;
