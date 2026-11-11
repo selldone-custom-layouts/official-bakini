@@ -66,8 +66,8 @@
             >
           </span>
         </router-link>
-        <span v-if="s.money.save > 0" aria-hidden="true" class="md-hero-s__round"
-          ><small>{{ t("medio.hero.save", "Save") }}</small><b>{{ whole(s.money.save) }}</b></span
+        <span v-if="s.money.save > 0" :ref="(el) => keep('rounds', k, el)" aria-hidden="true" class="md-hero-s__round"
+          ><small>{{ t("medio.hero.save", "Save") }}</small><b>{{ breakable(whole(s.money.save)) }}</b></span
         >
       </div>
       <div v-if="!shown.length" aria-hidden="true" class="md-hero-s__skel"><i></i><i></i><i></i><i></i></div>
@@ -116,6 +116,7 @@
 import { aisleRoute, dropSrcset, productSrcset } from "../kalio/kalio-catalog";
 import { isRtl } from "../region-switcher/region";
 import { iso, moneyText } from "./medio";
+import { breakable, fitInCircle } from "./fit-in-circle";
 import { t } from "../kalio/i18n/kalio-i18n";
 
 /** How long a slide plays (ms). */
@@ -186,6 +187,13 @@ export default {
       this.on = 0;
       this.elapsed = 0;
     },
+    /* New amounts (data, currency): fit them in their circles again. */
+    shown: {
+      handler() {
+        this.$nextTick(this.fitRounds);
+      },
+      flush: "post",
+    },
     paused() {
       this.last = 0;
     },
@@ -199,6 +207,8 @@ export default {
     this.last = 0;
     this.raf = 0;
     this.touch = null;
+    this.rounds = [];
+    this.resized = 0;
   },
 
   mounted() {
@@ -208,10 +218,14 @@ export default {
       /* no matchMedia: play */
     }
     this.raf = requestAnimationFrame(this.tick);
+    this.fitRounds();
+    document.fonts?.ready.then(this.fitRounds).catch(() => {});
+    window.addEventListener("resize", this.onResize, { passive: true });
   },
 
   beforeUnmount() {
     cancelAnimationFrame(this.raf);
+    window.removeEventListener("resize", this.onResize);
   },
 
   methods: {
@@ -224,6 +238,8 @@ export default {
     full(n) {
       return moneyText(n || 0, this.currency, false);
     },
+    /* In the circle a long amount may take two lines ("AED" over "1,837"). */
+    breakable,
     pic(p) {
       return p?.icon ? window.CDN.GET_SHOP_IMAGE_PATH(p.icon, null) : null;
     },
@@ -235,6 +251,16 @@ export default {
     },
     productTo(p) {
       return { name: window.$storefront.routes.PRODUCT_PAGE, params: { product_id: p.id } };
+    },
+    /* The Save circles: every amount stays inside its circle (the owner's
+       rule, 11 Nov 2026: "AED 1,837" ran out of it), smaller or on two
+       lines, in every currency and language (fit-in-circle.ts). */
+    fitRounds() {
+      this.rounds.forEach((el) => fitInCircle(el));
+    },
+    onResize() {
+      clearTimeout(this.resized);
+      this.resized = setTimeout(this.fitRounds, 150);
     },
     /* The tabs and their tints, kept outside Vue's reactivity. */
     keep(list, k, el) {

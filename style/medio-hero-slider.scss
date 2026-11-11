@@ -16,7 +16,7 @@ $card-ink: var(--hs-dark); /* words on the white pick card */
 
 .md-hero-s {
   --hs: color-mix(in oklab, var(--md-head) 28%, #0d0622);
-  --hs-pink: #ff7ab8; /* 6.9:1 on #170b3d */
+  --hs-pink: #ff9cc9; /* 5.2:1 or more on the playing tab's tint, in every palette (#ff7ab8 was 4.2 on Ocean) */
   --hs-dark: #1c1b22;
   position: relative;
   margin-top: 18px;
@@ -36,6 +36,7 @@ $card-ink: var(--hs-dark); /* words on the white pick card */
      slide (no jump on a phone); only the playing one is seen and reached. */
   &__slide {
     position: relative;
+    z-index: 0; /* each slide its own layer: its photo (z-index -1) stays inside it while it fades out */
     grid-area: 1 / 1;
     display: flex;
     align-items: center;
@@ -73,7 +74,12 @@ $card-ink: var(--hs-dark); /* words on the white pick card */
     }
   }
 
+  /* The photo is the slide's background on purpose (absolute, z-index -1:
+     box-check's mark for words drawn over a picture by design). */
   &__img {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
     display: block;
     width: 100%;
     height: 100%;
@@ -215,6 +221,16 @@ $card-ink: var(--hs-dark); /* words on the white pick card */
     background: var(--md-sale-solid);
     color: #fff;
     transform: rotate(-8deg);
+
+    /* Each line at most 80% of the circle, so a long amount ("AED 1,837")
+       takes two lines; fit-in-circle.ts then shrinks the words until they
+       sit inside the circle (the owner's rule, 11 Nov 2026). */
+    small,
+    b {
+      max-width: 80%;
+      text-align: center;
+      overflow-wrap: normal;
+    }
 
     small {
       font: 600 14px/1.2 $font;
