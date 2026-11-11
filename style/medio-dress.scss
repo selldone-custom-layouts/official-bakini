@@ -326,3 +326,10 @@ $font: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", system-ui, -apple-s
     margin-block: 12px 2px;
   }
 }
+
+/* About us: the step numbers in the action colour's soft tint (readable in
+   both modes; the shared --k-leaf stays light in dark mode). */
+.w-mag__how i {
+  background: var(--md-buy-l);
+  color: var(--md-buy-t);
+}

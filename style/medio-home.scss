@@ -171,6 +171,10 @@ $font: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", system-ui, -apple-s
 .v-locale--is-rtl .md-hero.-photo::before {
   transform: scaleX(-1);
 }
+/* The photo's subject moves with the words' other side too (SYNC §21). */
+[dir="rtl"] .md-hero__photo {
+  object-position: 30% 50%;
+}
 
 /* 3. Round category tiles */
 .md-rounds {
@@ -859,4 +863,10 @@ html.md-dark .md-why__img {
       position: static;
     }
   }
+}
+
+/* The hero's white stage stays white in dark mode: its savings keep the
+   light magenta (a token with no role suffix, so the dark build leaves it). */
+.md-hero__stage .md-sale-t {
+  color: var(--md-sale-fixed) !important;
 }

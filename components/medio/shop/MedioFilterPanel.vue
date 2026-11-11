@@ -58,7 +58,7 @@
         </form>
         <label v-for="b in bands" :key="b.key" class="md-check">
           <input :checked="bandOn(b)" type="checkbox" @change="pickBand(b)" />
-          <i aria-hidden="true"><span class="ms">check</span></i>{{ b.label }}
+          <i aria-hidden="true"><span class="ms">check</span></i><span v-if="b.range" class="md-range">{{ b.label }}</span><template v-else>{{ b.label }}</template>
         </label>
       </div>
     </section>
@@ -167,7 +167,7 @@ export default {
       if (!cuts.length) return [];
       const m = (n) => moneyText(n, this.currency, true);
       const out = [{ key: "b0", lo, hi: cuts[0], label: t("medio.filters.under", "Under {amount}", { amount: m(cuts[0]) }) }];
-      for (let i = 1; i < cuts.length; i++) out.push({ key: "b" + i, lo: cuts[i - 1], hi: cuts[i], label: `${m(cuts[i - 1])} – ${m(cuts[i])}` });
+      for (let i = 1; i < cuts.length; i++) out.push({ key: "b" + i, lo: cuts[i - 1], hi: cuts[i], label: `${m(cuts[i - 1])} – ${m(cuts[i])}`, range: true });
       out.push({ key: "bx", lo: cuts[cuts.length - 1], hi, label: t("medio.filters.andOver", "{amount} and over", { amount: m(cuts[cuts.length - 1]) }) });
       return out;
     },

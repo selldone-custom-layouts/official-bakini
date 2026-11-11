@@ -108,6 +108,7 @@
 </template>
 
 <script lang="ts">
+import { withRetry } from "@app-storefront/components/medio/medio";
 import NotificationService from "@selldone/components-vue/plugins/notification/NotificationService.ts";
 
 import { throttle } from "lodash-es";
@@ -190,28 +191,33 @@ export default {
     //――――――――――――――――――――――― FAQ Tags ―――――――――――――――――――――――
 
     fetchFAQTags() {
-      axios.get(window.XAPI.GET_FAQ_TAGS(this.shop.name)).then(({ data }) => {
-        this.tags = data.tags;
-      });
+      /* Tried again after a 429 (withRetry); no tags is not an error. */
+      withRetry(() => axios.get(window.XAPI.GET_FAQ_TAGS(this.shop.name)))
+        .then(({ data }) => {
+          this.tags = data.tags;
+        })
+        .catch(() => {});
     },
 
     //――――――――――――――――――――――― FAQs ―――――――――――――――――――――――
 
     fetchFAQData() {
       this.busy_fetch = true;
-      axios
-        .get(window.XAPI.GET_FAQ(this.shop.name), {
+      withRetry(() =>
+        axios.get(window.XAPI.GET_FAQ(this.shop.name), {
           params: {
             offset: (this.page - 1) * 10,
             limit: 10,
             tag: this.$route.params.tag,
             search: this.search,
           },
-        })
+        }),
+      )
         .then(({ data }) => {
           this.faqs = data.faqs;
           this.total = data.total;
         })
+        .catch(() => {})
         .finally(() => {
           this.busy_fetch = false;
         });

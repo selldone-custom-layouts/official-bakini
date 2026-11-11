@@ -164,6 +164,9 @@ $font: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", system-ui, -apple-s
   color: $brand-t !important;
 }
 .v-application .md-btn.-white {
+  /* The white ground here too, so the dark build keeps these words light-mode
+     dark (postcss-dark-tokens keeps a rule's text only beside a light surface). */
+  background: #fff;
   color: #2b1470 !important;
 }
 
@@ -728,13 +731,27 @@ html.md-dark .md-badge.-off {
     }
   }
 }
+/* The messages slide (never fade), so a word is never half-transparent:
+   the strip clips them. */
+.md-strip {
+  overflow: hidden;
+}
 .md-msg-enter-active,
 .md-msg-leave-active {
-  transition: opacity 0.25s;
+  display: inline-block;
+  transition: transform 0.22s ease;
 }
-.md-msg-enter-from,
+.md-msg-enter-from {
+  transform: translateY(110%);
+}
 .md-msg-leave-to {
-  opacity: 0;
+  transform: translateY(-110%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .md-msg-enter-active,
+  .md-msg-leave-active {
+    transition: none;
+  }
 }
 
 /* 2. The utility row */
@@ -2293,4 +2310,37 @@ html.md-dark .md-menu__ic.-sale {
    region switcher sets it before Vuetify's locale class arrives). */
 [dir="rtl"] .k-flip {
   transform: scaleX(-1);
+}
+
+/* Merchant text in a right-to-left language (SYNC §21): product, category
+   and brand names, descriptions and articles the merchant wrote in English
+   keep their own direction on an Arabic page, so "TVs." never shows as
+   ".TVs". Names in boxes keep the page's alignment (right); long text
+   (descriptions, articles) aligns with its own language. */
+[dir="rtl"] {
+  :is(.md-card__t, .md-lrow__t, .md-lrow__brand, .md-lrow__specs li, .md-pdp__title, .md-hub__h, .md-crumbs__here, .md-crumbs a,
+    .md-round-tile__t, .md-mega__name, .md-mega h3, .md-mini__t, .md-suggest__t, .md-svc__w b, .md-menu__row, .md-addon__t,
+    .md-together__t, .md-others__w b, .md-latest__txt b, .md-latest__txt small, .md-brandcard__w, .md-dcard__t, .md-post__t,
+    .md-gcard b, .md-chevrow span, .md-pill, .md-footer nav a, .md-spec td, .md-spec caption, .md-keyspec__c b, .md-badge,
+    .k-jentry__title, .k-jentry__lede, .md-ptile__txt b) {
+    unicode-bidi: plaintext;
+  }
+  :is(.md-card__t, .md-lrow__t, .md-lrow__brand, .md-pdp__title, .md-hub__h, .md-mini__t, .md-suggest__t, .md-addon__t,
+    .md-together__t, .md-others__w b, .md-latest__txt b, .md-dcard__t, .md-post__t, .md-gcard b, .md-spec td, .k-jentry__title) {
+    text-align: right;
+  }
+  :is(.md-post__p, .md-gcard small, .k-prose, .k-jentry__lede, .md-pdp__about) {
+    unicode-bidi: plaintext;
+  }
+}
+
+/* Signed numbers and ranges keep their reading order in Arabic (SYNC §21):
+   "+3" never "3+", "-20%" never "20%-", "$100 – $200" left to right. */
+.md-swrow em,
+.md-caps em,
+.md-range,
+.k-board__thumb.-more,
+.k-cmp__off {
+  direction: ltr;
+  unicode-bidi: isolate;
 }

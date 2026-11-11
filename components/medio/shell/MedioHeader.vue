@@ -45,7 +45,7 @@
         <router-link :to="blogTo">{{ t("medio.header.guides", "Buying guides") }}</router-link>
         <!-- Language and currency (the owner's choice B): hidden when the
              shop has one of each. -->
-        <region-switcher-button button-class="md-util__region" />
+        <region-switcher-button :key="regionKey" button-class="md-util__region" />
       </nav>
     </div>
 
@@ -268,7 +268,7 @@
             <router-link v-for="s in services" :key="s.key" :to="s.to" class="md-menu__row -link">
               <span class="md-menu__ic -line"><span class="ms">{{ s.icon }}</span></span>{{ s.title }}
             </router-link>
-            <region-sheet row-class="md-menu__row -link md-menu__region" />
+            <region-sheet :key="regionKey" row-class="md-menu__row -link md-menu__region" />
           </div>
         </div>
       </transition>
@@ -349,6 +349,11 @@ export default {
   }),
 
   computed: {
+    /* The region package reads its words when it draws: redraw the pill and
+       the menu's row once the language file has loaded (SYNC §21). */
+    regionKey() {
+      return t("region.title", "Language & currency");
+    },
     rtl() {
       return isRtl();
     },

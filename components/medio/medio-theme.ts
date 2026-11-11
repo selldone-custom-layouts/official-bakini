@@ -141,7 +141,7 @@ export const MEDIO_THEME: ThemeSwitcherConfig = {
     "--md-strip": "#0b0a10",
     "--md-ph-c0": "#26252f",
     "--md-ph-c1": "#33323d",
-    "--md-ph-c2": "#aeaabb",
+    "--md-ph-c2": "#cbc7d8",
     "--md-red-t": "#ff7ab8",
     "--md-sale-t": "#ff7ab8",
     "--md-green-t": "#6fd39b",
@@ -220,7 +220,7 @@ export const MEDIO_THEME: ThemeSwitcherConfig = {
   custom: {
     headerContrast: 5,
     darkSurfaces: ["#121118", "#1b1a23", "#24232e"],
-    lightSurfaces: ["#ffffff", "#f4f3f7"],
+    lightSurfaces: ["#ffffff", "#f4f3f7", "#efeef3"],
     darkText: "#1c1b22",
     extras: (v) => ({
       brand: v.primary,
