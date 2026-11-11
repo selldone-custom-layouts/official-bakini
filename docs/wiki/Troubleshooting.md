@@ -35,7 +35,7 @@ The shop's Home is a Page Builder page. Set Home to **Shop**: see [Go Live](Go-L
 
 ## Grey boxes with a file name in them
 
-Those are photo slots waiting for their photo. Put a WebP with exactly that name in `assets/photos/`, then build and release. A new tag or brand asks for its own `trend-<tag>.webp` or `brand-<brand>.webp`. See [Customize](Customize#photos).
+Those are photo slots waiting for their photo. Put a WebP with exactly that name in `assets/photos/`, then build and release. A new tag asks for its own `choose-<tag>.webp` (a hub's "Can't decide?" choice). See [Customize](Customize#photos).
 
 ## A category shows a collage of products instead of a photo
 
@@ -47,15 +47,15 @@ Each section folds away without its data: the campaign strip and "Deals" cards n
 
 ## The deal clock or the deal date is missing
 
-A clock counts only to a deal's own end date. Give the discount an end date in Selldone. Without one, the strip says "Today's deals across the store".
+A clock counts only to a deal's own end date. Give the discount an end date in Selldone. Without one, the strips name the saving only.
 
-## The Theme button doesn't show on my shop
+## The footer's Theme row doesn't show on my shop
 
 That is by design: with `themeSwitcher: "showcase"` it shows only on Medio's showcase shops. Set `themeSwitcher: "on"` in `components/medio/medio-theme.settings.ts` to give your visitors the switcher. See [Theme and colours](Theme-and-colours).
 
-## Purple buttons appear in some places
+## Selldone's default purple appears in some places
 
-Those are Selldone's own components using the theme colour. Medio sets `--v-theme-primary` from its buy colour in `style/kalio-tokens.scss`; if a part still shows Selldone's purple, make it read that variable rather than a fixed colour. To change the colours themselves, use the settings file, not the tokens.
+Those are Selldone's own components using the theme colour. Medio sets `--v-theme-primary` from its action colour in `style/kalio-tokens.scss`; if a part still shows Selldone's purple, make it read that variable rather than a fixed colour. To change the colours themselves, use the settings file, not the tokens.
 
 ## Filters are missing or show old values
 
@@ -80,3 +80,11 @@ Vuetify's `.v-application` has `overflow: hidden`. Switch it to `overflow: clip`
 ## GitHub blocks the push: "Mapbox Secret Access Token"
 
 Selldone's storefront history contains Selldone's **public** Mapbox browser key (`pk.`). It has been public in `selldone/storefront` since 2023. Allow it once with the link GitHub prints, or remove it from your own commits.
+
+## A word stays in English after picking another language
+
+If it is your shop's data (a product, category, tag, article or a footer page link), translate it in the Selldone dashboard. If Medio writes it, it is a string not yet wrapped in `t()`: wrap it with a new `medio.…` key, add the key to `medio.en.ts` and to each `medio.<code>.ts`, then build and release. See [Customize](Customize#languages).
+
+## A red "429 Too Many Attempts" message, or a page that stays empty
+
+Selldone limits how many requests one address may send in a minute. Many test browsers at once (or several Layouts tested from one computer) reach it; shoppers do not. Medio retries its shared reads up to four times; wait a minute and reload.
