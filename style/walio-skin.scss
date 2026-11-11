@@ -241,8 +241,11 @@ h3 {
     font-size: 19px;
 
     > span {
-      background: $walio-spark;
-      color: $walio-navy;
+      /* Medio: the action colour's soft tint and its words, readable in both
+         modes and every palette (a fixed lilac turned dark under a fixed
+         navy in dark mode). */
+      background: var(--md-buy-l);
+      color: var(--md-buy-t);
     }
   }
 }
