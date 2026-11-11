@@ -2247,7 +2247,11 @@ html.md-dark .md-menu__ic.-sale {
 /* The guides' topics: the chosen one is a dark pill, never a line under it. */
 .k-journal__tabs {
   gap: 8px !important;
-  padding: 8px 0 12px;
+  /* A scrolling row clips at its edge: 14px of room at each end, stepped
+     out by the same 14px, so the first, last and chosen pills stay whole
+     (the kit's kalio-bidi.scss rule). */
+  margin-inline: -14px !important;
+  padding: 8px 14px 12px;
   border-bottom: 0 !important;
   box-shadow: none !important;
   a {
