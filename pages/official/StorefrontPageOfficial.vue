@@ -22,9 +22,9 @@
   <div class="k-official">
     <slot name="header"></slot>
     <div class="md-wrap">
-      <nav aria-label="Breadcrumb" class="md-crumbs">
-        <router-link :to="{ path: '/' }">Home</router-link>
-        <span aria-hidden="true" class="ms">chevron_right</span>
+      <nav :aria-label="t('pages.breadcrumb', 'Breadcrumb')" class="md-crumbs">
+        <router-link :to="{ path: '/' }">{{ t("pages.home", "Home") }}</router-link>
+        <span aria-hidden="true" class="ms md-chev">chevron_right</span>
         <span aria-current="page">{{ page_name }}</span>
       </nav>
       <router-view class="k-official__body" />

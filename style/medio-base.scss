@@ -34,7 +34,7 @@ $photo: var(--md-photo);
 .s--shop {
   background: $bg !important;
   color: $ink;
-  font-family: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 body {
@@ -120,7 +120,7 @@ body {
   border-radius: 6px;
   background: $blue;
   color: var(--md-on-brand) !important;
-  font: 700 14px/1 "Outfit", system-ui, sans-serif;
+  font: 700 14px/1 "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", system-ui, sans-serif;
   white-space: nowrap;
   cursor: pointer;
   box-shadow: none !important;
@@ -173,7 +173,7 @@ body {
   background: none;
   padding: 0;
   color: $blue-t !important;
-  font: 700 14px "Outfit", system-ui, sans-serif;
+  font: 700 14px "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", system-ui, sans-serif;
   cursor: pointer;
 
   &:hover {
@@ -185,12 +185,12 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  margin-left: auto;
+  margin-inline-start: auto;
   border: 0;
   background: none;
   padding: 4px 0;
   color: $blue-t !important;
-  font: 700 14px "Outfit", system-ui, sans-serif;
+  font: 700 14px "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", system-ui, sans-serif;
   white-space: nowrap;
   cursor: pointer;
 
@@ -257,7 +257,7 @@ body {
 
   h2 {
     margin: 0;
-    font: 800 24px/1.15 "Outfit", system-ui, sans-serif !important;
+    font: 800 24px/1.15 "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", system-ui, sans-serif !important;
     letter-spacing: -0.02em !important;
     color: $ink;
     white-space: nowrap;
@@ -321,14 +321,14 @@ body {
 
 /* ━━━━━━━━━━━━━━━━━━━━━ Drawers in Medio's dress ━━━━━━━━━━━━━━━━━━━━━ */
 .md-drawer {
-  font-family: "Outfit", system-ui, sans-serif;
+  font-family: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", system-ui, sans-serif;
 
   .k-drawer__head {
     border-bottom: 1px solid $line;
   }
 
   .k-drawer__title {
-    font: 800 20px "Outfit", sans-serif !important;
+    font: 800 20px "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif !important;
     color: $ink !important;
 
     small {

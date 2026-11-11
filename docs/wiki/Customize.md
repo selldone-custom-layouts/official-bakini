@@ -19,7 +19,7 @@ One file: `components/medio/medio-theme.settings.ts`. See [Theme and colours](Th
 | Fonts (Outfit, Material Symbols Rounded) | `components/kalio/kalio-fonts.ts` |
 | Colour tokens (violet actions, magenta savings, black pills, grey page, white cards, slate footer, pastels) | `style/medio-theme.scss` |
 | The word for the basket in Selldone's own English strings | `components/kalio/kalio-brand.ts` (`cartWords`) |
-| Medio's own words (every one through `t("medio.…", "English")`) | the components; other languages in `components/medio/i18n/` |
+| Medio's own words (every one through `t("medio.…", "English")`) | the components; the English in `components/kalio/i18n/medio.en.ts`, the languages in `medio.<code>.ts` (see [Languages](#languages)) |
 
 ## Photos
 
@@ -67,6 +67,29 @@ A category without a photo gets a collage of its own products, so the Layout is 
 | Help & Support (FAQ) | `pages/faq/StorefrontPageFaq.vue` |
 | 404 | `pages/errors/404/StorefrontPageError404.vue` |
 | Styles | `style/medio.scss` (base, header, footer, cards), `medio-home.scss`, `medio-shop.scss`, `medio-pdp.scss`, `medio-dress.scss` (the other pages), loaded last |
+
+## Languages
+
+Every word Medio writes goes through `t("key", "English")` (`components/kalio/i18n/kalio-i18n.ts`). The English is the second argument and `medio.en.ts`; the other languages are files beside it:
+
+| File | Holds |
+| --- | --- |
+| `components/kalio/i18n/base/<code>.ts` | the shared Kalio words (basket, checkout, account, compare…), the same in every Kalio-family Layout |
+| `components/kalio/i18n/medio.<code>.ts` | Medio's own words (`medio.*`) |
+| `components/kalio/i18n/lang-<code>.ts` | merges the two; loaded only when a visitor picks that language |
+| `components/kalio/i18n/index.ts` | the list of languages Medio knows |
+
+Medio ships English, Arabic (`ar`, right to left: the whole page mirrors, prices and numbers keep their own direction), Hindi (`hi`) and Danish (`da`). The visitor picks one from the language and currency pill in the header (the phone menu's last row); the list is the shop's own languages (Selldone dashboard › Shop › Languages).
+
+To add a language your shop offers:
+
+1. Copy `medio.en.ts` to `medio.<code>.ts` and translate every value (keep `{n}`, `{shop}` and the other `{…}` words; plural keys end in `.one` / `.other`, and a language with more forms adds `.zero`, `.two`, `.few`, `.many`).
+2. Get `base/<code>.ts` from the shared Kalio set (or translate `base/en.ts` the same way).
+3. Copy `lang-da.ts` to `lang-<code>.ts` and change its two imports.
+4. Add one line to `LOADERS` in `index.ts`.
+5. Build and check every page in that language. A word still in English is a string that is not wrapped in `t()` yet: wrap it with a new `medio.…` key.
+
+The words the shop writes (product names, categories, tags, articles, the footer's page links) are the shop's data: translate them in the Selldone dashboard.
 
 ## Rules the design keeps
 

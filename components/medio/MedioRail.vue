@@ -10,7 +10,7 @@
     <header class="md-head">
       <h2>{{ title }}</h2>
       <slot name="head"></slot>
-      <router-link v-if="moreTo" :to="moreTo" class="md-more">{{ moreLabel || t("medio.rail.seeAll", "See all") }}<span class="ms">chevron_right</span></router-link>
+      <router-link v-if="moreTo" :to="moreTo" class="md-more">{{ moreLabel || t("medio.rail.seeAll", "See all") }}<span class="ms md-chev">chevron_right</span></router-link>
     </header>
     <medio-scroller :label="title" :watch-key="products ? products.map((p) => p.id).join() : 'loading'" class="md-rail" edge>
       <template v-if="products === null">

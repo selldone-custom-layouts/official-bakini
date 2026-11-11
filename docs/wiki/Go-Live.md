@@ -21,7 +21,7 @@ Your Layout id is the one printed after your first upload. Pin the **exact** ver
 
 ## Two Layouts on one shop (how Medio runs)
 
-A shop can show a different Layout on one of its domains. Medio lives only on `medio.selldone.shop` (domain 1243 of the shop Digini; Medio's Layout id: see `MEDIO.md`), while the shop's default and its other domains carry other Layouts:
+A shop can show a different Layout on one of its domains. Medio lives only on `medio.selldone.shop` (domain 1243 of the shop Digini, Layout 34), while the shop's default and its other domains carry other Layouts:
 
 ```json
 api.shops.domains.layout.set   path { "domain_key": "<the domain's id>" }

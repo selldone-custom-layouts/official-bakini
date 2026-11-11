@@ -62,7 +62,7 @@ $photo: var(--md-photo);
   }
 
   &__tools {
-    margin-left: auto;
+    margin-inline-start: auto;
   }
 }
 
@@ -77,7 +77,7 @@ $photo: var(--md-photo);
   background: $surface;
   box-shadow: inset 0 0 0 1px $line;
   color: $ink !important;
-  font: 700 13.5px "Outfit", sans-serif;
+  font: 700 13.5px "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif;
   white-space: nowrap;
   cursor: pointer;
 
@@ -113,7 +113,7 @@ $photo: var(--md-photo);
 .w-shop {
   max-width: var(--md-max) !important;
   padding-inline: var(--md-pad) !important;
-  font-family: "Outfit", system-ui, sans-serif;
+  font-family: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", system-ui, sans-serif;
 }
 
 .w-shop__cols {
@@ -138,7 +138,7 @@ $photo: var(--md-photo);
     h1 {
       margin: 0;
       color: $ink;
-      font: 800 30px/1.15 "Outfit", sans-serif !important;
+      font: 800 30px/1.15 "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif !important;
       letter-spacing: -0.025em !important;
     }
 
@@ -176,7 +176,7 @@ $photo: var(--md-photo);
     color: $muted;
     font-size: 13.5px;
     font-weight: 600;
-    margin-right: 4px;
+    margin-inline-end: 4px;
   }
 }
 
@@ -265,7 +265,7 @@ $photo: var(--md-photo);
   border: 1px solid $line;
   border-radius: 10px;
   background: $surface;
-  font-family: "Outfit", sans-serif;
+  font-family: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif;
 
   &__hd {
     border-bottom: 1px solid $line !important;
@@ -328,7 +328,7 @@ $photo: var(--md-photo);
     border: 0;
     background: none;
     color: $blue-t;
-    font: 700 13.5px "Outfit", sans-serif;
+    font: 700 13.5px "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif;
     text-align: start;
     cursor: pointer;
 
@@ -367,7 +367,7 @@ $photo: var(--md-photo);
       border: 0;
       outline: 0;
       background: transparent;
-      font: 600 13.5px "Outfit", sans-serif;
+      font: 600 13.5px "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif;
       color: $ink;
     }
 
@@ -461,7 +461,7 @@ $photo: var(--md-photo);
   height: 38px !important;
   border: 1px solid $line !important;
   border-radius: 6px !important;
-  font-family: "Outfit", sans-serif;
+  font-family: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif;
   font-size: 13.5px !important;
   white-space: nowrap;
 
@@ -473,7 +473,7 @@ $photo: var(--md-photo);
 .t-dd {
   border: 1px solid $line;
   border-radius: 10px !important;
-  font-family: "Outfit", sans-serif;
+  font-family: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif;
 
   &__opt.-on,
   &__opt:hover {
@@ -483,7 +483,7 @@ $photo: var(--md-photo);
 }
 
 .w-split button {
-  font-family: "Outfit", sans-serif;
+  font-family: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif;
 }
 
 .t-keep__list a:hover {
@@ -567,7 +567,7 @@ $photo: var(--md-photo);
 /* load more and empty states in the listing */
 .t-listing .s--products-listing-load-more,
 .t-listing .v-btn {
-  font-family: "Outfit", sans-serif !important;
+  font-family: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif !important;
 }
 
 
@@ -630,18 +630,18 @@ $photo: var(--md-photo);
 }
 
 .k-signin__title {
-  font-family: "Outfit", sans-serif !important;
+  font-family: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif !important;
   font-weight: 800 !important;
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━ Contact us ━━━━━━━━━━━━━━━━━━━━━ */
 .md-contact {
-  font-family: "Outfit", system-ui, sans-serif;
+  font-family: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", system-ui, sans-serif;
   text-align: start;
 
   &__h {
     margin: 4px 0 6px;
-    font: 800 32px "Outfit", sans-serif !important;
+    font: 800 32px "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif !important;
     letter-spacing: -0.025em !important;
   }
 
@@ -664,7 +664,7 @@ $photo: var(--md-photo);
 
     h2 {
       margin: 0 0 18px;
-      font: 800 20px "Outfit", sans-serif !important;
+      font: 800 20px "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif !important;
     }
   }
 
@@ -785,7 +785,7 @@ $photo: var(--md-photo);
     border-radius: 6px;
     background: $surface;
     color: $ink;
-    font: 500 15px "Outfit", sans-serif;
+    font: 500 15px "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif;
     outline: 0;
     appearance: auto;
 
@@ -835,7 +835,7 @@ $photo: var(--md-photo);
 
 /* ━━━━━━━━━━━━━━━━━━━━━ Cart drawer (design C) in Medio's dress ━━━━━━━━━━━━━━━━━━━━━ */
 .k-bdrawer {
-  font-family: "Outfit", sans-serif;
+  font-family: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif;
 
   &__receipt {
     border: 1px solid $line !important;
@@ -865,7 +865,7 @@ $photo: var(--md-photo);
 
 /* ━━━━━━━━━━━━━━━━━━━━━ Quick-buy sheet ━━━━━━━━━━━━━━━━━━━━━ */
 .k-quickbuy {
-  font-family: "Outfit", sans-serif;
+  font-family: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif;
 
   .k-quickbuy__bar .k-more {
     color: $blue-t !important;
@@ -902,7 +902,7 @@ $photo: var(--md-photo);
   background: $blue !important;
   box-shadow: none !important;
   color: var(--md-on-brand) !important;
-  font: 700 13.5px "Outfit", sans-serif !important;
+  font: 700 13.5px "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif !important;
 
   .v-icon {
     color: var(--md-on-brand) !important;
@@ -930,7 +930,7 @@ $photo: var(--md-photo);
 }
 
 .k-cmp {
-  font-family: "Outfit", sans-serif;
+  font-family: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif;
   /* Words on the navy share card are white (the owner's rule for every
      blue or navy surface); its head stays the yellow accent. */
   --c-share-ink: #fff;
@@ -953,6 +953,10 @@ $photo: var(--md-photo);
   .k-cmp .k-cmp__rm {
     top: 6px !important;
     right: 6px !important;
+  }
+  [dir="rtl"] .k-cmp .k-cmp__rm {
+    right: auto !important;
+    left: 6px !important;
   }
 }
 
@@ -1002,7 +1006,7 @@ $photo: var(--md-photo);
 /* ━━━━━━━━━━━━━━━━━━━━━ Official pages, FAQ: Medio's type and a calm empty card ━━━━━━━━━━━━━━━━━━━━━ */
 .k-official__title,
 .k-faq .k-official__title {
-  font: 800 32px/1.15 "Outfit", sans-serif !important;
+  font: 800 32px/1.15 "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif !important;
   letter-spacing: -0.025em !important;
 
   @media (max-width: 899px) {
@@ -1044,7 +1048,7 @@ $photo: var(--md-photo);
 
   h3 {
     margin: 0 0 8px !important;
-    font: 800 22px/1.25 "Outfit", sans-serif !important;
+    font: 800 22px/1.25 "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif !important;
   }
 
   p {
@@ -1088,7 +1092,7 @@ $photo: var(--md-photo);
   h2 {
     margin: 0 0 8px !important;
     color: $ink;
-    font: 800 20px/1.25 "Outfit", sans-serif !important;
+    font: 800 20px/1.25 "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", sans-serif !important;
   }
 
   p {

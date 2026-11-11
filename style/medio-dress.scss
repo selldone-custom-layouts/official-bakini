@@ -16,7 +16,7 @@ $ink-2: var(--md-ink-2);
 $muted: var(--md-muted);
 $surface: var(--md-surface);
 $photo: var(--md-photo);
-$font: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+$font: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", sans-serif;
 
 /* ━━━━━━━━━━━━━━━━━━━━━ 404 ━━━━━━━━━━━━━━━━━━━━━ */
 .md-404 {
@@ -313,4 +313,16 @@ $font: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
 /* Every pill-shaped Kalio button follows Medio's pill. */
 .k-btn {
   border-radius: 999px !important;
+}
+
+/* About us: the about-hero.webp slot above the story. */
+.md-about__hero {
+  border-radius: var(--k-radius, 14px);
+  margin-block: 18px 6px;
+}
+@media (max-width: 760px) {
+  .md-about__hero {
+    --ratio: 2 !important;
+    margin-block: 12px 2px;
+  }
 }

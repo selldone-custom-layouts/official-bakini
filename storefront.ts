@@ -44,9 +44,9 @@ import {SetupService} from "@selldone/core-js/server";
 import {Shop} from "@selldone/core-js/models";
 import { bootThemeSwitcher } from "./components/theme-switcher/theme-switcher"; // the shared theme switcher (Medio 1.0.11)
 import { MEDIO_THEME } from "./components/medio/medio-theme";
-import { bootRegion, defineMessages } from "./components/region-switcher/region"; // language + currency (the owner's choice B)
-import { MEDIO_MESSAGES, MEDIO_LANGUAGES } from "./components/medio/i18n";
-import { bootI18n } from "./components/kalio/i18n/kalio-i18n"; // the Layout's own words in the visitor's language (lazy per language)
+import { bootRegion } from "./components/region-switcher/region"; // language + currency (the owner's choice B)
+import { EN as MEDIO_EN, LOADERS as MEDIO_LANGUAGES } from "./components/kalio/i18n"; // the Kalio base + Medio's own words
+import { bootI18n, i18nGlobals } from "./components/kalio/i18n/kalio-i18n"; // the Layout's own words in the visitor's language (lazy per language)
 
 const vuetify = VuetifyInstance(i18n);
 // Vuetify's light error red reads 4.5:1 on white (its #ff5252 is 3.3:1); set
@@ -87,6 +87,7 @@ const app = createApp(StorefrontApp);
 
 const components = createComponents({});
 app.use(components);
+Object.assign(app.config.globalProperties, i18nGlobals); // t(), formatNumber(), formatDate() in every template
 
 //█████████████████████████████████████████████████████████████
 //――――――――――― Selldone® Storefront SDK ―――――――――――
@@ -94,9 +95,8 @@ app.use(components);
 
 // ━━━ Storefront SDK (xapi) ━━━
 StorefrontSDK.Setup(); // Set up the Shop SDK.
-defineMessages(MEDIO_MESSAGES); // Medio's own words, per language
 bootRegion(store); // the visitor's currency and language, mirrored for money() and t()
-bootI18n(MEDIO_MESSAGES.en, MEDIO_LANGUAGES); // <html lang/dir>, and a language's words fetched when it is picked
+bootI18n(MEDIO_EN, MEDIO_LANGUAGES); // <html lang/dir>, and a language's words fetched when it is picked
 
 // ━━━ Community SDK (capi) ━━━
 CapiCommunity.Setup(); // Setup community.

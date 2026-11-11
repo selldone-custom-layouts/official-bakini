@@ -251,7 +251,7 @@
             <button v-for="w in ways" :key="w.key" class="md-srow" type="button" @click="$emit('open', 'delivery')">
               <span class="ms">{{ w.icon === "storefront" ? "storefront" : "local_shipping" }}</span>
               <span class="md-srow__w">
-                <b>{{ w.word }}</b>
+                <b>{{ wayWords(w).word }}</b>
                 <small v-if="w.free">{{ t("medio.pdp.free", "Free") }}</small>
                 <small v-else-if="w.freeOver">{{ t("medio.pdp.freeOverShort", "Free on orders over {amount}", { amount: moneyFrom(w.freeOver, w.currency, { short: "auto" }) }) }}</small>
                 <small v-else>{{ t("medio.pdp.priceAtCheckout", "Its price shows at checkout, for your address") }}</small>
@@ -353,7 +353,7 @@ import { addCount } from "../../kalio/kalio-basket";
 import { dealsRoute } from "../../kalio/kalio-catalog";
 import { freeShippingFrom, waysOf } from "../../walio/walio-home";
 import { specRows } from "./medio-spec";
-import { badgesOf, brandRoute, colourName, dealEnd, moneyOf, moneyText, readTagIndex, saved, swatchBg, toggleSaved, variantDimension } from "../medio";
+import { badgesOf, brandRoute, colourName, dealEnd, moneyOf, moneyText, readTagIndex, saved, swatchBg, toggleSaved, variantDimension, wayWords } from "../medio";
 import { formatDate, t } from "../../kalio/i18n/kalio-i18n";
 import { percentOff } from "../../kalio/kalio-catalog";
 
@@ -575,6 +575,7 @@ export default {
 
   methods: {
     t,
+    wayWords,
     moneyFrom,
     onResize() {
       this.compact = window.innerWidth < 900;

@@ -41,7 +41,7 @@ VITE_APP_SAMPLE_SHOP_CUSTOM_HOME=shop
 VITE_APP_SAMPLE_DEFAULT_CURRENCY=USD
 VITE_APP_SAMPLE_DEFAULT_COUNTRY=US
 VITE_APP_SAMPLE_DEFAULT_LANGUAGE=en
-VITE_APP_DEV_SERVER_PORT=9132
+VITE_APP_DEV_SERVER_PORT=9134
 ```
 
 `.env.development.local` picks the buyer-account design for development: `VITE_KALIO_ACCOUNT=desk` (side rail, the one Medio ships) or remove it for `home` (tabs).

@@ -88,7 +88,7 @@ place real orders.
 
 1. **Checks sign-in:** the shop's OAuth client, before anything else.
 2. **Forks and clones** the repository with its Selldone submodules (`modules/*`).
-3. **Installs and configures** `.env` for your shop, then runs the dev server on port 9132. In development the Layout reads your shop's public data from Selldone.
+3. **Installs and configures** `.env` for your shop, then runs the dev server on port 9134. In development the Layout reads your shop's public data from Selldone.
 4. **Checks your data** against [Shop Requirements](Shop-Requirements): category icons, product photos, brands, variants, tags, specs for filters, deals.
 5. **Sets your brand:** `BRAND.name` in `components/kalio/kalio-brand.ts` (the round logo, page titles, footer and messages follow it).
 6. **Sets your theme** in `components/medio/medio-theme.settings.ts` (see [Theme and colours](Theme-and-colours)).

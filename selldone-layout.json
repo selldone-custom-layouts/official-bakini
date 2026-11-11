@@ -1,8 +1,8 @@
 {
   "name": "Medio Electronics",
   "shop": "Digini",
-  "kind": "Electronics store · bright catalogue store",
-  "summary": "A single-shop electronics store dressed as a bright, busy catalogue retailer: a red logo tile and a wide search, a category carousel with packshot tiles, dark promo cards, a green deal strip that names the deals' real end date, photo cards, product rails with Deal, New and Best seller badges and green Add to cart buttons, trending tags, brands and services; a results page with a row of filter dropdowns and an All filters side sheet; a two-column product page (gallery card left, stacked buy cards right) with Complete your purchase; a side-by-side compare page; a receipt-first cart and a desk-style account.",
+  "kind": "Electronics store · big high-street retailer",
+  "summary": "A single-shop electronics store dressed as a big high-street electronics retailer: one deep violet for every action, magenta savings and rounded white cards on a light grey page; a header with a rotating message strip, Shop All, Services and Deals panels and a big round search; a deals-first home (campaign strip, hero deals, round category tiles, promo tiles, brand deals, dark deal cards with real clocks, tabbed rails, pastel promise tiles, buying guides); a category hub over every results page; results with a Filters card and a List / Grid toggle (a list row with a price column); a product page with a sticky buy card, add-ons, Buy together and accordions; a basket drawer, a desk account, Help & Support and a designed 404. English, Arabic (RTL), Hindi and Danish.",
   "live": "https://medio.selldone.shop",
   "cover": "docs/screenshots/cover.jpg",
   "screenshots": [
@@ -18,10 +18,11 @@
   "tags": [
     "electronics",
     "single-vendor",
-    "catalogue-store",
-    "white",
-    "red",
-    "green"
+    "big-retailer",
+    "violet",
+    "magenta",
+    "multilingual",
+    "rtl"
   ],
   "package": "medio-electronics",
   "base": "selldone/storefront",

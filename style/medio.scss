@@ -24,7 +24,7 @@ $muted: var(--md-muted);
 $bg: var(--md-bg);
 $surface: var(--md-surface);
 $photo: var(--md-photo);
-$font: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+$font: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", sans-serif;
 
 /* ━━━━━━━━━━━━━━━━━━━━━ Base ━━━━━━━━━━━━━━━━━━━━━ */
 .v-application,
@@ -1523,8 +1523,8 @@ html.md-dark .md-menu__ic.-sale {
 .md-slide-leave-to {
   transform: translateX(100%);
 }
-[dir="rtl"].md-slide-enter-from,
-[dir="rtl"].md-slide-leave-to {
+[dir="rtl"] .md-slide-enter-from,
+[dir="rtl"] .md-slide-leave-to {
   transform: translateX(-100%);
 }
 @media (prefers-reduced-motion: reduce) {
@@ -2287,4 +2287,10 @@ html.md-dark .md-menu__ic.-sale {
   margin-inline-start: 8px;
   padding: 0 8px 0 7px;
   font-size: 12.5px;
+}
+
+/* The shared Kalio pieces' arrows mirror on <html dir="rtl"> too (the
+   region switcher sets it before Vuetify's locale class arrives). */
+[dir="rtl"] .k-flip {
+  transform: scaleX(-1);
 }

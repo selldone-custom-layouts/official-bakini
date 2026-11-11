@@ -36,7 +36,7 @@ The arguments:
 - the **new version**, never used before;
 - the **account design**: `desk` (side rail, the one Medio ships) or `home` (tabs).
 
-With `LAYOUT_ID` set, the script also checks the upload on the server. Medio's own Layout id on the showcase shop: see `MEDIO.md`.
+With `LAYOUT_ID` set, the script also checks the upload on the server. Medio's own Layout id on the showcase shop is 34.
 
 ## What the script does, and why
 

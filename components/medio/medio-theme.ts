@@ -22,10 +22,11 @@
  */
 import type { ThemeSwitcherConfig } from "../theme-switcher/theme-switcher";
 import { THEME_SETTINGS } from "./medio-theme.settings";
+import { t } from "../kalio/i18n/kalio-i18n";
 
 /* One palette: the light and dark values, with the old buy/brand names
    pointing at the same colour. */
-function pal(id: string, name: string, light: Record<string, string>, dark: Record<string, string>) {
+function pal(id: string, name: () => string, light: Record<string, string>, dark: Record<string, string>) {
   const both = (v: Record<string, string>) => ({
     ...v,
     brand: v.primary,
@@ -33,7 +34,15 @@ function pal(id: string, name: string, light: Record<string, string>, dark: Reco
     brandSoft: v.soft,
     brandText: v.text,
   });
-  return { id, name, light: both(light), dark: both(dark) };
+  /* The name is read when drawn, so it follows the visitor's language. */
+  return {
+    id,
+    get name() {
+      return name();
+    },
+    light: both(light),
+    dark: both(dark),
+  };
 }
 
 export const MEDIO_THEME: ThemeSwitcherConfig = {
@@ -54,31 +63,31 @@ export const MEDIO_THEME: ThemeSwitcherConfig = {
   palettes: [
     pal(
       "medio",
-      "Medio violet",
+      () => t("medio.palette.medio", "Medio violet"),
       { primary: "#5a2ed0", deep: "#4a06b8", soft: "#efeaff", onPrimary: "#ffffff", text: "#5a2ed0" },
       { primary: "#7250f0", deep: "#653edf", soft: "#2b274f", onPrimary: "#ffffff", text: "#ada7ff" },
     ),
     pal(
       "ocean",
-      "Ocean",
+      () => t("medio.palette.ocean", "Ocean"),
       { primary: "#0a5ab4", deep: "#004794", soft: "#e7f1ff", onPrimary: "#ffffff", text: "#0a5ab4" },
       { primary: "#256dc9", deep: "#115eb8", soft: "#142e50", onPrimary: "#ffffff", text: "#7bb3ff" },
     ),
     pal(
       "emerald",
-      "Emerald",
+      () => t("medio.palette.emerald", "Emerald"),
       { primary: "#0b6e52", deep: "#005840", soft: "#dbf8eb", onPrimary: "#ffffff", text: "#0b6e52" },
       { primary: "#227b5f", deep: "#076c50", soft: "#003727", onPrimary: "#ffffff", text: "#6dc1a1" },
     ),
     pal(
       "ruby",
-      "Ruby",
+      () => t("medio.palette.ruby", "Ruby"),
       { primary: "#b3123f", deep: "#940030", soft: "#ffeaeb", onPrimary: "#ffffff", text: "#b3123f" },
       { primary: "#cb3252", deep: "#b91c44", soft: "#4b1d23", onPrimary: "#ffffff", text: "#ff919c" },
     ),
     pal(
       "copper",
-      "Copper",
+      () => t("medio.palette.copper", "Copper"),
       { primary: "#a2470d", deep: "#863700", soft: "#ffece3", onPrimary: "#ffffff", text: "#a2470d" },
       { primary: "#b0541f", deep: "#a04509", soft: "#49210b", onPrimary: "#ffffff", text: "#fb9766" },
     ),
@@ -173,7 +182,37 @@ export const MEDIO_THEME: ThemeSwitcherConfig = {
 
   metaThemeColor: "light.brand",
   ui: { ink: "var(--md-ink)", muted: "var(--md-muted)", line: "var(--md-line)", surface: "var(--md-surface)", font: '"Outfit", system-ui, sans-serif' },
-  labels: { theme: "Theme", palettes: "Colour", mode: "Light or dark", modeTitle: "Mode", light: "Light", dark: "Dark", custom: "Custom colour", adjusted: "Adjusted for readability", brand: "Brand colour" },
+  /* Read when drawn, so they follow the visitor's language (theme.* are the
+     shared Kalio words). */
+  labels: {
+    get theme() {
+      return t("theme.title", "Theme");
+    },
+    get palettes() {
+      return t("theme.palettes", "Colour");
+    },
+    get mode() {
+      return t("theme.mode", "Light or dark");
+    },
+    get modeTitle() {
+      return t("theme.modeTitle", "Mode");
+    },
+    get light() {
+      return t("theme.light", "Light");
+    },
+    get dark() {
+      return t("theme.dark", "Dark");
+    },
+    get custom() {
+      return t("theme.custom", "Custom colour");
+    },
+    get adjusted() {
+      return t("theme.adjusted", "Adjusted for readability");
+    },
+    get brand() {
+      return t("theme.brand", "Brand colour");
+    },
+  },
 
   /* "Custom colour" (the owner, 9 November 2026): any colour, made readable
      by paletteFromColor(). The header is white, so white on the light primary

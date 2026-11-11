@@ -32,7 +32,7 @@
     <div class="md-wrap">
       <!-- ▆▆▆▆ 1. Campaign strip ▆▆▆▆ -->
       <router-link :to="dealsTo" class="md-campaign">
-        <span>{{ campaignLine }}</span><span aria-hidden="true" class="ms">chevron_right</span>
+        <span>{{ campaignLine }}</span><span aria-hidden="true" class="ms md-chev">chevron_right</span>
       </router-link>
 
       <!-- ▆▆▆▆ 2. Hero ▆▆▆▆ -->
@@ -80,19 +80,19 @@
         <div class="md-promos__top">
           <router-link :to="catTo(promos.tall.cat)" class="md-ptile -tall">
             <medio-photo :alt="promos.tall.cat.title" :photo="promos.tall.photo" :products="inCategory(promos.tall.cat)" sizes="(max-width: 760px) 92vw, 520px" />
-            <span class="md-ptile__txt"><b v-html="promoHtml(promos.tall)"></b><small>{{ t("medio.home.shopNow", "Shop now") }}<span class="ms">chevron_right</span></small></span>
+            <span class="md-ptile__txt"><b v-html="promoHtml(promos.tall)"></b><small>{{ t("medio.home.shopNow", "Shop now") }}<span class="ms md-chev">chevron_right</span></small></span>
           </router-link>
           <div class="md-promos__grid">
             <router-link v-for="p in promos.grid" :key="p.cat.id" :to="catTo(p.cat)" class="md-ptile">
               <medio-photo :alt="p.cat.title" :photo="p.photo" :products="inCategory(p.cat)" sizes="(max-width: 760px) 46vw, 420px" />
-              <span class="md-ptile__txt"><b v-html="promoHtml(p)"></b><small>{{ t("medio.home.shopNow", "Shop now") }}<span class="ms">chevron_right</span></small></span>
+              <span class="md-ptile__txt"><b v-html="promoHtml(p)"></b><small>{{ t("medio.home.shopNow", "Shop now") }}<span class="ms md-chev">chevron_right</span></small></span>
             </router-link>
           </div>
         </div>
         <div v-if="promos.wide.length === 2" class="md-promos__wide">
           <router-link v-for="p in promos.wide" :key="p.cat.id" :to="catTo(p.cat)" class="md-ptile -wide">
             <medio-photo :alt="p.cat.title" :photo="p.photo" :products="inCategory(p.cat)" sizes="(max-width: 760px) 92vw, 690px" />
-            <span class="md-ptile__txt"><b v-html="promoHtml(p)"></b><small>{{ t("medio.home.shopNow", "Shop now") }}<span class="ms">chevron_right</span></small></span>
+            <span class="md-ptile__txt"><b v-html="promoHtml(p)"></b><small>{{ t("medio.home.shopNow", "Shop now") }}<span class="ms md-chev">chevron_right</span></small></span>
           </router-link>
         </div>
       </section>
@@ -105,7 +105,7 @@
             <span class="md-latest__txt">
               <small>{{ latest.brand }} · {{ catName(p.category_id) }}</small>
               <b>{{ p.title }}</b>
-              <em>{{ t("medio.home.shopNow", "Shop now") }}<span class="ms">chevron_right</span></em>
+              <em>{{ t("medio.home.shopNow", "Shop now") }}<span class="ms md-chev">chevron_right</span></em>
             </span>
             <span class="md-latest__img"><img :src="pic(p)" :srcset="srcset(p)" alt="" loading="lazy" sizes="180px" @error="dropSrcset" /></span>
           </router-link>
@@ -128,7 +128,7 @@
       <section v-if="dealCards.length" class="md-sec" :aria-label="t('medio.home.dealsH', 'Deals')">
         <header class="md-head -center">
           <h2 class="md-title">{{ t("medio.home.dealsH", "Deals") }}</h2>
-          <router-link :to="dealsTo" class="md-more">{{ t("medio.home.seeAllDeals", "See all deals") }}<span class="ms">chevron_right</span></router-link>
+          <router-link :to="dealsTo" class="md-more">{{ t("medio.home.seeAllDeals", "See all deals") }}<span class="ms md-chev">chevron_right</span></router-link>
         </header>
         <medio-scroller :label="t('medio.home.dealsH', 'Deals')" :watch-key="dealCards.length" class="md-darkdeals" edge>
           <router-link v-for="p in dealCards" :key="p.id" :to="productTo(p)" class="md-dcard" role="listitem">
@@ -210,7 +210,7 @@
       <section v-if="posts.length" class="md-sec" :aria-label="t('medio.home.guidesH', 'Guides & inspiration')">
         <header class="md-head -center">
           <h2 class="md-title">{{ t("medio.home.guidesH", "Guides & inspiration") }}</h2>
-          <router-link :to="blogTo" class="md-more">{{ t("medio.home.allGuides", "All guides") }}<span class="ms">chevron_right</span></router-link>
+          <router-link :to="blogTo" class="md-more">{{ t("medio.home.allGuides", "All guides") }}<span class="ms md-chev">chevron_right</span></router-link>
         </header>
         <div class="md-posts">
           <router-link v-for="a in posts" :key="a.id" :to="postTo(a)" class="md-post">

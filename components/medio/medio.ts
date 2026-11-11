@@ -25,6 +25,7 @@ import { reactive } from "vue";
 import { PriceHelper } from "@selldone/core-js";
 import { EventBus } from "@selldone/components-vue/utils/events/EventBus.ts";
 import { percentOff, priceOf } from "../kalio/kalio-catalog";
+import { t } from "../kalio/i18n/kalio-i18n";
 
 declare const window: any;
 
@@ -530,4 +531,26 @@ export function tagsIn(map: Map<string, any[]>, categoryId: number): { tag: stri
     original and a 128px thumbnail). */
 export function packshot(product: any, thumb = false): string | null {
   return product?.icon ? window.CDN.GET_SHOP_IMAGE_PATH(product.icon, thumb ? 128 : null) : null;
+}
+
+/* ━━━━━━━━━━━━ Medio: a delivery way's words in the visitor's language ━━━━━━━━━━━━
+   walio-home.ts waysOf() names a way by the merchant's own title, or by its
+   kind ("Pickup", "Delivery"…). A title that is the kind's own English word
+   is drawn in the visitor's language; a merchant's own name stays as written. */
+export function wayWords(w: { key: string; word: string; line: string }): { word: string; line: string } {
+  const own = w.word !== w.key;
+  switch (w.key) {
+    case "Pickup":
+      return { word: own ? w.word : t("medio.way.pickup", "Pickup"), line: t("medio.way.pickupL", "Order online, collect at the shop") };
+    case "Delivery":
+      return { word: own ? w.word : t("medio.way.delivery", "Delivery"), line: t("medio.way.deliveryL", "A courier brings it to your door") };
+    case "Shipping":
+      return { word: own ? w.word : t("medio.way.shipping", "Shipping"), line: t("medio.way.shippingL", "Shipped to your address") };
+    case "By post":
+      return { word: own ? w.word : t("medio.way.post", "By post"), line: t("medio.way.postL", "Sent to your address by post") };
+    case "Worldwide":
+      return { word: own ? w.word : t("medio.way.world", "Worldwide"), line: t("medio.way.worldL", "Shipped wherever you are") };
+    default:
+      return { word: w.word, line: w.line };
+  }
 }

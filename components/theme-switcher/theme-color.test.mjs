@@ -4,7 +4,7 @@
 import { contrast, luminance, normalizeHex, paletteFromColor } from "./theme-color.ts";
 
 const WHITE = "#ffffff";
-const SURFACES = ["#0c111b", "#151c2b", "#1c2536"]; // Besti's dark page, card and wells
+const SURFACES = ["#0d1220", "#161d2e", "#1e2639"];
 const LIGHT_SURFACES = ["#ffffff", "#f0f2f5"];
 let failures = 0;
 const check = (ok, msg) => {
@@ -46,8 +46,8 @@ const navy = paletteFromColor("#0a4bd8", { headerContrast: 6.5 });
 check(navy.light.primary === "#0a4bd8" && !navy.adjusted.light, "Digito blue kept in light");
 
 const pop = (v) => ({ pop: v.onPrimary === WHITE ? "#ffd91a" : v.onPrimary });
-const DIGITO = { headerContrast: 6.5, extras: pop, darkSurfaces: SURFACES, lightSurfaces: LIGHT_SURFACES }; // Besti's options (besti-theme.ts custom)
-const BRAND_AUTO = { headerContrast: 6.5, extras: pop, textOnBrand: "auto", darkText: "#0f1729", darkSurfaces: SURFACES, lightSurfaces: LIGHT_SURFACES };
+const DIGITO = { headerContrast: 6.5, extras: pop };
+const BRAND_AUTO = { headerContrast: 6.5, extras: pop, textOnBrand: "auto", darkText: "#0f1729" };
 const PICKS = ["#ffff00", "#00ffff", "#ffffff", "#000000", "#808080", "#ff00ff", "#7fff00", "#ff0000", "#0000ff", "#ffa500"];
 const rows = [];
 for (const pick of PICKS) {

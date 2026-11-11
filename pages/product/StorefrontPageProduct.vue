@@ -91,7 +91,7 @@
                   <li v-for="w in ways" :key="w.key">
                     <span class="ms">{{ w.icon === "storefront" ? "storefront" : "local_shipping" }}</span>
                     <span>
-                      <b>{{ w.word }}</b> · {{ w.line }}.
+                      <b>{{ wayWords(w).word }}</b> · {{ wayWords(w).line }}.
                       <template v-if="w.free"> {{ t("medio.pdp.free", "Free") }}.</template>
                       <template v-else-if="w.freeOver">
                         {{ t("medio.pdp.freeOverShort", "Free on orders over {amount}", { amount: moneyFrom(w.freeOver, w.currency, { short: "auto" }) }) }}.</template
@@ -158,7 +158,7 @@ import MedioProductOverview from "../../components/medio/product/MedioProductOve
 import MedioRail from "../../components/medio/MedioRail.vue";
 import KalioQuickBuy from "../../components/kalio/KalioQuickBuy.vue";
 import { specGroups, specRows } from "../../components/medio/product/medio-spec";
-import { catalogue, mixByCategory, rememberViewed, tagged } from "../../components/medio/medio";
+import { catalogue, mixByCategory, rememberViewed, tagged, wayWords } from "../../components/medio/medio";
 import MedioRow from "../../components/medio/MedioRow.vue";
 import MedioTogether from "../../components/medio/product/MedioTogether.vue";
 import { t } from "../../components/kalio/i18n/kalio-i18n";
@@ -367,6 +367,7 @@ export default {
 
   methods: {
     t,
+    wayWords,
     moneyFrom,
     toggle(key) {
       this.open = { ...this.open, [key]: !this.open[key] };

@@ -73,7 +73,7 @@
         <button class="md-lrow__offer" type="button" @click.prevent.stop="toggleCompare">
           <span class="ms">compare_arrows</span>
           <span class="md-lrow__ow">{{ comparing ? t("medio.card.inCompare", "Added to compare") : t("medio.card.compareSimilar", "Compare with similar products") }}</span>
-          <span class="ms md-lrow__chev">chevron_right</span>
+          <span class="ms md-chev md-lrow__chev">chevron_right</span>
         </button>
       </div>
     </div>

@@ -111,7 +111,7 @@
             <u-price :amount="price(p).now" :currency="currency" />
           </router-link>
           <button class="md-suggest__all" type="button" @click="submit()" @mousedown.prevent>
-            {{ t("medio.header.seeAllFor", "See all results for “{q}”", { q }) }}<span class="ms">arrow_forward</span>
+            {{ t("medio.header.seeAllFor", "See all results for “{q}”", { q }) }}<span class="ms md-chev">arrow_forward</span>
           </button>
         </div>
       </form>
@@ -168,13 +168,13 @@
           >
             <span class="md-mega__ic"><img v-if="c.icon" :src="catIcon(c)" alt="" /></span>
             <span class="md-mega__name">{{ c.title || c.name }}</span>
-            <span aria-hidden="true" class="ms">chevron_right</span>
+            <span aria-hidden="true" class="ms md-chev">chevron_right</span>
           </router-link>
         </div>
         <div v-if="megaCat" class="md-mega__side">
           <div class="md-mega__head">
             <h3>{{ megaCat.title || megaCat.name }}</h3>
-            <router-link :to="catTo(megaCat)" class="md-more">{{ t("medio.header.shopAllIn", "Shop all {name}", { name: megaCat.title || megaCat.name }) }}<span class="ms">chevron_right</span></router-link>
+            <router-link :to="catTo(megaCat)" class="md-more">{{ t("medio.header.shopAllIn", "Shop all {name}", { name: megaCat.title || megaCat.name }) }}<span class="ms md-chev">chevron_right</span></router-link>
           </div>
           <p v-if="megaLine" class="md-mega__line">{{ megaLine }}</p>
           <div class="md-mega__picks">
