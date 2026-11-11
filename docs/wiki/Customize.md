@@ -91,6 +91,14 @@ To add a language your shop offers:
 
 The words the shop writes (product names, categories, tags, articles, the footer's page links) are the shop's data: translate them in the Selldone dashboard.
 
+Right to left, Medio keeps these rules (in `style/medio.scss` and `components/medio/medio.ts`):
+
+- a merchant name inside a translated sentence goes through `iso()` (an isolate, so "TV 85-Inch" never reads "TV -85 Inch"); amounts are isolated by the region package ("500 US$", never "$US 500");
+- elements that show only the merchant's words (names, brands, articles) use `unicode-bidi: plaintext`, so "TVs." never shows as ".TVs";
+- "+3", "-20%" and price ranges keep their left-to-right order;
+- arrows and chevrons mirror (`md-chev`, `k-flip`), drawers open from the other side, photo scrims and the hero photo's subject move with the words;
+- no letter-spacing on Arabic or Hindi pages.
+
 ## Rules the design keeps
 
 - **One action colour.** Violet for every button, the round search button, links and chosen states; magenta only for savings and the campaign strip; black pills only for campaign tags. Every colour is a token.

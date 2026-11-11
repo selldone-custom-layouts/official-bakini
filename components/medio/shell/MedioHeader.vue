@@ -313,7 +313,7 @@ import { basketView } from "../../kalio/kalio-basket";
 import { catalogue, dealsEndDate, dealsOf, iso, moneyOf, moneyText } from "../medio";
 import RegionSwitcherButton from "../../region-switcher/RegionSwitcherButton.vue";
 import RegionSheet from "../../region-switcher/RegionSheet.vue";
-import { currentCurrency, isRtl } from "../../region-switcher/region";
+import { currentCurrency, isRtl, money } from "../../region-switcher/region";
 import { formatDate, t } from "../../kalio/i18n/kalio-i18n";
 
 const STRIP_KEY = "medio:strip-closed";
@@ -379,7 +379,7 @@ export default {
       const bill = b.bill || {};
       const total = typeof bill.price === "number" ? bill.price : b.price;
       if (!(Number(total) > 0)) return "";
-      return moneyText(total, bill.currency || b.currency);
+      return money(total, bill.currency || b.currency);
     },
     r() {
       return window.$storefront.routes;
