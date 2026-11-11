@@ -6,8 +6,11 @@
 
    1. A slim magenta campaign strip: the biggest saving and the deals' real
       end date (a link to the deals).
-   2. The hero: a photo when hero-main.webp is in the build; until then a
-      deep violet panel with the three biggest deals on a white stage.
+   2. The hero: a photo slider (MedioHeroSlider.vue, the owner's pick of
+      three options, 11 Nov 2026), one slide per category with the owner's
+      wide photo, when two or more are in the build. Otherwise a photo when
+      hero-main.webp is in the build, else a deep violet panel with the
+      three biggest deals on a white stage.
    3. "Shop deals": round tiles of every category (its top deal's
       packshot), "All deals" first, with arrows. (The categories are the
       page's second section, the owner's rule.)
@@ -36,7 +39,8 @@
       </router-link>
 
       <!-- ▆▆▆▆ 2. Hero ▆▆▆▆ -->
-      <section :class="{ '-photo': heroPhoto }" class="md-hero" :aria-label="t('medio.home.heroLabel', 'Deals')">
+      <medio-hero-slider v-if="useSlider" :currency="currency" :slides="heroLoaded ? heroSlides : []" />
+      <section v-else :class="{ '-photo': heroPhoto }" class="md-hero" :aria-label="t('medio.home.heroLabel', 'Deals')">
         <img v-if="heroPhoto" :src="heroPhoto" alt="" class="md-hero__photo" fetchpriority="high" />
         <div class="md-hero__txt">
           <span class="md-tag">{{ t("medio.home.dealsTag", "Deals") }}</span>
@@ -240,11 +244,13 @@ import MedioPhoto from "./MedioPhoto.vue";
 import MedioSlot from "./MedioSlot.vue";
 import MedioScroller from "./MedioScroller.vue";
 import MedioDealClock from "./MedioDealClock.vue";
+import MedioHeroSlider from "./MedioHeroSlider.vue";
 import KalioQuickBuy from "../kalio/KalioQuickBuy.vue";
 import { aisleRoute, aisles, catalogueRoute, dealsRoute, dropSrcset, photoSrcset, productSrcset } from "../kalio/kalio-catalog";
 import { journalPage, journalRoute, postRoute } from "../kalio/pages/kalio-journal";
 import { SLOTS, slotSrc } from "./medio-photos";
 import {
+  bestSellerIds,
   brandsOf,
   catalogue,
   dealEnd,
@@ -255,6 +261,8 @@ import {
   mixByCategory,
   moneyOf,
   moneyText,
+  percentOff,
+  photoCount,
   photoOf,
   tagged,
   tagTitle,
@@ -264,7 +272,7 @@ import { formatDate, t } from "../kalio/i18n/kalio-i18n";
 
 export default {
   name: "MedioHome",
-  components: { MedioRail, MedioPhoto, MedioSlot, MedioScroller, MedioDealClock, KalioQuickBuy },
+  components: { MedioRail, MedioPhoto, MedioSlot, MedioScroller, MedioDealClock, MedioHeroSlider, KalioQuickBuy },
   mixins: [CurrencyMixin],
   inject: ["$shop"],
 
@@ -273,6 +281,7 @@ export default {
     products: [],
     tags: new Map(),
     ready: false,
+    best_ids: null,
     posts: [],
     sheet: false,
     picked: null,
@@ -329,6 +338,46 @@ export default {
         if (out.length === 3) break;
       }
       return out;
+    },
+    /* The slider's slides: each category with the owner's wide photo, its
+       pick (its best-selling deal, else its biggest saving, else a product in
+       stock), its biggest saving and top "% off"; the biggest saving first,
+       at most five. */
+    heroSlides() {
+      const best = this.best_ids || new Set();
+      return this.cats
+        .map((c) => {
+          const photo = photoOf(c, "wide");
+          const mine = photo ? this.inCategory(c).filter((p) => p.icon) : [];
+          if (!mine.length) return null;
+          const deals = dealsOf(this.$shop, mine).sort((a, b) => this.price(b).save - this.price(a).save);
+          const stocked = mine.filter((p) => p.quantity > 0);
+          const pick = deals.find((p) => best.has(p.id)) || deals[0] || stocked.find((p) => best.has(p.id)) || stocked[0] || mine[0];
+          return {
+            cat: c,
+            photo,
+            pick,
+            money: this.price(pick),
+            save: Math.max(0, ...mine.map((p) => this.price(p).save)),
+            pct: Math.max(0, ...deals.map((p) => percentOff(this.$shop, p))),
+            from: Math.min(...mine.map((p) => this.price(p).now)),
+          };
+        })
+        .filter(Boolean)
+        .sort((a, b) => b.save - a.save)
+        .slice(0, 5);
+    },
+    heroLoaded() {
+      return this.cats.length > 0 && this.ready && this.best_ids !== null;
+    },
+    /* Known before anything loads (the photos are in the build), so the
+       page does not switch heroes once the shop's data is in. */
+    useSlider() {
+      return photoCount("wide") >= 2 && (!this.heroLoaded || this.heroSlides.length >= 2);
+    },
+    /* The products the hero shows, kept out of the sections below. */
+    heroIds() {
+      return new Set(this.useSlider ? this.heroSlides.map((s) => s.pick.id) : this.heroDeals.map((p) => p.id));
     },
     heroLine() {
       const top = this.heroDeals[0];
@@ -402,7 +451,7 @@ export default {
     },
     /* The dark Deals cards: the biggest savings not in the hero. */
     dealCards() {
-      const hero = new Set(this.heroDeals.map((p) => p.id));
+      const hero = this.heroIds;
       return mixByCategory(
         [...this.deals].filter((p) => !hero.has(p.id)).sort((a, b) => this.price(b).save - this.price(a).save),
         10,
@@ -440,7 +489,7 @@ export default {
     },
     /* Four more offers, not shown above. */
     offers() {
-      const shown = new Set([...this.heroDeals, ...this.dealCards].map((p) => p.id));
+      const shown = new Set([...this.heroIds, ...this.dealCards.map((p) => p.id)]);
       const rest = this.deals.filter((p) => !shown.has(p.id));
       return mixByCategory(rest.length >= 4 ? rest : this.deals, 4);
     },
@@ -465,6 +514,7 @@ export default {
       this.ready = true;
     });
     tagged().then((map) => (this.tags = map));
+    bestSellerIds().then((ids) => (this.best_ids = ids));
     journalPage({ page: 1, limit: 8 })
       .then(({ articles }) => (this.posts = articles.slice(0, 4)))
       .catch(() => (this.posts = []));

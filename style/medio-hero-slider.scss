@@ -1,0 +1,545 @@
+/* ▆▆▆▆▆▆▆▆▆▆▆▆▆▆ Medio — the home's hero as a photo slider ▆▆▆▆▆▆▆▆▆▆▆▆▆▆
+   MedioHeroSlider.vue (the owner's pick, option B of
+   digini-design/medio-hero-b.html, 11 Nov 2026). A deep violet made from the
+   palette's own colour under the photos; words, tabs and the pause button
+   white; savings pink on the dark and magenta on the white pick card. The
+   same in light and dark mode (selectors with "md-hero" keep their
+   light-mode colours in the dark build, vite.config.ts keepLightExtra). The
+   playing tab is a tint that fills while its slide plays, never a bar. */
+
+$font: "Outfit", "Noto Sans Arabic", "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", sans-serif;
+/* Fixed colours as variables whose names carry no role suffix, so the dark
+   build leaves them (a literal text colour in a rule without a light ground
+   is turned light there: the pick card's words went light on white). */
+$pink: var(--hs-pink); /* a saving on the dark violet */
+$card-ink: var(--hs-dark); /* words on the white pick card */
+
+.md-hero-s {
+  --hs: color-mix(in oklab, var(--md-head) 28%, #0d0622);
+  --hs-pink: #ff7ab8; /* 6.9:1 on #170b3d */
+  --hs-dark: #1c1b22;
+  position: relative;
+  margin-top: 18px;
+  border-radius: 18px;
+  overflow: hidden;
+  background-color: #170b3d; /* under the mix: what contrast tools read */
+  background-color: var(--hs);
+  color: #fff;
+
+  &__slides {
+    position: relative;
+    display: grid;
+    height: 470px;
+  }
+
+  /* Every slide in the same cell: the hero keeps the height of its tallest
+     slide (no jump on a phone); only the playing one is seen and reached. */
+  &__slide {
+    position: relative;
+    grid-area: 1 / 1;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    padding: 40px 56px;
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      opacity 0.5s,
+      visibility 0s linear 0.5s;
+
+    &.-on {
+      z-index: 1;
+      visibility: visible;
+      opacity: 1;
+      transition: opacity 0.5s;
+    }
+  }
+
+  &__ph {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--hs) 88%, transparent) 0%,
+        color-mix(in srgb, var(--hs) 68%, transparent) 34%,
+        transparent 60%
+      );
+    }
+  }
+
+  &__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 70% 50%;
+  }
+
+  &__txt {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 500px;
+  }
+
+  &__kick {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 6px;
+    min-height: 32px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    font: 600 14px/1.2 $font;
+  }
+
+  &__off {
+    font-style: normal;
+    color: $pink;
+  }
+
+  &__h {
+    margin: 16px 0 12px !important;
+    color: #fff !important;
+    font: 800 54px/1.04 $font !important;
+    letter-spacing: -0.025em !important;
+  }
+
+  &__p {
+    margin: 0 0 24px;
+    color: rgba(255, 255, 255, 0.92);
+    font: 400 18px/1.4 $font;
+  }
+
+  .md-btn {
+    min-height: 50px;
+    padding: 0 26px;
+    font-size: 16px;
+  }
+
+  /* The pick: a white card at the photo's far corner. */
+  &__pick {
+    position: absolute;
+    inset-inline-end: 40px;
+    bottom: 32px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 340px;
+    padding: 10px;
+    padding-inline-end: 14px;
+    border-radius: var(--md-r);
+    background: #fff;
+    color: $card-ink !important;
+    transition: background-color 0.15s;
+
+    &:hover {
+      background: #efeaff;
+    }
+  }
+
+  &__pimg {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    border-radius: var(--md-r-s);
+    background: #fff;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  &__pt {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    color: $card-ink;
+    font: 400 13.5px/1.25 $font;
+
+    > b {
+      display: -webkit-box;
+      overflow: hidden;
+      font-weight: 600;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    > span {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px 8px;
+      font-size: 15px;
+
+      b {
+        font-weight: 700;
+      }
+    }
+  }
+
+  &__psave {
+    font-style: normal;
+    font-weight: 700;
+    color: var(--md-sale-fixed) !important;
+  }
+
+  &__round {
+    position: absolute;
+    inset-inline-end: 56px;
+    top: 36px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    background: var(--md-sale-solid);
+    color: #fff;
+    transform: rotate(-8deg);
+
+    small {
+      font: 600 14px/1.2 $font;
+    }
+
+    b {
+      font: 800 26px/1 $font;
+    }
+  }
+
+  &__skel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+    grid-area: 1 / 1;
+    padding: 40px 56px;
+
+    i {
+      display: block;
+      width: 180px;
+      height: 32px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    i:nth-child(2) {
+      width: min(460px, 80%);
+      height: 54px;
+      border-radius: 12px;
+    }
+
+    i:nth-child(3) {
+      width: min(380px, 70%);
+      height: 22px;
+    }
+
+    i:nth-child(4) {
+      width: 170px;
+      height: 50px;
+    }
+  }
+
+  /* The tabs and the pause button. */
+  &__bar {
+    display: flex;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  &__tabs {
+    flex: 1;
+    display: grid;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  &__tab {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    height: 60px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff !important;
+    font: inherit;
+    text-align: start;
+    overflow: hidden;
+    cursor: pointer;
+    transition: background-color 0.15s;
+
+    &:hover,
+    &.-on {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    &.-skel {
+      cursor: default;
+    }
+
+    .ms {
+      position: relative;
+      font-size: 24px;
+      color: $pink !important;
+    }
+  }
+
+  &__fill {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.16);
+    transform: scaleX(0);
+    transform-origin: left center;
+    pointer-events: none;
+  }
+
+  &__tt {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.2;
+
+    b,
+    small {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    b {
+      color: #fff;
+      font: 700 15px/1.25 $font;
+    }
+
+    small {
+      color: rgba(255, 255, 255, 0.78);
+      font: 600 12.5px/1.25 $font;
+
+      &.-sale {
+        color: $pink;
+      }
+    }
+  }
+
+  &__pause {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff !important;
+    cursor: pointer;
+    transition: background-color 0.15s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .ms {
+      font-size: 26px;
+    }
+  }
+}
+
+/* Rings inside the box (the owner's rule); the tabs clip what is outside. */
+.md-hero-s :is(.md-hero-s__tab, .md-hero-s__pause, .md-hero-s__pick, .md-btn):focus-visible {
+  outline: none !important;
+  box-shadow: inset 0 0 0 3px $pink !important;
+}
+
+/* Arabic: the words sit on the right, so the photo and its scrim turn round
+   (the photos have no words in them) and the tints fill from the right. */
+:is([dir="rtl"], .v-locale--is-rtl) {
+  .md-hero-s__ph {
+    transform: scaleX(-1);
+  }
+
+  .md-hero-s__fill {
+    transform-origin: right center;
+  }
+
+  .md-hero-s__round {
+    transform: rotate(8deg);
+  }
+
+  /* Merchant words that stand alone keep their own direction (SYNC §21). */
+  .md-hero-s__p.-merchant,
+  .md-hero-s__pt > b,
+  .md-hero-s__tt b {
+    unicode-bidi: plaintext;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .md-hero-s__slide,
+  .md-hero-s__slide.-on {
+    transition: none;
+  }
+}
+
+@media (max-width: 1100px) {
+  .md-hero-s {
+    &__slide {
+      padding: 36px 40px;
+    }
+
+    &__txt {
+      max-width: 440px;
+    }
+
+    &__h {
+      font-size: 44px !important;
+    }
+
+    &__pick {
+      width: 300px;
+    }
+
+    &__tt small {
+      display: none;
+    }
+  }
+}
+
+/* Tablet and phone: the photo on top, the words under it, then the pick. */
+@media (max-width: 960px) {
+  .md-hero-s {
+    margin-top: 12px;
+    border-radius: 16px;
+
+    &__slides {
+      height: auto;
+    }
+
+    &__slide {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 0;
+    }
+
+    &__ph {
+      position: relative;
+      inset: auto;
+      aspect-ratio: 16 / 9;
+
+      &::after {
+        background: linear-gradient(180deg, transparent 70%, var(--hs) 100%);
+      }
+    }
+
+    &__txt {
+      max-width: none;
+      padding: 16px 16px 4px;
+    }
+
+    &__h {
+      margin: 12px 0 8px !important;
+      font-size: 34px !important;
+    }
+
+    &__p {
+      margin-bottom: 16px;
+      font-size: 16px;
+    }
+
+    &__txt .md-btn {
+      align-self: stretch;
+    }
+
+    &__pick {
+      position: relative;
+      inset: auto;
+      width: auto;
+      margin: 12px 16px 16px;
+    }
+
+    &__round {
+      top: 14px;
+      inset-inline-end: 14px;
+      width: 86px;
+      height: 86px;
+
+      small {
+        font-size: 12px;
+      }
+
+      b {
+        font-size: 20px;
+      }
+    }
+
+    &__skel {
+      min-height: 420px;
+      padding: 24px 16px;
+    }
+
+    &__bar {
+      gap: 8px;
+      padding: 0 16px 16px;
+    }
+
+    &__tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    &__tab {
+      flex: none;
+      height: 48px;
+      padding: 0 16px;
+      padding-inline-start: 12px;
+
+      &.-skel {
+        width: 120px;
+      }
+    }
+
+    &__tt small {
+      display: none;
+    }
+
+    &__pause {
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  /* On a phone the words are under the photo: it keeps its own way round. */
+  :is([dir="rtl"], .v-locale--is-rtl) .md-hero-s__ph {
+    transform: none;
+  }
+}

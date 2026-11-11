@@ -59,6 +59,12 @@ export function photoOf(category: any, shape: Shape): Photo | null {
   return { src, srcset: small ? `${small} 800w, ${src} 1600w` : null };
 }
 
+/** How many category photos of this shape are in the build (the home's
+ *  photo slider needs two; known before the categories load). */
+export function photoCount(shape: Shape): number {
+  return [...BY_NAME.keys()].filter((k) => k.startsWith(shape + "-") && !k.endsWith("-800")).length;
+}
+
 /** The categories that have a photo of this shape, in the shop's order. */
 export function withPhoto(list: any[], shape: Shape): any[] {
   return list.filter((c) => photoOf(c, shape));
@@ -116,6 +122,17 @@ const SEEDS = [
 
 let taggedRead: Promise<Map<string, any[]>> | null = null;
 
+/* The best sellers are in tagged()'s first read (their tag is a seed), so
+   the home's hero can pick from them before the other tags are found. */
+let seedDone: ((ids: Set<number>) => void) | null = null;
+const seedRead = new Promise<Set<number>>((r) => (seedDone = r));
+
+/** The ids of products with a best-seller tag, once tagged()'s first read is in. */
+export function bestSellerIds(): Promise<Set<number>> {
+  tagged();
+  return seedRead;
+}
+
 function byTags(tags: string[]): Promise<any[]> {
   const params = new URLSearchParams();
   params.set("offset", "0");
@@ -136,6 +153,7 @@ export function tagged(): Promise<Map<string, any[]>> {
       for (let round = 0; round < 4 && next.length; round++) {
         next.forEach((t) => asked.add(t.toLowerCase()));
         const list = await byTags(next);
+        if (round === 0) seedDone?.(new Set(list.filter((p: any) => (p.tags || []).some(isBestSellerTag)).map((p: any) => p.id)));
         const fresh = new Set<string>();
         for (const p of list) {
           found.set(p.id, p);
@@ -153,6 +171,7 @@ export function tagged(): Promise<Map<string, any[]>> {
       }
       return out;
     })().catch(() => {
+      seedDone?.(new Set());
       taggedRead = null;
       return new Map();
     });
