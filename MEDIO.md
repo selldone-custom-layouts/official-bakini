@@ -63,3 +63,6 @@ Kit tools (`new-shop-kits/…`), one browser at a time, `MSYS_NO_PATHCONV=1`, th
 | box-check, light and dark | TOTAL 0 (1.0.3) |
 | currency-check, USD · DKK · AED · EUR · SAR · AUD, 1440 and 390 | TOTAL 0 (1.0.3; one EUR line at 390 was a 429 and passed on a re-run) |
 | medio-errwalk: every page, a post, the basket drawer and page, checkout up to sign-in, en and ar, 1440 and 390 | 0 page errors (1.0.3) |
+| The slider hero (1.0.6–1.0.8), home: contrast-audit (Medio, Ocean, `#ffff00`, light and dark; Arabic light and dark), ring-sweep, box-check (with states), card-edge (Arabic) | all TOTAL 0 (1.0.8) |
+| circle-fit-check, home, 1440 and 390: every currency (USD, DKK, AED, EUR, SAR, AUD) with the long stress amount; Arabic with SAR | TOTAL 0 (1.0.8; the Save circles from 1.0.7) |
+| The slider plays (6 s, the next slide, the page not scrolled), en and ar, 1440 and 390; one height for every slide; dark mode keeps the pick card's dark words | checked live (1.0.6) |

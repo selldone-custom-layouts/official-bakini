@@ -31,7 +31,7 @@ The slots are registered in `components/medio/medio-photos.ts`. Each looks for `
 
 | File | Size | Where |
 | --- | --- | --- |
-| `hero-main.webp` | 2400×960 | Home, the big hero (words on its calm left side); without it the hero shows the three biggest deals on a white stage |
+| `hero-main.webp` | 2400×960 | Home, the big hero, used only when fewer than two categories have a wide photo (`assets/medio/wide-<category>.webp`, then the hero is the photo slider); without either the hero shows the three biggest deals on a white stage |
 | `why-deals.webp`, `why-compare.webp`, `why-track.webp`, `why-returns.webp`, `why-help.webp`, `why-secure.webp` | 800×800 | Home, the six "Why shop with" tiles (shown in a circle) |
 | `help-hero.webp` | 2400×640 | Help & Support (the FAQ), beside the banner's words |
 | `about-hero.webp` | 2400×900 | About us |
@@ -97,6 +97,7 @@ Right to left, Medio keeps these rules (in `style/medio.scss` and `components/me
 - elements that show only the merchant's words (names, brands, articles) use `unicode-bidi: plaintext`, so "TVs." never shows as ".TVs";
 - "+3", "-20%" and price ranges keep their left-to-right order;
 - arrows and chevrons mirror (`md-chev`, `k-flip`), drawers open from the other side, photo scrims and the hero photo's subject move with the words;
+- words in a circle (the hero's Save circle) stay inside it in every currency and language: the amount may take two lines and `components/medio/fit-in-circle.ts` shrinks it until it fits; check with the kit's `circle-fit-check.cjs` (`CURRENCIES=all LONG=1`);
 - no letter-spacing on Arabic or Hindi pages.
 
 ## Rules the design keeps
