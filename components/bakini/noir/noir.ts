@@ -99,7 +99,7 @@ export function productImage(p: any, size: number | null = null): string | null 
 
 /** The unit a product is sold by ("croissant"), or "piece". */
 export function unitOf(p: any): string {
-  return (p?.unit && String(p.unit).trim()) || t("bakini.unit.piece", "piece");
+  return (p?.unit && String(p.unit).trim()) || t("bakini.n.unit.piece", "piece");
 }
 
 export interface PriceView {
@@ -195,12 +195,12 @@ export function wayTitle(tr: any, shop: any): string {
   const name = raw.charAt(0).toUpperCase() + raw.slice(1);
   if (tr?.type === "Pickup") {
     const p = (tr.pickups || [])[0];
-    return p?.name ? t("bakini.way.pickupAt", "Pickup at {place}", { place: p.name }) : t("bakini.way.pickup", "Pickup");
+    return p?.name ? t("bakini.n.way.pickupAt", "Pickup at {place}", { place: p.name }) : t("bakini.n.way.pickup", "Pickup");
   }
-  if (COURIER.includes(tr?.type)) return t("bakini.way.courier", "{shop} courier", { shop: name });
-  if (tr?.type === "Global") return t("bakini.way.worldwide", "Worldwide shipping");
-  if (tr?.type === "Post") return t("bakini.way.post", "Post");
-  return t("bakini.way.delivery", "Delivery");
+  if (COURIER.includes(tr?.type)) return t("bakini.n.way.courier", "{shop} courier", { shop: name });
+  if (tr?.type === "Global") return t("bakini.n.way.worldwide", "Worldwide shipping");
+  if (tr?.type === "Post") return t("bakini.n.way.post", "By post");
+  return t("bakini.n.way.delivery", "Delivery");
 }
 
 export function deliveryWays(shop: any): DeliveryWay[] {

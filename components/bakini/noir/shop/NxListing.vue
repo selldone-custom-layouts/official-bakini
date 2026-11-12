@@ -236,6 +236,8 @@ export default {
     deals: Boolean,
     initialSort: { type: String, default: "" },
   },
+  /* fetched: the page's search-engine data (StorefrontSeo.updateProducts). */
+  emits: ["fetched"],
 
   data: () => ({
     noir,
@@ -404,9 +406,10 @@ export default {
 
   watch: {
     base: {
-      handler() {
+      handler(list) {
         this.resetRange();
         this.snapshot = null;
+        if (this.ready && (this.kind !== "category" || this.cat)) this.$emit("fetched", { parent: this.cat || null, products: list });
       },
       immediate: true,
     },
