@@ -1,95 +1,66 @@
 <!--
-  Kalio — the frame of the shopper's account (4 November 2026).
-
-  Two designs, picked when the layout is built (kalio-account.ts):
-    home (B): a greeting with what is happening to the orders, and the
-              sections as tabs across the page (Overview first);
-    desk (A): a rail at the side with the shopper and the sections in
-              three groups (Shopping, Money, You), and sign out.
-  Every section of Selldone's account stays: orders of every kind,
-  returns, saved, wallet, gift cards, addresses, reviews, profile. A guest
-  (orders kept on this device) sees only the orders and a way to sign in.
+  Bakini Noir — the account's desk (bakio-design/account-b.html,
+  addresses-b.html; b/pages-buy.js deskMenu): the page's own words as a
+  serif heading ("Good to see you.", "Your addresses."), then the side menu
+  (the shopper, Overview · Orders · Addresses · Profile · Sign out, as the
+  mockup; Selldone's other sections — saved, wallet, gift cards, returns,
+  reviews — stay reachable in a quieter list under them) beside the open
+  section. A guest (orders kept on this device) sees the orders and a way
+  to sign in. The data is Kalio's (kalio-account.ts).
 -->
 <template>
-  <div :class="`-${style}`" class="k-acct">
-    <!-- ━━━━━━━━ B: greeting and tabs ━━━━━━━━ -->
-    <template v-if="style === 'home'">
-      <section class="k-acct__hero">
-        <div class="k-wrap">
-          <div class="k-acct__hi">
-            <span aria-hidden="true" class="k-acct__ava -lg">
-              <img v-if="avatar" :src="avatar" alt="" @error="avatar_failed = true" />
+  <div class="nx nx-acct">
+    <section class="wrap desk">
+      <div class="desk-hd">
+        <h1 class="serif">{{ heading[0] }}{{ " " }}<em>{{ heading[1] }}</em></h1>
+      </div>
+      <div class="desk-grid">
+        <aside class="desk-side">
+          <div class="desk-me">
+            <span aria-hidden="true" class="av lg">
+              <img v-if="avatar" :src="avatar" alt="" class="nx-acct__img" @error="avatar_failed = true" />
               <template v-else-if="initials">{{ initials }}</template>
-              <v-icon v-else size="26">person_outline</v-icon>
+              <nx-icon v-else name="user" />
             </span>
-            <div class="k-acct__words">
-              <h1>{{ user ? t("account.greeting.line", "{greeting}, {name}", { greeting: hello, name: firstName }) : t("account.yourOrders", "Your orders") }}</h1>
-              <p>{{ summary }}</p>
+            <div>
+              <b>{{ user ? user.name : pending ? t("bakini.n.acc.moment", "One moment…") : t("bakini.n.acc.guest", "Shopping as a guest") }}</b>
+              <span>{{ user ? user.email || user.phone : t("bakini.n.acc.guestNote", "Orders placed on this device") }}</span>
             </div>
-            <button v-if="user" :disabled="busy_out" class="k-acct__out" type="button" @click="signOut">
-              <v-progress-circular v-if="busy_out" indeterminate size="16" width="2" />
-              <v-icon v-else size="18">logout</v-icon>{{ t("account.signOut", "Sign out") }}
-            </button>
-            <button v-else-if="!pending" class="k-acct__in" type="button" @click="signIn"><v-icon size="18">person</v-icon>{{ t("common.signIn", "Sign in") }}</button>
           </div>
-
-          <nav :aria-label="t('account.nav', 'Your account')" class="k-acct__tabs">
-            <router-link v-if="user" :class="{ '-on': $route.name === ACCOUNT_HOME }" :to="{ name: ACCOUNT_HOME }">
-              <v-icon size="19">grid_view</v-icon>{{ t("account.overview", "Overview") }}
+          <nav :aria-label="t('bakini.n.acc.nav', 'Your account')" class="desk-nav">
+            <router-link v-for="item in mainItems" :key="item.key" :aria-current="isOn(item) ? 'page' : undefined" :to="item.route">
+              <nx-icon :name="item.icon" /><span>{{ item.word }}</span>
             </router-link>
-            <router-link v-for="item in shown" :key="item.key" :class="{ '-on': isOn(item) }" :to="item.route">
-              <v-icon size="19">{{ item.icon }}</v-icon>{{ item.word }}<em v-if="countOf(item)">{{ countOf(item) }}</em>
+            <button v-if="user" :disabled="busy_out" type="button" @click="signOut">
+              <nx-icon name="logout" /><span>{{ t("bakini.n.acc.signOut", "Sign out") }}</span>
+            </button>
+            <button v-else-if="!pending" type="button" @click="signIn">
+              <nx-icon name="user" /><span>{{ t("bakini.n.acc.signIn", "Sign in") }}</span>
+            </button>
+          </nav>
+          <nav v-if="moreItems.length" :aria-label="t('bakini.n.acc.more', 'More in your account')" class="nx-acct__more">
+            <router-link v-for="item in moreItems" :key="item.key" :aria-current="isOn(item) ? 'page' : undefined" :to="item.route">
+              <nx-icon :name="item.icon" /><span>{{ item.word }}</span>
             </router-link>
           </nav>
+        </aside>
+        <div class="desk-main">
+          <router-view />
         </div>
-      </section>
-      <div class="k-wrap k-acct__body">
-        <router-view />
       </div>
-    </template>
-
-    <!-- ━━━━━━━━ A: the desk ━━━━━━━━ -->
-    <div v-else class="k-wrap k-acct__desk">
-      <aside class="k-acct__rail">
-        <div class="k-acct__me">
-          <span aria-hidden="true" class="k-acct__ava">
-            <img v-if="avatar" :src="avatar" alt="" @error="avatar_failed = true" />
-            <template v-else-if="initials">{{ initials }}</template>
-            <v-icon v-else size="22">person_outline</v-icon>
-          </span>
-          <div>
-            <b>{{ user ? user.name : pending ? t("account.oneMoment", "One moment…") : t("account.guest", "Shopping as a guest") }}</b>
-            <small>{{ user ? user.phone || user.email : t("account.guestNote", "Orders placed on this device") }}</small>
-          </div>
-        </div>
-        <nav :aria-label="t('account.nav', 'Your account')" class="k-acct__nav">
-          <template v-for="group in groups" :key="group.name">
-            <p class="k-acct__grp">{{ group.name }}</p>
-            <router-link v-for="item in group.items" :key="item.key" :class="{ '-on': isOn(item) }" :to="item.route">
-              <v-icon size="20">{{ item.icon }}</v-icon>{{ item.word }}<em v-if="countOf(item)">{{ countOf(item) }}</em>
-            </router-link>
-          </template>
-        </nav>
-        <button v-if="user" :disabled="busy_out" class="k-acct__railout" type="button" @click="signOut">
-          <v-progress-circular v-if="busy_out" indeterminate size="16" width="2" />
-          <v-icon v-else size="20">logout</v-icon>{{ t("account.signOut", "Sign out") }}
-        </button>
-        <button v-else-if="!pending" class="k-acct__in -rail" type="button" @click="signIn"><v-icon size="18">person</v-icon>{{ t("account.signInForRest", "Sign in for the rest") }}</button>
-      </aside>
-      <div class="k-acct__main">
-        <router-view />
-      </div>
-    </div>
+    </section>
   </div>
 </template>
 
 <script>
 import { EventBus } from "@selldone/components-vue/utils/events/EventBus.ts";
 import { t } from "../i18n/kalio-i18n";
+import NxIcon from "../../bakini/noir/NxIcon.vue";
 import { ACCOUNT_HOME, ACCOUNT_STYLE, account, greeting, loadAddresses, loadOrders, sections, standing } from "./kalio-account";
 
 export default {
   name: "KalioAccountShell",
+  components: { NxIcon },
   inject: ["$shop"],
 
   data() {
@@ -122,6 +93,48 @@ export default {
     },
     hello() {
       return greeting();
+    },
+    /* ── Bakini Noir ── */
+    /* The mockup's menu: Overview, Orders, Addresses, Profile. */
+    mainItems() {
+      const r = window.$storefront.routes;
+      const items = [];
+      if (this.user) items.push({ key: "home", word: t("bakini.n.acc.overview", "Overview"), icon: "grid", route: { name: ACCOUNT_HOME } });
+      items.push({ key: "orders", word: t("bakini.n.acc.orders", "Orders"), icon: "box", route: { name: r.HISTORY_ORDERS_PHYSICAL } });
+      if (this.user) {
+        items.push({ key: "addresses", word: t("bakini.n.acc.addresses", "Addresses"), icon: "pin", route: { name: r.USER_ADDRESSES_PAGE } });
+        items.push({ key: "profile", word: t("bakini.n.acc.profile", "Profile"), icon: "user", route: { name: r.USER_PROFILE_PAGE } });
+      }
+      return items;
+    },
+    /* Selldone's other sections, kept reachable under the menu. */
+    moreItems() {
+      if (!this.user) return [];
+      const r = window.$storefront.routes;
+      return [
+        { key: "saved", word: t("bakini.n.acc.saved", "Saved"), icon: "heart", route: { name: r.USER_FAVORITES_PAGE } },
+        { key: "wallet", word: t("bakini.n.acc.wallet", "Wallet"), icon: "cash", route: { name: r.USER_WALLETS_PAGE } },
+        { key: "gift", word: t("bakini.n.acc.gift", "Gift cards"), icon: "tag", route: { name: r.USER_GIFTCARDS_PAGE } },
+        { key: "returns", word: t("bakini.n.acc.returns", "Returns"), icon: "arrowL", route: { name: r.USER_RETURN_REQUESTS } },
+        { key: "reviews", word: t("bakini.n.acc.reviews", "Reviews"), icon: "star", route: { name: r.USER_COMMENTS_PAGE } },
+      ];
+    },
+    /* The open section's own words, as the mockup's heading. */
+    heading() {
+      const r = window.$storefront.routes;
+      const name = this.$route.name;
+      if (name === ACCOUNT_HOME) return [t("bakini.n.acc.hHome", "Good to see"), t("bakini.n.acc.hHomeEm", "you.")];
+      if (this.$route.matched.some((m) => m.name === r.ORDERS_PAGE)) return [t("bakini.n.acc.hYour", "Your"), t("bakini.n.acc.hOrders", "orders.")];
+      const words = {
+        [r.USER_ADDRESSES_PAGE]: [t("bakini.n.acc.hYour", "Your"), t("bakini.n.acc.hAddresses", "addresses.")],
+        [r.USER_PROFILE_PAGE]: [t("bakini.n.acc.hYour", "Your"), t("bakini.n.acc.hProfile", "profile.")],
+        [r.USER_FAVORITES_PAGE]: [t("bakini.n.acc.hSaved", "Saved"), t("bakini.n.acc.hSavedEm", "for later.")],
+        [r.USER_WALLETS_PAGE]: [t("bakini.n.acc.hYour", "Your"), t("bakini.n.acc.hWallet", "wallet.")],
+        [r.USER_GIFTCARDS_PAGE]: [t("bakini.n.acc.hGift", "Gift"), t("bakini.n.acc.hGiftEm", "cards.")],
+        [r.USER_RETURN_REQUESTS]: [t("bakini.n.acc.hYour", "Your"), t("bakini.n.acc.hReturns", "returns.")],
+        [r.USER_COMMENTS_PAGE]: [t("bakini.n.acc.hYour", "Your"), t("bakini.n.acc.hReviews", "reviews.")],
+      };
+      return words[name] || [t("bakini.n.acc.hYour", "Your"), t("bakini.n.acc.hAccount", "account.")];
     },
     shown() {
       return sections().filter((item) => this.user || !item.user);
@@ -175,12 +188,13 @@ export default {
   },
 
   methods: {
+    t,
     /** On a phone the sections are one row that scrolls sideways: bring the
      *  open one into view (Wallet, Profile… were off the right edge). */
     showActive() {
       this.$nextTick(() => {
-        for (const nav of this.$el?.querySelectorAll?.(".k-acct__nav, .k-acct__tabs") || []) {
-          const on = nav.querySelector(".-on");
+        for (const nav of this.$el?.querySelectorAll?.(".desk-nav, .nx-acct__more") || []) {
+          const on = nav.querySelector('[aria-current="page"]');
           if (!on || nav.scrollWidth <= nav.clientWidth + 1) continue;
           const delta = on.getBoundingClientRect().left - nav.getBoundingClientRect().left;
           nav.scrollLeft = Math.max(0, nav.scrollLeft + delta - (nav.clientWidth - on.offsetWidth) / 2);
@@ -188,6 +202,7 @@ export default {
       });
     },
     isOn(item) {
+      if (item.key === "home") return this.$route.name === ACCOUNT_HOME;
       if (item.key === "orders") return this.$route.matched.some((m) => m.name === window.$storefront.routes.ORDERS_PAGE);
       return this.$route.name === item.route.name;
     },

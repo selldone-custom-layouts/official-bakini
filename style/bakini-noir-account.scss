@@ -1,0 +1,370 @@
+/* Bakini Noir — the Layout's own touches for the account pages (on top of
+   style/noir/*.css, the B mockup's buy.css desk): the side menu's Sign out
+   (a button, styled as the menu's links), the quieter list of Selldone's
+   other sections, the Overview's states, the address book's delete, and
+   Kalio's / Selldone's parts inside the desk in the mockup's tokens. */
+
+/* ── The desk ── */
+.nx .desk-nav button {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  padding: 11px 12px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  font: 600 14.5px/1.3 var(--bk-ft);
+  color: var(--bk-ink-2);
+  text-align: start;
+  cursor: pointer;
+  transition: background-color 0.18s, color 0.18s;
+}
+.nx .desk-nav button svg.i {
+  color: var(--bk-mut);
+}
+.nx .desk-nav button:hover {
+  background: var(--bk-s2);
+  color: var(--bk-ink);
+}
+.nx .desk-nav button:focus-visible,
+.nx .desk-nav a:focus-visible,
+.nx .nx-acct__more a:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--bk-focus);
+}
+.nx .desk-nav button:disabled {
+  opacity: 0.6;
+}
+.nx .desk-me .av {
+  overflow: hidden;
+}
+.nx .desk-me .av .nx-acct__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.nx .desk-me .av svg.i {
+  width: 24px;
+  height: 24px;
+}
+.nx .nx-acct__more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-top: 14px;
+  box-shadow: inset 0 1px 0 var(--bk-line);
+}
+.nx .nx-acct__more a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--bk-ink-2);
+  box-shadow: inset 0 0 0 1px var(--bk-line);
+  transition: background-color 0.18s, color 0.18s;
+}
+.nx .nx-acct__more a svg.i {
+  width: 15px;
+  height: 15px;
+  color: var(--bk-mut);
+}
+.nx .nx-acct__more a:hover {
+  background: var(--bk-s2);
+  color: var(--bk-ink);
+}
+.nx .nx-acct__more a[aria-current="page"] {
+  background: var(--bk-sel);
+  color: var(--bk-ink);
+  box-shadow: inset 0 0 0 2px var(--bk-act-text);
+}
+@media (max-width: 900px) {
+  .nx .desk-nav {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+  }
+  .nx .desk-nav button {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    gap: 4px;
+    padding: 10px 2px;
+    font-size: 11.5px;
+  }
+  .nx .desk-nav button span {
+    overflow-wrap: anywhere;
+  }
+  .nx .nx-acct__more {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-top: 10px;
+  }
+  .nx .nx-acct__more a {
+    flex: none;
+  }
+}
+
+/* ── The Overview ── */
+.nx .nx-ahome {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.nx .nx-ahome .last .tl {
+  margin-top: 4px;
+}
+.nx .nx-ahome .last-t {
+  min-width: 0;
+}
+.nx .nx-ahome .last-thumbs .th {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--bk-hue, transparent) 40%, transparent), transparent), var(--bk-plate);
+}
+.nx .nx-ahome__off {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-weight: 700;
+  color: var(--bk-mut);
+}
+.nx .nx-ahome__off svg.i {
+  width: 18px;
+  height: 18px;
+}
+.nx .nx-ahome__pay {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--bk-s2);
+  font-size: 14px;
+}
+.nx .nx-ahome__wait {
+  display: grid;
+  gap: 12px;
+  min-height: 200px;
+}
+.nx .nx-ahome__wait span {
+  height: 18px;
+  border-radius: 9px;
+  background: var(--bk-s2);
+}
+.nx .nx-ahome__wait span:first-child {
+  width: 40%;
+}
+
+/* ── The address book ── */
+.nx .nx-abook {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.nx .nx-abook .ab-card p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.nx .nx-abook .ab-top b {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.nx .nx-abook__note {
+  font-style: italic;
+}
+.nx .nx-abook__ask {
+  flex-basis: 100%;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+.nx .nx-abook .btn.nx-abook__del {
+  background: var(--bk-warn);
+  color: #fff;
+}
+.nx .nx-abook .btn.quiet.sm {
+  width: 38px;
+  padding: 0;
+}
+.nx .nx-abook .btn.quiet svg.i {
+  width: 17px;
+  height: 17px;
+}
+.nx .nx-abook .ab-add {
+  border: 0;
+  background: transparent;
+  color: var(--bk-ink);
+  cursor: pointer;
+  font-family: var(--bk-ft);
+}
+.nx .nx-abook .ab-add .ch-plus {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--bk-act);
+  color: var(--bk-act-on);
+}
+.nx .nx-abook .ab-add .ch-plus svg.i {
+  width: 18px;
+  height: 18px;
+}
+.nx .nx-abook__wait {
+  min-height: 220px;
+}
+
+/* ── The orders list (KalioOrdersBoard in the desk) ── */
+.nx .nx-sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.nx .k-board {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  font-family: var(--bk-ft);
+  color: var(--bk-ink);
+}
+.nx .k-board__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin: 0;
+}
+.nx .k-board__titles p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--bk-mut);
+}
+.nx .k-board__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.nx .k-board__filters button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--bk-line-2);
+  color: var(--bk-ink-2);
+  font: 600 13.5px/1 var(--bk-ft);
+  transition: background-color 0.18s, color 0.18s;
+}
+.nx .k-board__filters button:hover {
+  background: var(--bk-s2);
+  color: var(--bk-ink);
+}
+.nx .k-board__filters button.-on {
+  background: var(--bk-sel);
+  color: var(--bk-ink);
+  box-shadow: inset 0 0 0 2px var(--bk-act-text);
+}
+.nx .k-board__filters small {
+  font-size: 12px;
+  color: var(--bk-gold);
+  background: none;
+  padding: 0;
+}
+.nx .nx-orders {
+  display: grid;
+  gap: 16px;
+}
+.nx .nx-orders .last-in {
+  color: inherit;
+}
+.nx .nx-orders .last-in:hover .last-t b {
+  color: var(--bk-act-text);
+}
+.nx .nx-orders .last-thumbs .th {
+  background: var(--bk-plate);
+}
+.nx .nx-orders__tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--bk-ink-2);
+  box-shadow: inset 0 0 0 1px var(--bk-line-2);
+}
+.nx .nx-orders__tag.-go,
+.nx .nx-orders__tag.-prep {
+  color: var(--bk-act-text);
+  box-shadow: inset 0 0 0 1px var(--bk-act-text);
+}
+.nx .nx-orders__tag.-pay {
+  color: var(--bk-gold);
+  box-shadow: inset 0 0 0 1px var(--bk-gold);
+}
+.nx .nx-orders__tag.-off {
+  color: var(--bk-mut);
+}
+.nx .nx-orders__acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 20px;
+}
+.nx .nx-orders__acts .link {
+  margin-inline-start: auto;
+  font-size: 13.5px;
+}
+.nx .k-board__more {
+  display: flex;
+  justify-content: center;
+}
+.nx .k-board__more .k-btn,
+.nx .k-board__all {
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--bk-line-2);
+  color: var(--bk-ink);
+  background: transparent;
+  text-decoration: none;
+}
+.nx .k-board__wait {
+  display: grid;
+  gap: 16px;
+}
+.nx .k-board__ghost {
+  height: 180px;
+  border-radius: var(--bk-r-xl);
+  background: var(--bk-s1);
+  box-shadow: inset 0 0 0 1px var(--bk-line);
+}
+@media (max-width: 600px) {
+  .nx .nx-orders__acts .link {
+    margin-inline-start: 0;
+    flex-basis: 100%;
+  }
+  .nx .last .tl .tl-l {
+    font-size: 11.5px;
+  }
+}

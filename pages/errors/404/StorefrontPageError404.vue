@@ -1,107 +1,95 @@
 <!--
-  - Copyright (c) 2024. Selldone® Business OS™
-  -
-  - Author: M.Pajuhaan
-  - Web: https://selldone.com
-  -->
+  Bakini Noir — page not found (bakio-design/404-b.html, b/pages-shop.js
+  N.pages["404"]): inside the Layout, with the header and footer
+  (router: BakiniNotFound). "This page is not on the menu." with a search,
+  every collection as a chip, the big 404 on a lit plate; then "Something
+  good instead": four best sellers from different collections as cards.
+-->
 <template>
-  <!-- Bakini 404: a white card with a big violet "404", a search and quick
-       ways out (the picture slot notfound.webp beside it); then every
-       category as a round tile in two even rows (an "All products" tile
-       evens them out) and today's deals. Inside the Layout, with the header. -->
-  <div class="bk-404 bk-wrap">
-    <section class="bk-404__card">
-      <div class="bk-404__txt">
-        <p aria-hidden="true" class="bk-404__big">404</p>
-        <h1>{{ t("bakini.nf.h", "We can’t find that page") }}</h1>
-        <p class="bk-404__p">{{ t("bakini.nf.p", "The link may be old, or the page has moved. Try a search, or start from a category.") }}</p>
-        <form class="bk-search" role="search" @submit.prevent="go">
-          <input
-            :aria-label="t('bakini.header.searchLabel', 'Search products or brands')"
-            :placeholder="t('bakini.nf.ph', 'What can we help you find?')"
-            :value="q"
-            enterkeyhint="search"
-            type="search"
-            @input="q = $event.target.value"
-          />
-          <button :aria-label="t('bakini.header.search', 'Search')" class="bk-search__go" type="submit"><span class="ms">search</span></button>
-        </form>
-        <div class="bk-404__links">
-          <span>{{ t("bakini.nf.or", "Or go to") }}</span>
-          <router-link :to="deals" class="bk-chip">{{ t("bakini.header.allDeals", "All deals") }}</router-link>
-          <router-link :to="newest" class="bk-chip">{{ t("bakini.header.newIn", "New in") }}</router-link>
-          <router-link :to="{ name: r.HISTORY_ORDERS_PHYSICAL }" class="bk-chip">{{ t("bakini.header.track", "Track my order") }}</router-link>
-          <router-link :to="help" class="bk-chip">{{ t("bakini.header.helpSupport", "Help & Support") }}</router-link>
+  <div class="nx nx-404">
+    <section class="nf">
+      <div class="wrap nf-in">
+        <div class="nf-copy">
+          <p class="eyebrow">{{ t("bakini.n.rd.err", "Error 404") }}</p>
+          <h1 class="serif">{{ t("bakini.n.rd.nfH", "This page is") }} <em>{{ t("bakini.n.rd.nfHem", "not on the menu.") }}</em></h1>
+          <p class="muted">{{ t("bakini.n.rd.nfP", "The link may be old, or the page has moved. Search the bakery or start from a collection.") }}</p>
+          <form class="sr-form nf-form" role="search" @submit.prevent="go">
+            <nx-icon name="search" />
+            <input
+              :aria-label="t('bakini.n.rd.searchBakery', 'Search the bakery')"
+              :placeholder="t('bakini.n.rd.searchBakery', 'Search the bakery')"
+              :value="q"
+              enterkeyhint="search"
+              name="q"
+              type="search"
+              @input="q = $event.target.value"
+            />
+            <button class="btn" type="submit">{{ t("bakini.n.rd.search", "Search") }}</button>
+          </form>
+          <div v-if="noir.cats.length" :aria-label="t('bakini.n.rd.collections', 'Collections')" class="es-chips nf-chips">
+            <router-link v-for="c in noir.cats" :key="c.id" :to="catTo(c)" class="chip"
+              ><img v-if="catImage(c, 128)" :src="catImage(c, 128)" alt="" /><bdi>{{ catTitle(c) }}</bdi></router-link
+            >
+          </div>
+        </div>
+        <div aria-hidden="true" class="nf-plate"><span class="nf-num serif">404</span></div>
+      </div>
+    </section>
+    <section v-if="picks.length" class="sec tight">
+      <div class="wrap">
+        <div class="sec-hd">
+          <div>
+            <p class="eyebrow">{{ t("bakini.n.rd.whileHere", "While you are here") }}</p>
+            <h2>{{ t("bakini.n.rd.goodH", "Something") }} <em>{{ t("bakini.n.rd.goodHem", "good instead.") }}</em></h2>
+          </div>
+        </div>
+        <div class="nf-grid">
+          <nx-card v-for="p in picks" :key="p.id" :product="p" />
         </div>
       </div>
-      <bakini-slot class="bk-404__img" place="notfound" />
     </section>
-
-    <section v-if="cats.length" class="bk-sec">
-      <h2 class="bk-title">{{ t("bakini.nf.cats", "Shop by category") }}</h2>
-      <div :style="{ '--cols': tiles.cols }" class="bk-404__cats">
-        <router-link v-for="c in tiles.cats" :key="c.id" :to="catTo(c)" class="bk-round-tile">
-          <span class="bk-round-tile__disc"><img v-if="c.icon" :src="icon(c)" alt="" loading="lazy" /><span v-else class="ms">category</span></span>
-          <span class="bk-round-tile__t">{{ c.title || c.name }}</span>
-        </router-link>
-        <router-link v-if="tiles.all" :to="catalogue" class="bk-round-tile -all">
-          <span class="bk-round-tile__disc"><span class="ms">grid_view</span></span>
-          <span class="bk-round-tile__t">{{ t("bakini.header.allProducts", "All products") }}</span>
-        </router-link>
-      </div>
-    </section>
-
-    <bakini-row :filter="{ only_has_discount: true }" :limit="12" :more-label="t('bakini.home.seeAllDeals', 'See all deals')" :more-to="deals" :title="t('bakini.nf.deals', 'Today’s deals')" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import BakiniRow from "../../../components/bakini/BakiniRow.vue";
-import BakiniSlot from "../../../components/bakini/BakiniSlot.vue";
-import { aisleRoute, aisles, catalogueRoute, dealsRoute } from "../../../components/kalio/kalio-catalog";
-import { catTiles } from "../../../components/bakini/bakini";
+import NxIcon from "../../../components/bakini/noir/NxIcon.vue";
+import NxCard from "../../../components/bakini/noir/NxCard.vue";
+import { bySells, catImage, catTitle, catTo, loadNoir, noir } from "../../../components/bakini/noir/noir";
+import { catalogueRoute } from "../../../components/kalio/kalio-catalog";
 import { t } from "../../../components/kalio/i18n/kalio-i18n";
 
 export default defineComponent({
   name: "StorefrontPageError404",
-  components: { BakiniRow, BakiniSlot },
-  data: () => ({ q: "", cats: [] as any[] }),
+  components: { NxIcon, NxCard },
+  data: () => ({ q: "", noir }),
   computed: {
-    r(): any {
-      return (window as any).$storefront.routes;
-    },
-    deals() {
-      return dealsRoute();
-    },
-    newest() {
-      return catalogueRoute({ sort: "newest" });
-    },
-    catalogue() {
-      return catalogueRoute();
-    },
-    help(): any {
-      return this.$router.hasRoute("ShopFAQ") ? { name: "ShopFAQ" } : { name: this.r.SHOP_CONTACT_US };
-    },
-    /* Two even rows (the owner's rule): an odd count gets an "All" tile. */
-    tiles(): any {
-      return catTiles(this.cats);
+    /* Four best sellers in stock, one per collection. */
+    picks(): any[] {
+      const out: any[] = [];
+      const used = new Set();
+      for (const p of bySells(this.noir.products.filter((x: any) => x.quantity > 0))) {
+        if (out.length < 4 && !used.has(p.category_id)) {
+          out.push(p);
+          used.add(p.category_id);
+        }
+      }
+      return out;
     },
   },
-  mounted() {
-    aisles().then((list) => (this.cats = list));
+  created() {
+    loadNoir();
+    (this as any).setPageTitle?.(t("bakini.n.rd.nfTitle", "Page not found"));
   },
   methods: {
     t,
-    catTo(c: any) {
-      return aisleRoute(c);
-    },
-    icon(c: any) {
-      return (window as any).CDN.GET_CATEGORY_ICON(c.id, 256);
-    },
+    catTo,
+    catTitle,
+    catImage,
     go() {
       const text = this.q.trim();
-      this.$router.push(text ? { name: this.r.SHOP_PAGE, query: { search: text } } : catalogueRoute());
+      const r = (window as any).$storefront.routes;
+      this.$router.push(text ? { name: r.SHOP_PAGE, query: { search: text } } : catalogueRoute({}));
     },
   },
 });

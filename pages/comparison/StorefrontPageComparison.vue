@@ -13,20 +13,19 @@
   -->
 
 <!--
-  The compare page is KalioCompare (8 November 2026) — the picks pinned
-  side by side, the details grouped with the differences marked — in place
-  of Selldone's SComparisonList table. The address keeps Selldone's ?list=
+  The compare page is Bakini Noir's (NxCompare: bakio-design/compare-b.html),
+  built on Kalio's compare logic. The address keeps Selldone's ?list=
   format, so its old links still open here.
 -->
 <template>
-  <kalio-compare />
+  <nx-compare />
 </template>
 
 <script lang="ts">
-import KalioCompare from "../../components/kalio/compare/KalioCompare.vue";
+import NxCompare from "../../components/bakini/noir/compare/NxCompare.vue";
 
 export default {
   name: "StorefrontPageComparison",
-  components: { KalioCompare },
+  components: { NxCompare },
 };
 </script>

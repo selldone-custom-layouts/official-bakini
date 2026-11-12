@@ -1,0 +1,234 @@
+/* Bakini Noir — the Layout's own touches for the product and compare pages
+   (on top of style/noir/product.css, the mockup's own rules). */
+
+/* ── Product page ── */
+.nx-pdp {
+  padding-bottom: 8px;
+}
+.nx .pd-crumbs .crumbs {
+  align-items: center;
+}
+.nx .pd-crumbs .crumbs svg.i {
+  width: 14px;
+  height: 14px;
+}
+html[dir="rtl"] .nx .pd-crumbs .crumbs svg.i,
+html[dir="rtl"] .nx .nx-pdp .link svg.i {
+  transform: scaleX(-1);
+}
+.nx .nx-pd-admin {
+  margin-inline-start: auto;
+}
+.nx .nx-pd-admin:empty {
+  display: none;
+}
+
+/* The photo from the shop sits a little lower than the mockup's cut-outs. */
+.nx .pd-ph img {
+  display: block;
+  margin: auto;
+}
+
+/* Selldone's tax line stays (when the shop charges tax); its shipping and
+   pickup chips are the delivery lines below, in the mockup's words. */
+.nx .s--product-section-tax {
+  padding: 0 !important;
+  margin: 0 !important;
+  color: var(--bk-mut);
+  font-size: 13px;
+}
+.nx .s--product-section-tax .-shipping-box,
+.nx .s--product-section-tax .-pickup-box {
+  display: none !important;
+}
+.nx .s--product-section-tax:not(:has(.-tax-box:not(:empty))) {
+  display: none !important;
+}
+
+/* Out of stock: the stock dot turns warm. */
+.nx .pd-stock.-out i {
+  background: var(--bk-warn);
+}
+.nx .nx-pd-deal {
+  color: var(--bk-gold);
+}
+
+/* Real option tiles (a product with variants). */
+.nx .nx-pd-opt {
+  margin-top: 4px;
+}
+.nx .opt-tile.-out {
+  opacity: 0.55;
+}
+.nx .opt-tile .ot-p {
+  font: 600 12px/1.2 var(--bk-ft);
+  color: var(--bk-mut);
+}
+.nx .ot-ph .nx-ot-sw {
+  display: block;
+  width: 56%;
+  aspect-ratio: 1;
+  margin: 10% auto 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 41, 0.34);
+}
+/* Selldone's own picker (variants that differ in more than one way) in the
+   mockup's tile dress: ring and tint inside the box, no corner tick. */
+.nx .nx-sd-variants .s-product-variants__options .var-sel {
+  border: 0 !important;
+  border-radius: 16px !important;
+  background: var(--bk-s2) !important;
+  color: var(--bk-ink) !important;
+  box-shadow: none !important;
+}
+.nx .nx-sd-variants .s-product-variants__options .var-sel:hover {
+  background: var(--bk-s3) !important;
+}
+.nx .nx-sd-variants .s-product-variants__options .var-sel.selected {
+  background: var(--bk-sel) !important;
+  box-shadow: inset 0 0 0 2px var(--bk-act-text) !important;
+}
+.nx .nx-sd-variants .s-product-variants__options .var-sel.selected::after {
+  display: none !important;
+  content: none !important;
+}
+.nx .nx-sd-more:empty {
+  display: none;
+}
+
+/* The page's description (the merchant's own article): one reading column. */
+.nx .nx-pd-article {
+  max-width: 760px;
+  color: var(--bk-ink-2);
+  font-size: 16.5px;
+  line-height: 1.7;
+}
+.nx .nx-pd-article :is(p, ul, ol) {
+  margin: 0 0 1em;
+}
+.nx .nx-pd-article :is(ul, ol) {
+  padding-inline-start: 1.3em;
+  list-style: revert;
+}
+.nx .nx-pd-article :is(h2, h3, h4) {
+  font: 400 26px/1.15 var(--bk-fd);
+  color: var(--bk-ink);
+  margin: 1.2em 0 0.4em;
+}
+.nx .nx-pd-article a {
+  color: var(--bk-act-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.nx .nx-pd-article img {
+  border-radius: 16px;
+  height: auto;
+}
+
+/* Selldone's own sections for other kinds of product: nothing when empty. */
+.nx .nx-pd-sd:empty {
+  display: none;
+}
+
+/* Reviews: Selldone's own box under the card (a signed-in shopper, or a
+   product with reviews). */
+.nx .nx-rv-sd {
+  margin-top: 16px;
+  border-radius: 34px;
+  background: var(--bk-s1);
+  box-shadow: inset 0 0 0 1px var(--bk-line);
+  padding: clamp(20px, 3vw, 40px);
+}
+.nx .nx-rv-sd.-rated {
+  margin-top: 0;
+}
+
+/* Loading: the page's shape, quietly. */
+.nx .nx-pd-skel .pd-ph {
+  min-height: 0;
+}
+.nx .nx-pd-skel .pd-buy-in i {
+  display: block;
+  height: 18px;
+  border-radius: 10px;
+  background: var(--bk-s2);
+  animation: nx-pd-shine 1.4s ease-in-out infinite;
+}
+.nx .nx-pd-skel .pd-buy-in i.-a {
+  width: 30%;
+  height: 12px;
+}
+.nx .nx-pd-skel .pd-buy-in i.-b {
+  width: 80%;
+  height: 56px;
+}
+.nx .nx-pd-skel .pd-buy-in i.-c {
+  width: 40%;
+}
+.nx .nx-pd-skel .pd-buy-in i.-d {
+  width: 55%;
+  height: 48px;
+}
+.nx .nx-pd-skel .pd-buy-in i.-e {
+  width: 100%;
+  height: 54px;
+  border-radius: 999px;
+}
+@keyframes nx-pd-shine {
+  50% {
+    opacity: 0.55;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nx .nx-pd-skel .pd-buy-in i {
+    animation: none;
+  }
+}
+
+/* The phone's buy bar stays clear of the footer's last row. */
+@media (max-width: 860px) {
+  html:has(.nx-pdp) .nx .ftr-bot .wrap {
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  }
+}
+.nx.nx-pdbar {
+  position: relative;
+  z-index: 40;
+}
+.nx .pd-bar .qb.mid[data-q="0"] .p {
+  padding: 0 16px;
+}
+
+/* ── Compare page ── */
+.nx.nx-cmp {
+  padding-bottom: 4px;
+}
+.nx .cmp-title p.muted {
+  max-width: 720px;
+}
+.nx .cmp-stick {
+  z-index: 6;
+}
+.nx .ch-card .ch-ph img {
+  display: block;
+}
+.nx .crev .nx-stars {
+  color: var(--bk-gold);
+  font-weight: 700;
+}
+.nx .cmp-pick .cmp-pick-l button[disabled] {
+  opacity: 0.5;
+  cursor: default;
+}
+.nx .nx-cmp-empty {
+  margin: 8px 0 clamp(48px, 6vw, 80px);
+}
+.nx .nx-cmp-empty .acts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+html[dir="rtl"] .nx .nx-cmp .crumbs svg.i {
+  transform: scaleX(-1);
+}

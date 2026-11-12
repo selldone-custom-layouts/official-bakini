@@ -14,180 +14,150 @@
 
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <!--
-    Bakini — the product page (digini-design/bakini-product.html), after a big
-    electronics retailer's: the breadcrumb of the category; the overview
-    (BakiniProductOverview: the name, the gallery and key specs on the left,
-    the sticky buy card on the right); "Buy together and save"; four
-    accordions (Product information, Specifications, Reviews, Delivery &
-    returns); then "We recommend" and "More like this" rails.
+    Bakini Noir — the product page (bakio-design/product-b.html,
+    b/pages-product.js): the breadcrumb (Home › collection › product); the
+    gallery and the sticky buy column (NxProductOverview); "Why you'll love
+    it" (the product's own pros, numbered); the product's own description
+    when it has one; "Product information" (the spec in the shop's groups,
+    the SKU); "Buy together" (this and the best seller of two other
+    collections); the reviews (an honest empty state with the rating
+    criteria until there is one); "More <collection>" (never this product).
+    Selldone's own sections for other kinds of product (offers, includes,
+    files, membership, a product landing page) follow when the product has
+    them.
   -->
-  <div class="s--product k-product bk-product">
-    <div style="order: 0">
-      <div class="s--product-section-info bk-wrap">
-        <slot name="header" :center="true"></slot>
-        <nav :aria-label="t('bakini.crumbs', 'Breadcrumb')" class="bk-crumbs">
-          <router-link :to="{ path: '/' }">{{ t("bakini.home", "Home") }}</router-link>
-          <template v-if="product && product.category">
-            <span aria-hidden="true" class="ms bk-chev">chevron_right</span>
-            <router-link :to="{ name: window.$storefront.routes.SHOP_CATEGORY_PAGE, params: { category_name: product.category.name } }">{{
-              product.category.title || product.category.name
-            }}</router-link>
-          </template>
-          <template v-if="product">
-            <span aria-hidden="true" class="ms bk-chev">chevron_right</span>
-            <span aria-current="page" class="bk-crumbs__here">{{ product.title }}</span>
-          </template>
-          <span class="bk-crumbs__tools">
-            <s-product-admin-button v-if="$vuetify.display.mdAndUp"></s-product-admin-button>
-          </span>
-        </nav>
-        <bakini-product-overview v-if="product" :related="related || []" can-buy show-cover @open="openPanel" />
-        <s-product-overview-loading v-else />
-        <u-loading-progress v-if="busy"></u-loading-progress>
-      </div>
+  <div class="nx nx-pdp s--product">
+    <slot name="header" :center="true"></slot>
+    <div class="wrap pd-crumbs">
+      <nav :aria-label="t('bakini.n.pd.crumbs', 'Breadcrumb')" class="crumbs">
+        <router-link :to="{ path: '/' }">{{ t("bakini.n.pd.home", "Home") }}</router-link>
+        <template v-if="cat">
+          <nx-icon name="right" />
+          <router-link :to="catTo(cat)"><bdi>{{ catTitle(cat) }}</bdi></router-link>
+        </template>
+        <template v-if="product">
+          <nx-icon name="right" />
+          <span aria-current="page"><bdi>{{ product.title }}</bdi></span>
+        </template>
+        <span class="nx-pd-admin"><s-product-admin-button v-if="$vuetify.display.mdAndUp"></s-product-admin-button></span>
+      </nav>
     </div>
 
+    <nx-product-overview v-if="product" :key="product.id" can-buy show-cover />
+    <section v-else aria-hidden="true" class="wrap pd nx-pd-skel">
+      <div class="pd-gal">
+        <div class="pd-stage"><div class="pd-ph"></div></div>
+      </div>
+      <div class="pd-buy">
+        <div class="pd-buy-in"><i class="-a"></i><i class="-b"></i><i class="-c"></i><i class="-d"></i><i class="-e"></i></div>
+      </div>
+    </section>
+
     <template v-if="product">
-      <div class="bk-wrap" style="order: 1">
-        <bakini-together :product="product" />
-
-        <!-- ▆▆▆▆ Accordions ▆▆▆▆ -->
-        <div class="bk-acc">
-          <section v-for="sec in panels" :id="'bk-' + sec.key" :key="sec.key" :class="{ '-open': open[sec.key] }" class="bk-acc__sec">
-            <h2 class="bk-acc__h">
-              <button :aria-controls="'bk-acc-' + sec.key" :aria-expanded="open[sec.key] ? 'true' : 'false'" type="button" @click="toggle(sec.key)">
-                {{ sec.title }}<span aria-hidden="true" class="ms">{{ open[sec.key] ? "expand_less" : "expand_more" }}</span>
-              </button>
-            </h2>
-            <div v-show="open[sec.key]" :id="'bk-acc-' + sec.key" class="bk-acc__b">
-              <!-- Product information -->
-              <template v-if="sec.key === 'info'">
-                <p class="bk-acc__code">{{ t("bakini.pdp.code", "Product code {code}", { code: String(product.sku || product.id) }) }}</p>
-                <ul v-if="features.length" class="bk-acc__bullets">
-                  <li v-for="f in features" :key="f.key"><b>{{ f.key }}:</b> {{ f.value }}</li>
-                </ul>
-                <s-product-article v-if="article" class="k-prose" hide-title></s-product-article>
-                <p v-else-if="aboutLine" class="bk-acc__p">{{ aboutLine }}</p>
-              </template>
-              <!-- Specifications, in the shop's own groups -->
-              <template v-else-if="sec.key === 'specs'">
-                <table v-for="g in spec_groups" :key="g.title" class="bk-spec">
-                  <caption v-if="spec_groups.length > 1 || g.title">{{ g.title }}</caption>
-                  <tbody>
-                    <tr v-for="r in g.rows" :key="r.key">
-                      <th scope="row">{{ r.key }}</th>
-                      <td>{{ r.value }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </template>
-              <!-- Reviews -->
-              <div v-else-if="sec.key === 'reviews'" class="k-reviews bk-reviews">
-                <kalio-reviews></kalio-reviews>
-              </div>
-              <!-- Delivery and returns -->
-              <template v-else-if="sec.key === 'delivery'">
-                <ul v-if="ways.length" class="bk-acc__ways">
-                  <li v-for="w in ways" :key="w.key">
-                    <span class="ms">{{ w.icon === "storefront" ? "storefront" : "local_shipping" }}</span>
-                    <span>
-                      <b>{{ wayWords(w).word }}</b> · {{ wayWords(w).line }}.
-                      <template v-if="w.free"> {{ t("bakini.pdp.free", "Free") }}.</template>
-                      <template v-else-if="w.freeOver">
-                        {{ t("bakini.pdp.freeOverShort", "Free on orders over {amount}", { amount: moneyFrom(w.freeOver, w.currency, { short: "auto" }) }) }}.</template
-                      >
-                    </span>
-                  </li>
-                </ul>
-                <p v-else class="bk-acc__p">{{ t("bakini.pdp.deliveryAtCheckout", "Delivery options and prices are shown at checkout") }}</p>
-                <s-product-shipping class="bk-block"></s-product-shipping>
-                <s-product-warranty class="bk-block"></s-product-warranty>
-                <s-product-guide class="bk-block"></s-product-guide>
-                <router-link :to="{ name: window.$storefront.routes.SHOP_PROFILE_PAGE_TERMS }" class="bk-link"
-                  >{{ t("bakini.pdp.returnsTerms", "Returns and terms") }}<span class="ms bk-chev">chevron_right</span></router-link
-                >
-              </template>
+      <!-- Why you'll love it -->
+      <section v-if="pros.length" class="sec">
+        <div class="wrap">
+          <div class="sec-hd">
+            <div>
+              <p class="eyebrow">{{ t("bakini.n.pd.prosEyebrow", "Why you’ll love it") }}</p>
+              <h2>
+                {{ numberWord(pros.length) }}{{ " " }}<em>{{ pros.length === 1 ? t("bakini.n.pd.prosHemOne", "good reason.") : t("bakini.n.pd.prosHem", "good reasons.") }}</em>
+              </h2>
             </div>
-          </section>
+          </div>
+          <div class="pros">
+            <div v-for="(x, i) in pros" :key="i" class="pro">
+              <span class="pro-n serif">{{ String(i + 1).padStart(2, "0") }}</span>
+              <h3>{{ x[0] }}</h3>
+              <p>{{ x[1] }}</p>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div :style="{ order: getOrder('offer') }">
-        <s-product-offers class="s--product-section bk-wrap bk-block"></s-product-offers>
-      </div>
-      <div :style="{ order: getOrder('includes') }">
-        <s-product-includes class="bk-wrap bk-block"></s-product-includes>
-      </div>
-      <div :style="{ order: getOrder('files') }">
-        <s-product-files-list class="bk-wrap bk-block"></s-product-files-list>
-      </div>
-      <div :style="{ order: getOrder('contents') }">
-        <s-product-subscription-membership class="bk-wrap bk-block"></s-product-subscription-membership>
-      </div>
-      <div :style="{ order: getOrder('page') }">
-        <s-product-landing></s-product-landing>
-      </div>
-      <!-- We recommend (related, from other departments) and More like this (same category) -->
-      <div :style="{ order: getOrder('related-products') }">
-        <div id="bk-related">
-          <bakini-rail v-if="related === null || related.length" :products="related" :title="t('bakini.pdp.recommend', 'We recommend')" class="bk-wrap" @quick-buy="quickBuy" />
+      <!-- The product's own description -->
+      <section v-if="articleBody" class="sec tight">
+        <div class="wrap">
+          <div class="sec-hd">
+            <div>
+              <p class="eyebrow">{{ t("bakini.n.pd.storyEyebrow", "The story") }}</p>
+              <h2>{{ t("bakini.n.pd.storyH", "About this") }}{{ " " }}<em>{{ unit }}.</em></h2>
+            </div>
+          </div>
+          <div class="nx-pd-article" v-html="articleBody"></div>
         </div>
-        <bakini-row
-          v-if="product.category"
-          :key="'cat-' + product.category.id"
-          :dir="product.category.name"
-          :exclude="product.id"
-          :more-to="{ name: window.$storefront.routes.SHOP_CATEGORY_PAGE, params: { category_name: product.category.name } }"
-          :title="t('bakini.pdp.moreLike', 'More like this')"
-          class="bk-wrap"
-          lazy
-          sort="bestselling"
-        />
+      </section>
+
+      <!-- The details -->
+      <section v-if="groups.length || product.sku" class="sec tight">
+        <div class="wrap">
+          <div class="sec-hd">
+            <div>
+              <p class="eyebrow">{{ t("bakini.n.pd.detailsEyebrow", "The details") }}</p>
+              <h2>{{ t("bakini.n.pd.detailsH", "Product") }}{{ " " }}<em>{{ t("bakini.n.pd.detailsHem", "information.") }}</em></h2>
+            </div>
+          </div>
+          <div class="spec">
+            <div v-for="g in groups" :key="g.group" class="spec-g">
+              <h3 v-if="g.group">{{ g.group }}</h3>
+              <dl>
+                <div v-for="r in g.rows" :key="r[0]">
+                  <dt>{{ r[0] }}</dt>
+                  <dd>{{ r[1] }}</dd>
+                </div>
+              </dl>
+            </div>
+            <p v-if="product.sku" class="spec-sku muted">{{ t("bakini.n.pd.sku", "SKU {sku}", { sku: product.sku }) }}</p>
+          </div>
+        </div>
+      </section>
+
+      <nx-together :product="product" :variant="current_variant" />
+      <nx-reviews :product="product" />
+
+      <div class="wrap nx-pd-sd">
+        <s-product-offers class="s--product-section"></s-product-offers>
+        <s-product-includes></s-product-includes>
+        <s-product-files-list></s-product-files-list>
+        <s-product-subscription-membership></s-product-subscription-membership>
       </div>
+      <s-product-landing></s-product-landing>
+
+      <nx-row
+        v-if="more.length"
+        :accent="catTitle(cat).toLowerCase() + '.'"
+        :eyebrow="t('bakini.n.pd.moreEyebrow', 'From the same case')"
+        :items="more"
+        :more-label="t('bakini.n.pd.moreAll', 'All {name}', { name: catTitle(cat).toLowerCase() })"
+        :more-to="catTo(cat)"
+        :title="t('bakini.n.pd.moreH', 'More')"
+      />
     </template>
-
-    <kalio-quick-buy v-model="sheet" :product="picked" />
   </div>
 </template>
 
 <script lang="ts">
-import { money as moneyFrom } from "../../components/region-switcher/region";
 import NotificationService from "@selldone/components-vue/plugins/notification/NotificationService.ts";
-
-import BakiniProductOverview from "../../components/bakini/product/BakiniProductOverview.vue";
-import BakiniRail from "../../components/bakini/BakiniRail.vue";
-import KalioQuickBuy from "../../components/kalio/KalioQuickBuy.vue";
-import { specGroups, specRows } from "../../components/bakini/product/bakini-spec";
-import { catalogue, mixByCategory, rememberViewed, tagged, wayWords } from "../../components/bakini/bakini";
-import BakiniRow from "../../components/bakini/BakiniRow.vue";
-import BakiniTogether from "../../components/bakini/product/BakiniTogether.vue";
+import NxIcon from "../../components/bakini/noir/NxIcon.vue";
+import NxRow from "../../components/bakini/noir/NxRow.vue";
+import NxProductOverview from "../../components/bakini/noir/product/NxProductOverview.vue";
+import NxTogether from "../../components/bakini/noir/product/NxTogether.vue";
+import NxReviews from "../../components/bakini/noir/product/NxReviews.vue";
+import { numberWord } from "../../components/bakini/noir/product/pd";
+import { bySells, catOf, catTitle, catTo, loadNoir, noir, prosOf, specGroups, unitOf } from "../../components/bakini/noir/noir";
+import { rememberViewed } from "../../components/bakini/bakini";
 import { t } from "../../components/kalio/i18n/kalio-i18n";
-import { waysOf } from "../../components/walio/walio-home";
-import { EventBus } from "@selldone/components-vue/utils/events/EventBus.ts";
-import SProductOverviewLoading from "@selldone/components-vue/storefront/product/overview/loading/SProductOverviewLoading.vue";
-
 import { GtagEcommerce } from "@selldone/components-vue/plugins/gtag/GtagEcommerce";
-
 import SProductIncludes from "@selldone/components-vue/storefront/product/includes/SProductIncludes.vue";
-import SProductShipping from "@selldone/components-vue/storefront/product/shipping/SProductShipping.vue";
-import SProductWarranty from "@selldone/components-vue/storefront/product/warranty/SProductWarranty.vue";
-import SProductGuide from "@selldone/components-vue/storefront/product/guide/SProductGuide.vue";
 import SProductFilesList from "@selldone/components-vue/storefront/product/file/list/SProductFilesList.vue";
-import KalioReviews from "../../components/kalio/product/KalioReviews.vue";
 import SProductSubscriptionMembership from "@selldone/components-vue/storefront/product/subscription/membership/SProductSubscriptionMembership.vue";
 import SProductOffers from "@selldone/components-vue/storefront/product/offers/SProductOffers.vue";
-import SProductCrossSells from "@selldone/components-vue/storefront/product/cross-sells/SProductCrossSells.vue";
-import ProductSection from "@selldone/core-js/enums/product/ProductSection";
-import { Article } from "@selldone/core-js";
 import { computed } from "vue";
 import SProductAdminButton from "@selldone/components-vue/storefront/product/admin/button/SProductAdminButton.vue";
-import SProductQr from "@selldone/components-vue/storefront/product/qr/SProductQr.vue";
-import SProductSpec from "@selldone/components-vue/storefront/product/spec/SProductSpec.vue";
-import SProductArticle from "@selldone/components-vue/storefront/product/article/SProductArticle.vue";
 import { XapiProductGetTypes } from "@selldone/sdk-storefront/product";
 import SProductLanding from "@selldone/components-vue/storefront/product/landing/SProductLanding.vue";
 import CurrencyMixin from "@selldone/components-vue/mixin/currency/CurrencyMixin.ts";
-import {StorefrontSeo} from "../../helpers/StorefrontSeo";
+import { StorefrontSeo } from "../../helpers/StorefrontSeo";
 
 export default {
   name: "StorefrontPageProduct",
@@ -196,266 +166,89 @@ export default {
   inject: ["$shop"],
   props: {},
   components: {
+    NxIcon,
+    NxRow,
+    NxProductOverview,
+    NxTogether,
+    NxReviews,
     SProductLanding,
-    SProductArticle,
-    SProductSpec,
-    SProductQr,
     SProductAdminButton,
-    SProductCrossSells,
     SProductOffers,
     SProductSubscriptionMembership,
-    KalioReviews,
     SProductFilesList,
-    SProductGuide,
-    SProductWarranty,
-    SProductShipping,
     SProductIncludes,
-
-    SProductOverviewLoading,
-    BakiniProductOverview,
-    BakiniRail,
-    BakiniRow,
-    BakiniTogether,
-    KalioQuickBuy,
-
   },
 
-  /**
-   * ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-   *  🔷 Provide
-   * ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-   */
+  /* The product and the chosen variant, for Selldone's sections. */
   provide() {
     return {
       $product: computed(() => this.product),
-
-      /**
-       * Current selected variant by user
-       */
       $variant: computed(() => this.current_variant),
     };
   },
-  /**
-   * ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-   *  🔷 Data
-   * ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-   */
+
   data: function () {
     return {
-      show_article: true, // For refresh article!
-      tab: "details",
-
       product: null,
-
       busy: false,
-
-      article_type: Article.Types.Product,
-      related: null,
-      open: { info: true, specs: false, reviews: false, delivery: false },
-      sheet: false,
-      picked: null,
+      noir,
     };
   },
 
   computed: {
-    theme() {
-      return this.$shop.theme && !Array.isArray(this.$shop.theme)
-        ? this.$shop.theme
-        : {};
-    },
-
     current_variant() {
       return this.$store.getters.getCurrentSelectedVariant;
     },
-
-    article() {
-      return (
-        this.product &&
-        this.product.article_pack &&
-        this.product.article_pack.article &&
-        this.product.article_pack.article
-      );
+    cat() {
+      return this.product ? this.product.category || catOf(this.product.category_id) : null;
     },
-
-    // ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Admin URLs: ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃
-
-    /* The product's pros and cons, as label → note pairs, for Highlights. */
-    pros_list() {
-      return this.toPairs(this.product?.pros);
+    unit() {
+      return unitOf(this.product).toLowerCase();
     },
-    cons_list() {
-      return this.toPairs(this.product?.cons);
+    pros() {
+      return prosOf(this.product).filter((x) => x[0] || x[1]);
     },
-    ways() {
-      return waysOf(this.$shop);
-    },
-    panels() {
-      const out = [{ key: "info", title: t("bakini.pdp.info", "Product information") }];
-      if (this.spec_groups.length) out.push({ key: "specs", title: t("bakini.pdp.specs", "Specifications") });
-      out.push({ key: "reviews", title: t("bakini.pdp.reviews", "Reviews") });
-      out.push({ key: "delivery", title: t("bakini.pdp.deliveryReturns", "Delivery & returns") });
-      return out;
-    },
-    tabs() {
-      return [
-        { key: "details", label: "Details" },
-        { key: "spec", label: "Specifications" },
-        { key: "ship", label: "Shipping & returns" },
-      ];
-    },
-    /* Highlights: the merchant's pros, else the spec's first group. */
-    highlight_rows() {
-      if (this.pros_list.length) return this.pros_list.slice(0, 6);
-      const spec = this.product?.spec;
-      if (!spec || typeof spec !== "object") return [];
-      const order = Array.isArray(spec.spec_order) && spec.spec_order.length ? spec.spec_order : Object.keys(spec);
-      const out = [];
-      let groups = 0;
-      for (const key of order) {
-        if (key === "spec_order") continue;
-        const value = spec[key];
-        if (value === "group") {
-          if (++groups > 1) break;
-          continue;
-        }
-        if (value === null || value === undefined || value === "") continue;
-        out.push({ key, value: Array.isArray(value) ? value.join(", ") : String(value) });
-        if (out.length >= 6) break;
-      }
-      return out;
-    },
-    /* About this product: the first spec rows as bullets (the shop's own words). */
-    features() {
-      return this.product ? specRows(this.product).slice(0, 5) : [];
-    },
-    /* The category's own line when the product has no article. */
-    aboutLine() {
-      const d = (this.product?.category?.description || '').trim();
-      return d;
-    },
-    spec_groups() {
+    groups() {
       return specGroups(this.product);
     },
-    /* The groups in two columns of about the same height. */
-    spec_cols() {
-      const cols = [[], []];
-      const size = [0, 0];
-      for (const g of this.spec_groups) {
-        const i = size[0] <= size[1] ? 0 : 1;
-        cols[i].push(g);
-        size[i] += g.rows.length + 1;
-      }
-      return cols.filter((c) => c.length);
+    articleBody() {
+      const body = this.product?.article_pack?.article?.body;
+      return body && String(body).replace(/<[^>]*>/g, "").trim() ? body : null;
     },
-    has_pros_cons() {
-      return (
-        (this.product?.pros && Object.keys(this.product.pros).length > 0) ||
-        (this.product?.cons && Object.keys(this.product.cons).length > 0)
-      );
+    /* More of the same collection, best sellers first, never this one. */
+    more() {
+      if (!this.product) return [];
+      return bySells(this.noir.products.filter((p) => p.category_id === this.product.category_id && p.id !== this.product.id));
     },
   },
 
   watch: {
     $route() {
       this.getProduct();
-      this.$forceUpdate(); // Notice we have to use a $ here
     },
   },
+
   created() {
+    loadNoir();
     this.getProduct();
   },
 
   methods: {
     t,
-    wayWords,
-    moneyFrom,
-    toggle(key) {
-      this.open = { ...this.open, [key]: !this.open[key] };
-    },
-    /* A row in the buy card opens its accordion and brings it into view. */
-    openPanel(key) {
-      this.open = { ...this.open, [key]: true };
-      this.$nextTick(() => document.getElementById("bk-" + key)?.scrollIntoView({ behavior: "smooth", block: "start" }));
-    },
-    jump(id) {
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-    },
-    quickBuy(p) {
-      this.picked = p;
-      this.sheet = true;
-    },
-    /* Related: products from other departments that share a tag with this
-       one; else deals from other departments. */
-    async readRelated(product) {
-      if (this.related_for === product.id) return;
-      this.related_for = product.id;
-      this.related = null;
-      const [all, tags] = await Promise.all([catalogue(), tagged()]);
-      if (this.related_for !== product.id) return;
-      const rich = new Map(all.map((p) => [p.id, p]));
-      const mine = [...tags.entries()].filter(([, list]) => list.some((p) => p.id === product.id)).map(([t]) => t);
-      const seen = new Set([product.id]);
-      const out = [];
-      for (const t of mine)
-        for (const p of tags.get(t))
-          if (!seen.has(p.id) && p.category_id !== product.category_id && p.quantity > 0) {
-            seen.add(p.id);
-            out.push(rich.get(p.id) || p);
-          }
-      if (out.length < 6)
-        for (const p of all)
-          if (!seen.has(p.id) && p.category_id !== product.category_id && p.quantity > 0 && Number(p.discount) > 0) {
-            seen.add(p.id);
-            out.push(p);
-          }
-      this.related = mixByCategory(out, 12);
-      this.open = { info: true, specs: false, reviews: false, delivery: false };
-    },
-    askToSignIn() {
-      EventBus.$emit("need-login", true);
-    },
-    toPairs(value) {
-      if (!value || typeof value !== "object") return [];
-      return Object.entries(value)
-        .filter(([key, note]) => key && note != null)
-        .map(([key, note]) => ({ key, value: String(note) }));
-    },
-    getOrder(code) {
-      if (!this.theme?.order || !Array.isArray(this.theme?.order)) {
-        this.theme.order = Object.values(ProductSection).map((x) => x.code);
-      } else {
-        // Add missing sections
-        Object.values(ProductSection).forEach((t) => {
-          if (!this.theme.order.includes(t)) this.theme.order.push(t);
-        });
-      }
-
-      return this.theme.order.indexOf(code) + 1;
-    },
+    catTitle,
+    catTo,
+    numberWord,
 
     getProduct() {
       const seoNavigation = StorefrontSeo.captureNavigation();
-      const handleSuccessResponse = ({
-        product,
-      }: XapiProductGetTypes.IResponse) => {
+      const handleSuccessResponse = ({ product }: XapiProductGetTypes.IResponse) => {
         this.product = product;
         rememberViewed(product.id);
-        this.readRelated(product);
 
-        GtagEcommerce.MeasuringViewsOfProductDetails(
-          this.$shop,
-          product,
-          this.GetUserSelectedCurrency().code,
-          "product-page",
-        );
+        GtagEcommerce.MeasuringViewsOfProductDetails(this.$shop, product, this.GetUserSelectedCurrency().code, "product-page");
 
         // Reject initial-load and superseded responses, including SDK cache callbacks.
-        StorefrontSeo.updateProduct(
-          product,
-          this.$shop,
-          seoNavigation,
-          this.GetUserSelectedCurrency().code,
-        );
+        StorefrontSeo.updateProduct(product, this.$shop, seoNavigation, this.GetUserSelectedCurrency().code);
       };
 
       if (window.PRE_LOADED_DATA?.PRODUCT_PACK) {
@@ -463,7 +256,7 @@ export default {
         handleSuccessResponse(window.PRE_LOADED_DATA.PRODUCT_PACK);
         window.PRE_LOADED_DATA = null; // Clear!
       } else {
-        this.busy = true; // Do not show loading!
+        this.busy = true;
       }
 
       window.$storefront.products

@@ -19,10 +19,8 @@
 <template>
   <section :class="{ '-pickup': is_pickup }" class="k-ocard k-odel">
     <header class="k-ocard__head">
-      <span aria-hidden="true" class="k-ocard__ico"><v-icon size="22">{{ is_pickup ? "storefront" : "local_shipping" }}</v-icon></span>
       <div class="k-ocard__titles">
-        <h2>{{ is_pickup ? t("order.delivery.pickup", "Pickup") : t("order.delivery.title", "Delivery") }}</h2>
-        <p v-if="methodLine">{{ methodLine }}</p>
+        <h2>{{ is_pickup ? t("bakini.n.ord.pickupT", "Pickup") : t("bakini.n.ord.deliveryT", "Delivery") }}</h2>
       </div>
     </header>
 
@@ -48,24 +46,42 @@
     </p>
 
     <div :class="{ '-nomap': !mapImage }" class="k-odel__body">
-      <dl class="k-odel__list">
-        <div class="k-odel__row">
-          <dt>{{ is_pickup ? t("order.delivery.pickAt", "Pick it up at") : t("order.delivery.deliverTo", "Deliver to") }}</dt>
-          <dd>
-            <p v-if="contact" class="k-odel__who">{{ contact }}</p>
-            <p v-for="line in addressLines" :key="line">{{ line }}</p>
-            <p v-if="!addressLines.length && !contact" class="k-odel__none">{{ t("order.delivery.noAddress", "No address on this order.") }}</p>
-            <p v-if="receiver.message" class="k-odel__note">“{{ receiver.message }}”</p>
-            <div class="k-odel__links">
+      <!-- Bakini Noir: the mockup's lines — the way · window and its reach,
+           who receives it, the address (or the counter for a pickup). -->
+      <div class="ilines k-odel__lines">
+        <div v-if="methodLine" class="iline">
+          <nx-icon :name="wayIcon(delivery_info.type)" />
+          <div>
+            <b>{{ methodLine }}</b>
+            <span v-if="reach">{{ reach }}</span>
+          </div>
+        </div>
+        <div v-if="!is_pickup && (receiver.name || receiver.phone)" class="iline">
+          <nx-icon name="user" />
+          <div>
+            <b>{{ receiver.name || receiver.phone }}</b>
+            <span v-if="receiver.name && receiver.phone">{{ receiver.phone }}</span>
+          </div>
+        </div>
+        <div class="iline">
+          <nx-icon :name="is_pickup ? 'store' : 'pin'" />
+          <div>
+            <b>{{ is_pickup ? t("bakini.n.ord.pickAt", "Pick it up at") : t("bakini.n.ord.address", "Delivery address") }}</b>
+            <span v-if="addressLines.length">{{ addressLines.join(", ") }}</span>
+            <span v-else>{{ t("bakini.n.ord.noAddress", "No address on this order.") }}</span>
+            <span v-if="receiver.message" class="k-odel__note">“{{ receiver.message }}”</span>
+            <span v-if="canEditAddress || (is_pickup && directions)" class="k-odel__links">
               <button v-if="canEditAddress" :disabled="busy_address" class="k-odel__link" type="button" @click="address_sheet = true">
                 <v-progress-circular v-if="busy_address" indeterminate size="14" width="2" />
-                {{ t("order.delivery.changeAddress", "Change address") }}
+                {{ t("bakini.n.ord.changeAddress", "Change address") }}
               </button>
-              <a v-if="is_pickup && directions" :href="directions" class="k-odel__link" rel="noopener" target="_blank">{{ t("order.delivery.directions", "Directions") }}</a>
-            </div>
-          </dd>
+              <a v-if="is_pickup && directions" :href="directions" class="k-odel__link" rel="noopener" target="_blank">{{ t("bakini.n.ord.directions", "Directions") }}</a>
+            </span>
+          </div>
         </div>
+      </div>
 
+      <dl class="k-odel__list">
         <div v-if="is_pickup && pickupContact" class="k-odel__row">
           <dt>{{ t("order.delivery.collectedBy", "Collected by") }}</dt>
           <dd><p>{{ pickupContact }}</p></dd>
@@ -184,6 +200,8 @@ import NotificationService from "@selldone/components-vue/plugins/notification/N
 import SOrderDeliveryAutoComplete from "@selldone/components-vue/storefront/order/auto-complete/SOrderDeliveryAutoComplete.vue";
 import { ShopTransportations } from "@selldone/core-js/enums/logistic/ShopTransportations";
 import { TimeSpans } from "@selldone/core-js/enums/logistic/TimeSpans";
+import NxIcon from "../../bakini/noir/NxIcon.vue";
+import { wayIcon, wayReach, wayWindowLine } from "../../bakini/noir/buy/noir-cart";
 import { MapHelper } from "@selldone/core-js/helper/map/MapHelper";
 import { Basket, ShopOptionsHelper } from "@selldone/core-js";
 import KalioAddressSheet from "../checkout/KalioAddressSheet.vue";
@@ -224,7 +242,7 @@ function hour(h) {
 
 export default {
   name: "KalioOrderDelivery",
-  components: { KalioAddressSheet, SOrderDeliveryAutoComplete },
+  components: { KalioAddressSheet, SOrderDeliveryAutoComplete, NxIcon },
   inject: ["$shop"],
 
   props: {
@@ -276,17 +294,24 @@ export default {
       return !ShopOptionsHelper.HasMap(this.$shop);
     },
 
+    /* Bakini Noir: "<way> · <window>" in one line, as the bag and the order's
+       head say it (the way's own name, the window the shopper chose). */
     methodLine() {
       const info = this.delivery_info;
       const parts = [];
-      if (info?.type) parts.push(info.title || this.$t(ShopTransportations[info.type]?.name || info.type));
-      const price = this.basket?.delivery_price;
-      if (price > 0) parts.push(this.money(price));
-      else if (price === 0) parts.push(t("order.delivery.free", "Free"));
-      else if (price < 0) parts.push(t("order.delivery.paidOnArrival", "Paid when it arrives"));
+      if (info?.type) parts.push(wayWindowLine(this.$shop, info));
+      if (!parts.length) {
+        const price = this.basket?.delivery_price;
+        if (price > 0) parts.push(this.money(price));
+        else if (price === 0) parts.push(t("order.delivery.free", "Free"));
+      }
       return parts.join(" · ");
     },
 
+    /* Bakini Noir: the way's reach under its line. */
+    reach() {
+      return this.delivery_info?.type ? wayReach(this.$shop, { type: this.delivery_info.type }) : "";
+    },
     contact() {
       return [this.receiver.name, this.receiver.phone].filter(Boolean).join(" · ");
     },
@@ -331,6 +356,8 @@ export default {
             : list(DAYS.filter((d) => days.includes(d)).map(dayName), "and");
       }
       const spans = (info.time_spans || info.spans || []).map((s) => TimeSpans[s]).filter((s) => s && s.value !== "Instant");
+      /* Bakini Noir: one window is already in the method's line. */
+      if (info.custom && (info.time_spans || []).length === 1) return days.length && days.length < 7 ? dayText : null;
       if (!spans.length || spans.length >= 3) return days.length && days.length < 7 ? t("order.delivery.daysAnyTime", "{days}, any time", { days: dayText }) : null;
       const spanText = list(spans.map((s) => t("order.delivery.span", "{from} to {to}", { from: hour(s.min), to: hour(s.max) })), "or");
       return t("order.delivery.daysTimes", "{days}, {times}", { days: dayText, times: spanText });
@@ -429,6 +456,7 @@ export default {
   },
 
   methods: {
+    wayIcon,
     money(amount) {
       try {
         return new Intl.NumberFormat(this.$i18n?.locale || "en", { style: "currency", currency: this.basket?.currency || "USD" }).format(amount || 0);

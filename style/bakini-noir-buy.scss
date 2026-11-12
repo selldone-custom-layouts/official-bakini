@@ -1,0 +1,772 @@
+/* Bakini Noir — the Layout's own touches for the bag, checkout, sheets and
+   order pages (on top of style/noir/*.css, the B mockup's buy.css). Selldone's
+   own parts that sit inside these pages (its shipping options, billing form,
+   coupons, discount code, the address sheet, the payment window) are dressed
+   here in the mockup's tokens. Not rewritten by the dark build step. */
+
+/* ── The bag page ── */
+.nx-cartpage {
+  min-height: 60vh;
+}
+.nx .nx-cart-cats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+.nx .nx-cart-cats .chip img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+.nx .rc-card.-busy .rcpt,
+.nx .rc-card.-busy .ln.tot {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.nx .rc-card .btn.block .nx-spin {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+  border-top: 2px solid var(--bk-act-on);
+  animation: nx-spin 0.8s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nx .rc-card .btn.block .nx-spin {
+    animation: none;
+  }
+}
+.nx .pay-none-c {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--bk-s2);
+}
+.nx .pay-none-c .ec {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--bk-s1);
+  color: var(--bk-mut);
+}
+.nx .pay-none-c b {
+  display: block;
+  font-weight: 700;
+}
+.nx .pay-none-c span {
+  display: block;
+  font-size: 13px;
+  color: var(--bk-mut);
+  margin-top: 3px;
+}
+
+/* ── Selldone's shipping options inside the Delivery card and sheet ── */
+.nx .nx-ship {
+  display: grid;
+}
+.nx .nx-ship .dmc {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.nx .nx-ship .dm-win .chip[aria-pressed="true"] {
+  background: var(--bk-sel);
+  color: var(--bk-ink);
+  box-shadow: inset 0 0 0 2px var(--bk-act-text);
+}
+.nx .nx-ship__hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--bk-mut);
+}
+.nx .nx-ship__hint svg.i {
+  width: 16px;
+  height: 16px;
+  color: var(--bk-gold);
+}
+.nx .nx-ship__date input {
+  max-width: 280px;
+}
+/* The sheet lists the ways one under another, with their whole line. */
+.nx .nx-dlsheet .dms {
+  grid-template-columns: minmax(0, 1fr);
+}
+.nx .nx-dlsheet .dmc {
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 14px;
+}
+.nx .nx-dlsheet .dmc .dm-ic {
+  grid-row: span 2;
+  margin: 0;
+}
+.nx .nx-dlsheet .dmc b {
+  grid-column: 2;
+}
+.nx .nx-dlsheet .dmc-n {
+  grid-column: 2;
+}
+.nx .nx-dlsheet .dmc-f {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  margin: 0;
+  padding: 0;
+  text-align: end;
+}
+.nx #dlsheet .sh-in {
+  gap: 14px;
+}
+@media (max-width: 860px) {
+  .nx .nx-ship .dms {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ── Selldone's billing form, coupons and discount code, in Noir ── */
+.nx .nx-billform {
+  margin-top: 16px;
+}
+.nx .nx-billform .v-btn,
+.nx .nx-offers .v-btn,
+.nx .nx-code .v-btn {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-family: var(--bk-ft) !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+.nx .nx-code {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.nx .nx-code .discount-code-row {
+  width: 100%;
+}
+.nx .nx-code .discount-code-row > .v-btn {
+  background: transparent !important;
+  color: var(--bk-act-text) !important;
+  box-shadow: inset 0 0 0 1px var(--bk-line-2) !important;
+  border-radius: 999px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  margin: 0 !important;
+}
+.nx .nx-code .discount-code-row > .v-btn .v-icon {
+  color: var(--bk-gold) !important;
+}
+.nx .nx-offers:empty {
+  display: none;
+}
+.nx .nx-offers {
+  border-radius: var(--bk-r-xl);
+  padding: 18px 20px;
+  background: var(--bk-s1);
+  box-shadow: inset 0 0 0 1px var(--bk-line);
+}
+.nx .nx-offers .v-btn {
+  border-radius: 999px !important;
+}
+.nx .nx-coform:empty {
+  display: none;
+}
+
+/* ── The address sheet (map-b): Kalio's sheet in the mockup's dress ── */
+.v-overlay.v-dialog:has(.k-addr),
+.v-overlay.v-dialog:has(.s--storefront-master-payment-dialog) {
+  backdrop-filter: none !important;
+}
+.v-overlay.v-dialog:has(.k-addr) > .v-overlay__scrim,
+.v-overlay.v-dialog:has(.s--storefront-master-payment-dialog) > .v-overlay__scrim {
+  background: var(--bk-scrim) !important;
+  opacity: 1 !important;
+}
+.k-sheet.k-addr {
+  background: var(--bk-s1) !important;
+  color: var(--bk-ink);
+  font-family: var(--bk-ft);
+  border-radius: var(--bk-r-xl);
+  box-shadow: inset 0 0 0 1px var(--bk-line-2), 0 40px 80px -30px rgba(0, 0, 0, 0.6);
+  .k-sheet__head h2 {
+    font: 400 clamp(30px, 3.4vw, 40px) / 1.05 var(--bk-fd) !important;
+    letter-spacing: -0.005em !important;
+    margin-top: 4px;
+    color: var(--bk-ink);
+  }
+  .k-addr__eyebrow {
+    margin: 0;
+    font: 700 11.5px/1.3 var(--bk-ft) !important;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--bk-gold) !important;
+  }
+  .k-sheet__x {
+    background: var(--bk-s2) !important;
+    color: var(--bk-ink) !important;
+  }
+  .k-addr__field > span,
+  .k-addr__label {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--bk-ink-2);
+  }
+  .k-addr__field input,
+  .k-addr__field select,
+  .k-addr__field textarea,
+  .k-addr__search {
+    border-radius: 14px !important;
+    background: var(--bk-s2) !important;
+    color: var(--bk-ink) !important;
+    box-shadow: inset 0 0 0 1px var(--bk-line-2) !important;
+    border: 0 !important;
+  }
+  .k-addr__search {
+    border-radius: 999px !important;
+  }
+  .k-addr__field input:focus,
+  .k-addr__field select:focus,
+  .k-addr__field textarea:focus,
+  .k-addr__search:focus-within {
+    outline: none !important;
+    box-shadow: inset 0 0 0 2px var(--bk-act-text) !important;
+  }
+  .k-addr__field.-error input {
+    box-shadow: inset 0 0 0 2px var(--bk-warn) !important;
+  }
+  .k-sheet__foot {
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  .k-sheet__go {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-height: 54px;
+    padding: 0 28px !important;
+    border-radius: 999px !important;
+    background: var(--bk-act) !important;
+    color: var(--bk-act-on) !important;
+  }
+  .k-sheet__go:hover {
+    background: var(--bk-act-deep) !important;
+  }
+  .k-sheet__ghost {
+    border-radius: 999px !important;
+    padding: 0 20px !important;
+    min-height: 46px;
+    color: var(--bk-ink) !important;
+    box-shadow: inset 0 0 0 1px var(--bk-line-2) !important;
+    background: transparent !important;
+  }
+  .k-addr__locate {
+    border-radius: 999px !important;
+    background: var(--bk-s1) !important;
+    color: var(--bk-ink) !important;
+    box-shadow: inset 0 0 0 1px var(--bk-line-2) !important;
+  }
+  .k-addr__found {
+    border-radius: 16px;
+    background: var(--bk-s2);
+  }
+  .k-addr__found-ico {
+    color: var(--bk-gold);
+  }
+}
+
+/* ── The order page (order-b): the actions, and Kalio's delivery and
+   message cards in the mockup's glass ── */
+.nx .ord-t > .nx-ord-acts,
+.nx .nx-ord-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.nx .nx-ord-acts .nx-share .v-btn,
+.nx .nx-ord-acts .nx-share > button {
+  min-height: 38px !important;
+  height: 38px !important;
+  padding: 0 16px !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: var(--bk-ink) !important;
+  box-shadow: inset 0 0 0 1px var(--bk-line-2) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font: 700 13.5px/1 var(--bk-ft) !important;
+}
+.nx .nx-ord-acts .nx-share .v-btn:hover {
+  background: var(--bk-s2) !important;
+}
+.nx .nx-ord-acts .nx-share .v-btn__overlay,
+.nx .nx-ord-acts .nx-share .v-btn__underlay {
+  display: none;
+}
+.nx .nx-ord-off {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+.nx .nx-ord-off b {
+  display: block;
+  font-weight: 700;
+}
+.nx .nx-ord-off span:not(.dm-ic) {
+  display: block;
+  font-size: 13.5px;
+  color: var(--bk-mut);
+}
+.nx .ord-main {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.nx .k-ocard {
+  border: 0;
+  border-radius: var(--bk-r-xl);
+  padding: clamp(18px, 2.4vw, 28px);
+  background: linear-gradient(165deg, var(--bk-g-hi), var(--bk-g-lo)), var(--bk-s1);
+  box-shadow: inset 0 0 0 1px var(--bk-line), inset 0 1px 0 var(--bk-g-edge);
+  color: var(--bk-ink);
+  font-family: var(--bk-ft);
+}
+.nx .k-ocard__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin-bottom: 18px;
+}
+.nx .k-ocard__titles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  flex: 1;
+  min-width: 0;
+}
+.nx .k-ocard__titles h2 {
+  font: 400 28px/1.1 var(--bk-fd) !important;
+  letter-spacing: 0 !important;
+  color: var(--bk-ink);
+}
+.nx .k-ocard__titles p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--bk-mut);
+}
+.nx .k-ocard__ico {
+  background: var(--bk-s2);
+  box-shadow: inset 0 0 0 1px var(--bk-line);
+}
+.nx .k-ocard__ico .v-icon {
+  color: var(--bk-gold) !important;
+}
+
+/* Delivery */
+.nx .k-odel__lines {
+  margin-bottom: 4px;
+}
+.nx .k-odel__lines .iline > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.nx .k-odel__body:not(.-nomap) > .k-odel__lines,
+.nx .k-odel__body:not(.-nomap) > .k-odel__list {
+  grid-column: 1;
+}
+.nx .k-odel__body:not(.-nomap) > .k-odel__map {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  border-radius: 18px;
+  box-shadow: inset 0 0 0 1px var(--bk-line);
+}
+.nx .k-odel__body {
+  gap: 14px 24px;
+}
+.nx .k-odel__list:empty {
+  display: none;
+}
+.nx .k-odel__list {
+  box-shadow: inset 0 1px 0 var(--bk-line);
+  padding-top: 4px;
+}
+.nx .k-odel__row {
+  border-top: 1px solid var(--bk-line);
+}
+.nx .k-odel__row:first-child {
+  padding-top: 12px;
+}
+.nx .k-odel__row dt {
+  color: var(--bk-mut);
+  font-weight: 700;
+}
+.nx .k-odel__row dd {
+  color: var(--bk-ink-2);
+  font-size: 14.5px;
+}
+.nx .k-odel__who {
+  color: var(--bk-ink);
+}
+.nx .k-odel__note {
+  font-style: italic;
+  color: var(--bk-mut);
+}
+.nx .k-odel__link {
+  color: var(--bk-act-text) !important;
+  text-decoration: none !important;
+  font-size: 13.5px;
+}
+.nx .k-odel__link:hover {
+  color: var(--bk-ink) !important;
+}
+.nx .k-odel__ask,
+.nx .k-odel__done {
+  border: 0;
+  border-radius: 18px;
+  background: var(--bk-s2);
+  box-shadow: inset 0 0 0 1px var(--bk-line);
+  color: var(--bk-ink);
+}
+.nx .k-odel__go,
+.nx .k-odel__save {
+  border-radius: 999px;
+  background: var(--bk-act) !important;
+  color: var(--bk-act-on) !important;
+  box-shadow: none;
+}
+.nx .k-odel__go:hover,
+.nx .k-odel__save:hover {
+  background: var(--bk-act-deep) !important;
+}
+.nx .k-odel__ghost {
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--bk-line-2);
+  color: var(--bk-ink);
+  background: transparent;
+}
+.nx .k-odel__field input {
+  border: 0;
+  border-radius: 14px;
+  background: var(--bk-s2);
+  color: var(--bk-ink);
+  box-shadow: inset 0 0 0 1px var(--bk-line-2);
+}
+.nx .k-odel__field input:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--bk-act-text);
+}
+.nx .k-odel__seg button.-on {
+  background: var(--bk-sel);
+  box-shadow: inset 0 0 0 2px var(--bk-act-text);
+  color: var(--bk-ink);
+}
+.nx .k-odel__trip {
+  box-shadow: inset 0 1px 0 var(--bk-line);
+  border-top: 0;
+}
+.nx .k-odel__dot {
+  background: var(--bk-s2);
+  color: var(--bk-gold);
+}
+
+/* Messages: the shop's mark beside its bubbles, yours in the act colour */
+.nx .k-chat .k-ocard__head .k-ocard__ico {
+  display: none;
+}
+.nx .k-chat__thread {
+  gap: 14px;
+}
+.nx .k-chat__day span {
+  background: var(--bk-s2);
+  color: var(--bk-mut);
+}
+.nx .k-chat__face {
+  width: 36px;
+  height: 36px;
+  background: var(--bk-cream, #f4ece1);
+  box-shadow: inset 0 0 0 1px var(--bk-line);
+  object-fit: contain;
+}
+.nx .k-chat__who {
+  color: var(--bk-mut);
+  font-size: 12px;
+  font-weight: 600;
+}
+.nx .k-chat__who i {
+  background: transparent;
+  color: var(--bk-gold);
+  padding: 0;
+  font-style: normal;
+}
+.nx .k-chat__bubble {
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 18px 18px 18px 6px;
+  background: var(--bk-s2);
+  color: var(--bk-ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.nx .k-chat__msg.-mine .k-chat__bubble {
+  border-radius: 18px 18px 6px 18px;
+  background: var(--bk-act);
+  color: var(--bk-act-on);
+}
+.nx .k-chat__meta,
+.nx .k-chat__meta time {
+  color: var(--bk-mut);
+  font-size: 11.5px;
+}
+.nx .k-chat__bin {
+  color: var(--bk-mut);
+  background: transparent;
+}
+.nx .k-chat__bin:hover {
+  color: var(--bk-warn);
+}
+.nx .k-chat__empty p {
+  color: var(--bk-mut);
+  font-size: 14px;
+}
+.nx .k-chat__start {
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--bk-ink);
+  box-shadow: inset 0 0 0 1px var(--bk-line-2);
+}
+.nx .k-chat__start:hover {
+  background: var(--bk-s2);
+}
+.nx .k-chat__box {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  margin-top: 14px;
+  padding-top: 14px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: inset 0 1px 0 var(--bk-line);
+}
+.nx .k-chat__field {
+  flex: 1;
+  min-width: 0;
+}
+.nx .k-chat__field textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 16px;
+  border: 0;
+  border-radius: 22px;
+  background: var(--bk-s2);
+  color: var(--bk-ink);
+  box-shadow: inset 0 0 0 1px var(--bk-line-2);
+  resize: none;
+}
+.nx .k-chat__field textarea:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--bk-act-text);
+}
+.nx .k-chat__send {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--bk-act);
+  color: var(--bk-act-on);
+}
+.nx .k-chat__send:hover {
+  background: var(--bk-act-deep);
+}
+.nx .k-chat__send .v-icon {
+  color: inherit !important;
+}
+.nx .k-chat__send:disabled {
+  opacity: 0.55;
+}
+.nx .k-chat__left {
+  color: var(--bk-mut);
+}
+
+/* ── Selldone's payment window (payment-b): the sheet in the mockup's
+   glass, the total on the stone, each way to pay as the mockup's card
+   (an icon tile, its kind and name; the act ring on hover). Its logic and
+   words stay Selldone's (gateways, gift cards, wallet, Stripe…). ── */
+$nx-ico-cash: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='6.5' width='18' height='11' rx='2'/%3E%3Ccircle cx='12' cy='12' r='2.6'/%3E%3Cpath d='M6.5 9.5v5M17.5 9.5v5'/%3E%3C/svg%3E";
+$nx-ico-card: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5.5' width='18' height='13' rx='2.5'/%3E%3Cpath d='M3 10h18M7 15h4'/%3E%3C/svg%3E";
+$nx-ico-gift: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='9' width='16' height='11' rx='2'/%3E%3Cpath d='M3 9h18M12 9v11M12 9S10.5 4 8 4.8 9.5 9 12 9zM12 9s1.5-5 4-4.2S14.5 9 12 9z'/%3E%3C/svg%3E";
+
+html.bk-dark .s--storefront-master-payment-dialog,
+.s--storefront-master-payment-dialog {
+  font-family: var(--bk-ft);
+  border-radius: var(--bk-r-xl) var(--bk-r-xl) 0 0 !important;
+
+  > .v-card {
+    border-radius: var(--bk-r-xl) var(--bk-r-xl) 0 0 !important;
+    background: linear-gradient(165deg, var(--bk-g-hi, transparent), var(--bk-g-lo, transparent)), var(--bk-s1) !important;
+    color: var(--bk-ink) !important;
+    box-shadow: inset 0 0 0 1px var(--bk-line-2), 0 -30px 80px -40px rgba(0, 0, 0, 0.7) !important;
+  }
+
+  .v-toolbar {
+    background: transparent !important;
+    color: var(--bk-ink) !important;
+  }
+
+  .body-title {
+    font: 400 clamp(30px, 3.2vw, 38px) / 1.05 var(--bk-fd) !important;
+    letter-spacing: -0.005em !important;
+    color: var(--bk-ink) !important;
+  }
+
+  .circle-button-selldone .v-btn {
+    background: var(--bk-s2) !important;
+    color: var(--bk-ink) !important;
+    box-shadow: none !important;
+  }
+
+  .circle-button-selldone .v-btn:hover {
+    background: var(--bk-s3, var(--bk-s2)) !important;
+  }
+
+  .v-card-text {
+    color: var(--bk-ink-2) !important;
+  }
+
+  /* The total */
+  .v-card-text > div > .text-start:first-child {
+    background: var(--bk-s2) !important;
+    box-shadow: inset 0 0 0 1px var(--bk-line);
+    border-radius: 18px !important;
+
+    > small {
+      font: 700 11.5px/1.3 var(--bk-ft) !important;
+      letter-spacing: 0.16em !important;
+      color: var(--bk-gold) !important;
+    }
+
+    > .v-icon {
+      display: none;
+    }
+
+    .u--price {
+      font: 400 44px/1.05 var(--bk-fd) !important;
+      letter-spacing: 0 !important;
+      color: var(--bk-ink) !important;
+    }
+
+    .v-btn {
+      color: var(--bk-mut) !important;
+    }
+  }
+
+  .pb-12 > p.small {
+    color: var(--bk-ink-2) !important;
+    font-weight: 700;
+  }
+
+  /* Each way to pay */
+  .container-btn.container-btn {
+    border: 0 !important;
+    border-radius: 18px !important;
+    background: var(--bk-s2) !important;
+    box-shadow: inset 0 0 0 1px var(--bk-line-2) !important;
+    color: var(--bk-ink) !important;
+
+    &:hover,
+    &:focus-visible {
+      border: 0 !important;
+      background: var(--bk-sel, var(--bk-s2)) !important;
+      box-shadow: inset 0 0 0 2px var(--bk-act-text) !important;
+    }
+
+    .left-side {
+      position: relative;
+      display: grid !important;
+      place-items: center;
+
+      &::before {
+        content: "";
+        position: absolute;
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        background: var(--bk-s1);
+        box-shadow: inset 0 0 0 1px var(--bk-line);
+      }
+
+      &::after {
+        position: relative;
+        width: 22px !important;
+        height: 22px !important;
+        border-radius: 0 !important;
+        background: var(--bk-gold) !important;
+        -webkit-mask: url($nx-ico-card) center / 22px no-repeat;
+        mask: url($nx-ico-card) center / 22px no-repeat;
+      }
+    }
+
+    &.-blue .left-side::after {
+      -webkit-mask-image: url($nx-ico-cash);
+      mask-image: url($nx-ico-cash);
+    }
+
+    &.-purple .left-side::after {
+      -webkit-mask-image: url($nx-ico-gift);
+      mask-image: url($nx-ico-gift);
+    }
+
+    .-right-side-container {
+      color: var(--bk-mut) !important;
+
+      p {
+        color: var(--bk-ink) !important;
+      }
+    }
+
+    .arrow {
+      color: var(--bk-act-text) !important;
+    }
+  }
+
+  /* "No gateway for this currency": Selldone's own words, in a calm card */
+  .pb-12 > div:not(.v-row) {
+    background: var(--bk-s2) !important;
+    box-shadow: inset 0 0 0 1px var(--bk-line);
+    color: var(--bk-ink-2) !important;
+  }
+
+  .v-expansion-panel {
+    background: var(--bk-s2) !important;
+    color: var(--bk-ink) !important;
+  }
+
+  .v-field {
+    border-radius: 14px !important;
+    background: var(--bk-s2) !important;
+    color: var(--bk-ink) !important;
+  }
+
+  .v-field__outline {
+    --v-field-border-opacity: 0.18;
+    color: var(--bk-line-2) !important;
+  }
+}
+.s--storefront-master-payment-dialog .container-btn .-right-side-container img {
+  display: none !important;
+}

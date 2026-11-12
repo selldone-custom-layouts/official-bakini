@@ -13,154 +13,73 @@
   -->
 
 <!--
-  Kalio — one package's way to the shopper, in the basket page's When
-  sheet (design C, 4 November 2026). How it gets there as cards (the
-  shop's shipping methods, then its pickup points), and when: any time,
-  or the days and parts of the day that suit the shopper, or a date when
-  the method asks for one. Selldone's dropdowns and blue chips are gone;
-  the data and every rule below are Selldone's (days and time spans the
-  method offers, lead time, the date's earliest day).
+  Bakini Noir — one package's way to the shopper (checkout-b.html "Delivery
+  method", delivery-b.html): the shop's ways as cards (the mockup's .dmc:
+  icon, name, a line about it, the fee), its pickup points as cards too,
+  then the way's time windows as chips (one chosen, a ring inside). A way
+  that asks for a date gets a date field. The data and every rule are
+  Selldone's (the days and windows the way offers, lead time, the earliest
+  date); choosing a window writes delivery_info.custom, .days and
+  .time_spans, as Selldone's own "choose a time" does.
 -->
 <template>
-  <section class="k-ship">
-    <header class="k-ship__head">
-      <products-dense-images-circles
-        :ids="
-          basket.items
-            .filter((i) => itemIds?.includes(i.id))
-            .map((i) => getShopImagePath(i.variant?.image ? i.variant.image : i.product.icon, 128))
-        "
-        border
-        inline
-        raw-images-path
-      ></products-dense-images-circles>
-      <span class="k-ship__from">
-        <template v-if="warehouse?.title">{{ t("shipping.from", "From {place}", { place: warehouse.title }) }}</template>
-      </span>
-      <span v-if="cost !== null && cost !== undefined" :class="{ '-free': cost === 0 }" class="k-ship__cost">
-        <u-price v-if="cost > 0" :amount="cost"></u-price>
-        <template v-else-if="cost === 0">{{ t("shipping.free", "Free") }}</template>
-        <template v-else>{{ t("shipping.paidOnDelivery", "Paid on delivery") }}</template>
-      </span>
-    </header>
+  <section class="nx-ship">
+    <div v-if="transportation_exclude_pickup?.length || pickups?.length" :aria-label="t('bakini.n.co.method', 'Delivery method')" class="dms" role="group">
+      <button
+        v-for="item in transportation_exclude_pickup"
+        :key="item.type"
+        :aria-pressed="transportation?.type === item.type && !selectedPickup ? 'true' : 'false'"
+        class="dmc"
+        type="button"
+        @click="pickWay(item)"
+      >
+        <span class="dm-ic"><nx-icon :name="wayIcon(item.type)" /></span>
+        <b>{{ wayTitleOf(item) }}</b>
+        <span v-if="noteOf(item)" class="dmc-n">{{ noteOf(item) }}</span>
+        <span class="dmc-f">{{ feeOf(item) }}</span>
+      </button>
+      <button
+        v-for="(pickup, i) in pickups || []"
+        :key="'p' + i"
+        :aria-pressed="selectedPickup?.address && selectedPickup.address === pickup.address ? 'true' : 'false'"
+        class="dmc"
+        type="button"
+        @click="$emit('pickupSelected', { pickup, transportation: pickup_transportation })"
+      >
+        <span class="dm-ic"><nx-icon name="store" /></span>
+        <b>{{ pickup_transportation?.title || t("bakini.way.pickupAt", "Pickup at {place}", { place: pickup.title || pickup.name || pickup.address }) }}</b>
+        <span class="dmc-n">{{ pickup.message || MapHelper.GenerateFullAddressFromMapInfo(pickup) }}</span>
+        <span class="dmc-f">{{ t("bakini.n.co.free", "Free") }}</span>
+      </button>
+    </div>
 
-    <!-- How it gets there -->
-    <template v-if="transportation_exclude_pickup?.length || pickups?.length">
-      <p class="k-ship__label">{{ t("shipping.howLabel", "How you get it") }}</p>
-      <div class="k-ship__ways">
-        <button
-          v-for="item in transportation_exclude_pickup"
-          :key="item.type"
-          :class="{ '-on': transportation?.type === item.type && !selectedPickup }"
-          class="k-ship__way"
-          type="button"
-          @click="pickWay(item)"
-        >
-          <span aria-hidden="true" class="k-ship__radio"></span>
-          <img v-if="item.logo || getShopTransportationObject(item.type)?.icon" :src="item.logo ? getShopImagePath(item.logo) : getShopTransportationObject(item.type).icon" alt="" class="k-ship__ico" height="40" width="40" />
-          <span v-else aria-hidden="true" class="k-ship__ico -pickup"><v-icon size="20">local_shipping</v-icon></span>
-          <span class="k-ship__name">
-            <b>{{ item.title ? item.title : getShopTransportationObject(item.type) ? $t(getShopTransportationObject(item.type).name) : item.type }}</b>
-            <!-- The parts joined with " · ", so no line starts with a dot. -->
-            <small>{{ [item.message, item.cod && cod_payment_exists ? t("shipping.payOnDelivery", "Pay on delivery") : "", item.sod ? t("shipping.payAtDoor", "Pay at the door") : ""].filter(Boolean).join(" · ") }}</small>
-          </span>
-          <span v-if="item.free_shipping" class="k-ship__free">
-            {{ item.free_shipping_limit ? t("shipping.freeOver", "Free over {amount}", { amount: moneyFrom(item.free_shipping_limit, item.currency, { short: "auto" }) }) : t("shipping.free", "Free") }}
-          </span>
-        </button>
-
-        <button
-          v-for="(pickup, i) in pickups || []"
-          :key="'p' + i"
-          :class="{ '-on': selectedPickup?.address && selectedPickup.address === pickup.address }"
-          class="k-ship__way"
-          type="button"
-          @click="$emit('pickupSelected', { pickup, transportation: pickup_transportation })"
-        >
-          <span aria-hidden="true" class="k-ship__radio"></span>
-          <span aria-hidden="true" class="k-ship__ico -pickup"><v-icon size="20">storefront</v-icon></span>
-          <span class="k-ship__name">
-            <b>{{ t("shipping.pickupAt", "Pickup · {place}", { place: pickup.title || pickup.name || pickup.address }) }}</b>
-            <small>{{ MapHelper.GenerateFullAddressFromMapInfo(pickup) }}<template v-if="pickup.phone"> · {{ pickup.phone }}</template></small>
-          </span>
-          <span class="k-ship__free">{{ t("shipping.free", "Free") }}</span>
-        </button>
-      </div>
-    </template>
-
-    <!-- When -->
     <template v-if="transportation">
-      <template v-if="!showCustomDeliveryTimeButton">
-        <p class="k-ship__label">{{ t("shipping.when", "When") }}</p>
-        <p class="k-ship__hint"><v-icon size="16">place</v-icon>{{ t("shipping.addressFirst", "Add your address first; the times depend on where it goes.") }}</p>
-      </template>
-      <template v-else>
-        <p class="k-ship__label">{{ t("shipping.when", "When") }}</p>
-        <div v-if="!need_ask_shipping_date" class="k-ship__modes">
-          <button :class="{ '-on': !customDeliveryTimes }" class="k-ship__mode" type="button" @click="customDeliveryTimes = false">
-            <b>{{ t("shipping.anyTime", "Any time") }}</b><small>{{ t("shipping.anyTimeHint", "As soon as it is ready") }}</small>
-          </button>
-          <button :class="{ '-on': customDeliveryTimes }" class="k-ship__mode" type="button" @click="customDeliveryTimes = true">
-            <b>{{ t("shipping.chooseTime", "Choose a time") }}</b><small>{{ t("shipping.chooseTimeHint", "Days and hours that suit you") }}</small>
+      <template v-if="windowsOn && timeItems.length">
+        <p class="dm-lbl">{{ t("bakini.n.co.window", "Time window") }}</p>
+        <div :aria-label="t('bakini.n.co.window', 'Time window')" class="dm-win" role="group">
+          <button
+            v-for="span in timeItems"
+            :key="span.value"
+            :aria-pressed="isWindow(span.value) ? 'true' : 'false'"
+            :disabled="span.props?.disabled"
+            class="chip"
+            type="button"
+            @click="pickWindow(span.value)"
+          >
+            <nx-icon name="clock" />{{ windowName(span) }}
           </button>
         </div>
-
-        <div v-if="customDeliveryTimes" class="k-ship__times">
-          <template v-if="[ETA.weekday_timeframe.code, ETA.weekday.code].includes(transportation?.eta)">
-            <p class="k-ship__sub">{{ t("shipping.days", "Days that suit you") }}</p>
-            <div class="k-ship__days">
-              <button
-                v-for="day in dayItems"
-                :key="day.value"
-                :class="{ '-on': deliveryInfo.days?.includes(day.value) }"
-                :disabled="day.props?.disabled"
-                class="k-ship__day"
-                type="button"
-                @click="toggle('days', day.value)"
-              >
-                {{ $t(day.name) }}
-              </button>
-            </div>
-          </template>
-
-          <template v-if="[ETA.weekday_timeframe.code, ETA.timeframe.code].includes(transportation?.eta)">
-            <p class="k-ship__sub">{{ t("shipping.parts", "Parts of the day") }}</p>
-            <div class="k-ship__spans">
-              <button
-                v-for="span in timeItems"
-                :key="span.value"
-                :class="{ '-on': deliveryInfo.time_spans?.includes(span.value) }"
-                :disabled="span.props?.disabled"
-                class="k-ship__span"
-                type="button"
-                @click="toggle('time_spans', span.value)"
-              >
-                <img v-if="span.icon" :src="span.icon" alt="" height="28" width="28" />
-                <span>
-                  <b>{{ $t(span.name) }}</b>
-                </span>
-                <v-icon v-if="deliveryInfo.time_spans?.includes(span.value)" class="k-ship__tick" size="18">check_circle</v-icon>
-              </button>
-            </div>
-          </template>
-
-          <template v-if="need_ask_shipping_date">
-            <p class="k-ship__sub">{{ t("shipping.date", "Date") }}</p>
-            <input
-              :min="minDate"
-              :type="transportation.eta === ETA.date.code ? 'date' : 'datetime-local'"
-              :value="dateValue"
-              class="k-ship__date"
-              @change="setDate($event.target.value)"
-            />
-          </template>
-        </div>
-
-        <p v-if="max_lead_time > 0 || transportation?.etd" class="k-ship__hint">
-          <v-icon size="16">schedule</v-icon>
-          {{ t("shipping.readyIn", { one: "Ready in about {n} hour.", other: "Ready in about {n} hours." }, { n: max_lead_time + (transportation?.etd ? transportation.etd : 0) }) }}
-        </p>
       </template>
+      <template v-if="need_ask_shipping_date">
+        <p class="dm-lbl">{{ t("bakini.n.co.date", "Date") }}</p>
+        <label class="fld nx-ship__date">
+          <span class="vh">{{ t("bakini.n.co.date", "Date") }}</span>
+          <input :min="minDate" :type="transportation.eta === ETA.date.code ? 'date' : 'datetime-local'" :value="dateValue" @change="setDate($event.target.value)" />
+        </label>
+      </template>
+      <p v-if="max_lead_time > 0 || transportation?.etd" class="nx-ship__hint">
+        <nx-icon name="clock" />{{ t("bakini.n.co.readyIn", { one: "Ready in about {n} hour.", other: "Ready in about {n} hours." }, { n: max_lead_time + (transportation?.etd ? transportation.etd : 0) }) }}
+      </p>
     </template>
   </section>
 </template>
@@ -179,6 +98,9 @@ import { TimeSpans } from "@selldone/core-js/enums/logistic/TimeSpans.ts";
 import TemplateMixin from "@selldone/components-vue/mixin/template/TemplateMixin.ts";
 import ProductMixin from "@selldone/components-vue/mixin/product/ProductMixin.ts";
 import MapMixin from "@selldone/components-vue/mixin/map/MapMixin.ts";
+import NxIcon from "../../../components/bakini/noir/NxIcon.vue";
+import { shopWay, wayIcon } from "../../../components/bakini/noir/buy/noir-cart";
+import { wayTitle } from "../../../components/bakini/noir/noir";
 
 export default defineComponent({
   name: "SCartShippingOptions",
@@ -186,6 +108,7 @@ export default defineComponent({
 
   components: {
     ProductsDenseImagesCircles,
+    NxIcon,
   },
   inject: ["$shop"],
   emits: ["update:transportation", "set-basket-config", "pickupSelected"],
@@ -223,6 +146,10 @@ export default defineComponent({
   }),
 
   computed: {
+    /* The way offers parts of the day to choose from. */
+    windowsOn() {
+      return !!this.transportation && [ETA.weekday_timeframe.code, ETA.timeframe.code].includes(this.transportation.eta);
+    },
     MapHelper() {
       return MapHelper;
     },
@@ -429,6 +356,7 @@ export default defineComponent({
       if (!this.has_delivery) return;
 
       this.deliveryInfo.type = transportation ? transportation.type : null;
+      this.$nextTick(() => this.firstWindow());
     },
 
     transportations() {
@@ -442,7 +370,7 @@ export default defineComponent({
       if (custom && this.transportation) {
         // Set all times for default custom delivery time!
         this.deliveryInfo.days = this.transportation.days.slice(0);
-        this.deliveryInfo.time_spans = this.transportation.time_spans.slice(0);
+        this.deliveryInfo.time_spans = this._window ? [this._window] : this.transportation.time_spans.slice(0);
       }
 
       this.deliveryInfo.custom = custom;
@@ -465,10 +393,71 @@ export default defineComponent({
     this.customDeliveryTimes =
       this.need_ask_shipping_date || this.deliveryInfo.custom;
     this.autoSelectTransportationType();
+    this.$nextTick(() => this.firstWindow());
   },
 
   methods: {
     moneyFrom,
+    t,
+    wayIcon,
+    /* ── Bakini Noir ── */
+    wayTitleOf(item) {
+      return item?.title || wayTitle(item, this.$shop);
+    },
+    /* A line about the way, from its own data. */
+    noteOf(given) {
+      if (!given) return "";
+      const item = { ...given, ...shopWay(this.$shop, given) };
+      if (item.message) return item.message;
+      const parts = [];
+      if (item.type === "Global") parts.push(t("bakini.n.co.anywhere", "Ships anywhere"));
+      else if (item.distance && item.distance < 1000) parts.push(t("bakini.n.co.within", "Local delivery within {km} km of the bakery", { km: item.distance }));
+      if (item.free_shipping && item.free_shipping_limit > 0)
+        parts.push(t("bakini.n.co.freeOverOrders", "free on orders over {amount}", { amount: moneyFrom(item.free_shipping_limit, item.currency, { short: "auto" }) }));
+      const line = parts.join("; ");
+      return line.charAt(0).toUpperCase() + line.slice(1);
+    },
+    feeOf(given) {
+      if (!given) return "";
+      const item = { ...given, ...shopWay(this.$shop, given) };
+      const free = item.free_shipping && !(item.free_shipping_limit > 0);
+      const fee = Number(item.const) || 0;
+      const over = item.free_shipping && item.free_shipping_limit > 0 ? moneyFrom(item.free_shipping_limit, item.currency, { short: "auto" }) : "";
+      if (free || !fee) return over ? t("bakini.n.co.freeOver", "Free over {amount}", { amount: over }) : t("bakini.n.co.free", "Free");
+      const base = moneyFrom(fee, item.currency);
+      return over ? t("bakini.n.co.feeFreeOver", "{fee} · free over {amount}", { fee: base, amount: over }) : base;
+    },
+    /* The shop's window by its own name ("Morning"), not Selldone's hours. */
+    windowName(span) {
+      const words = {
+        Morning: t("bakini.n.co.winMorning", "Morning"),
+        Evening: t("bakini.n.co.winEvening", "Evening"),
+        Night: t("bakini.n.co.winNight", "Night"),
+        Instant: t("bakini.n.co.winInstant", "Instant"),
+      };
+      return words[span.value] || this.$t(span.name);
+    },
+    isWindow(value) {
+      return !!this.deliveryInfo?.custom && this.deliveryInfo.time_spans?.length === 1 && this.deliveryInfo.time_spans[0] === value;
+    },
+    /* One window: Selldone's own "choose a time" with that one part of the day. */
+    pickWindow(value) {
+      this._window = value;
+      this.customDeliveryTimes = true;
+      this.deliveryInfo.custom = true;
+      this.deliveryInfo.days = this.transportation.days.slice(0);
+      this.deliveryInfo.time_spans = [value];
+      this.setBasketConfig();
+    },
+    /* A way with windows always has one chosen (the mockup): the first,
+       until the shopper picks another. */
+    firstWindow() {
+      if (!this.transportation || !this.windowsOn || !this.timeItems.length) return;
+      const cur = this.deliveryInfo?.time_spans;
+      if (this.deliveryInfo?.custom && cur?.length === 1 && this.transportation.time_spans.includes(cur[0])) return;
+      const first = this.timeItems.find((x) => !x.props?.disabled);
+      if (first) this.pickWindow(first.value);
+    },
     getShopTransportationObject(type) {
       return ShopTransportations[type];
     },

@@ -13,85 +13,56 @@
   -->
 
 <!--
-  Kalio — the account's address book (5 November 2026).
-
-  Each saved address is a card: a small map of the spot, the flag and the
-  name, the address, who receives it and the note for the seller, with Edit
-  and Delete (Delete asks once, in the card). "New address" and Edit open
-  Kalio's address sheet (KalioAddressSheet, `titled`), the one the basket
-  uses: the name of the address first, then the map with its pin and every
-  field, saved in one step.
-
-  Selldone's page asked for a name in a dialog of its own, then opened its
-  full-screen map with the address book's chips across the top; deleting
-  was only possible from those chips.
+  Bakini Noir — the address book (bakio-design/addresses-b.html): each
+  saved address as the mockup's card (its name in the serif with an icon,
+  who receives it, the address in lines, the phone; Edit and Delete —
+  Delete asks once, in the card), and the dashed "Add an address" card.
+  Add and Edit open Kalio's address sheet (KalioAddressSheet, `titled`,
+  dressed like map-b), the same fields as the checkout's: the name of the
+  address, the map with its pin when the shop uses maps, every field,
+  saved in one step. Selldone keeps no "default" address, so none is shown.
 -->
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
-  <div class="py-10">
-    <div class="widget-box -large mb-5">
-      <u-widget-header
-        :add-caption="$t('addresses_page.new_action')"
-        :title="$t('addresses_page.title')"
-        add-icon="add_location"
-        icon="fmd_good"
-        @click:add="showAdd"
-      ></u-widget-header>
-
-      <v-list-subheader>{{ $t("addresses_page.subtitle") }}</v-list-subheader>
-
-      <u-loading-progress v-if="busy"></u-loading-progress>
-
-      <ul v-if="addresses.length" class="k-book">
-        <li v-for="address in addresses" :key="address.id" class="k-book__card">
-          <span class="k-book__map">
-            <img v-if="address.location?.lat" :src="mapOf(address)" alt="" loading="lazy" />
-            <v-icon v-else size="26">map</v-icon>
-          </span>
-
-          <span class="k-book__words">
-            <b>
-              <flag v-if="address.country" :iso="address.country" :squared="false" class="k-book__flag" />
-              {{ address.title || t("account.address.untitled", "Address") }}
-            </b>
-            <span class="k-book__line">{{ getFullAddress(address) }}</span>
-            <small v-if="address.name || address.phone">
-              <v-icon size="15">person_outline</v-icon>{{ [address.name, address.phone].filter(Boolean).join(" · ") }}
-            </small>
-            <small v-if="address.message"><v-icon size="15">chat_bubble_outline</v-icon>{{ address.message }}</small>
-          </span>
-
-          <span :class="{ '-asking': confirming === address.id }" class="k-book__acts">
-            <template v-if="confirming === address.id">
-              <span class="k-book__ask">{{ t("account.address.deleteAsk", "Delete this address?") }}</span>
-              <button :disabled="busy_delete" class="k-book__btn -danger" type="button" @click="remove(address)">
-                <v-progress-circular v-if="busy_delete" indeterminate size="14" width="2" />{{ t("account.address.delete", "Delete") }}
-              </button>
-              <button class="k-book__btn" type="button" @click="confirming = null">{{ t("account.address.keep", "Keep") }}</button>
-            </template>
-            <template v-else>
-              <button class="k-book__btn" type="button" @click="showEdit(address)">
-                <v-icon size="17">edit</v-icon>{{ t("common.edit", "Edit") }}
-              </button>
-              <button
-                :aria-label="address.title ? t('account.address.deleteNamed', 'Delete {name}', { name: address.title }) : t('account.address.deleteThis', 'Delete this address')"
-                class="k-book__btn -icon"
-                type="button"
-                @click="confirming = address.id"
-              >
-                <v-icon size="18">delete_outline</v-icon>
-              </button>
-            </template>
-          </span>
-        </li>
-      </ul>
-
-      <div v-else-if="!busy && loaded" class="k-board__empty k-book__empty">
-        <v-icon size="28">add_location_alt</v-icon>
-        <p>{{ t("account.address.empty", "No saved addresses yet. Save one here and pick it at checkout in a tap.") }}</p>
-        <button class="k-btn k-btn--solid" type="button" @click="showAdd">
-          <v-icon size="20">add_location</v-icon>{{ t("account.addAddress", "Add an address") }}
-        </button>
+  <div class="nx-abook">
+    <div v-if="busy && !loaded" aria-busy="true" class="ab-grid">
+      <div class="gcard ab-card nx-abook__wait"></div>
+    </div>
+    <div v-else class="ab-grid">
+      <div v-for="address in addresses" :key="address.id" class="gcard ab-card">
+        <div class="ab-top">
+          <span class="dm-ic"><nx-icon :name="iconOf(address)" /></span><b>{{ address.title || t("bakini.n.acc.addressUntitled", "Address") }}</b>
+        </div>
+        <p>
+          <b v-if="address.name">{{ address.name }}</b
+          ><template v-for="(line, i) in linesOf(address)" :key="i"><br v-if="i || address.name" />{{ line }}</template>
+        </p>
+        <p v-if="address.phone" class="muted">{{ address.phone }}</p>
+        <p v-if="address.message" class="muted nx-abook__note">“{{ address.message }}”</p>
+        <div class="ab-acts">
+          <template v-if="confirming === address.id">
+            <span class="nx-abook__ask">{{ t("bakini.n.acc.deleteAsk", "Delete this address?") }}</span>
+            <button :disabled="busy_delete" class="btn sm nx-abook__del" type="button" @click="remove(address)">{{ t("bakini.n.acc.delete", "Delete") }}</button>
+            <button class="btn ghost sm" type="button" @click="confirming = null">{{ t("bakini.n.acc.keep", "Keep") }}</button>
+          </template>
+          <template v-else>
+            <button class="btn ghost sm" type="button" @click="showEdit(address)"><nx-icon name="edit" />{{ t("bakini.n.acc.edit", "Edit") }}</button>
+            <button
+              :aria-label="address.title ? t('bakini.n.acc.deleteNamed', 'Delete {name}', { name: address.title }) : t('bakini.n.acc.deleteThis', 'Delete this address')"
+              class="btn quiet sm"
+              type="button"
+              @click="confirming = address.id"
+            >
+              <nx-icon name="trash" />
+            </button>
+          </template>
+        </div>
       </div>
+
+      <button class="ab-add" type="button" @click="showAdd">
+        <span class="ch-plus"><nx-icon name="plus" /></span>
+        <b>{{ t("bakini.n.acc.addAddress", "Add an address") }}</b>
+        <span class="muted">{{ noMap ? t("bakini.n.acc.addTyped", "Type it in, as at checkout") : t("bakini.n.acc.addMap", "Set it on the map or type it in") }}</span>
+      </button>
     </div>
 
     <kalio-address-sheet
@@ -99,8 +70,8 @@
       :busy="busy_save"
       :center="center"
       :countries="$shop?.countries?.length ? $shop.countries : null"
-      :heading="editing ? t('account.address.editTitle', 'Edit address') : t('account.address.newTitle', 'New address')"
-      :lede="editing ? t('account.address.editLede', 'Move the pin or change the details, then save.') : t('account.address.newLede', 'Name it, place the pin, and check the details.')"
+      :heading="editing ? t('bakini.n.acc.editTitle', 'Edit address') : t('bakini.n.acc.addAddress', 'Add an address')"
+      :lede="t('bakini.n.acc.sameFields', 'Same fields as checkout')"
       :no-map="noMap"
       :phone-required="false"
       :receiver-info="editing"
@@ -115,18 +86,18 @@
 <script lang="ts">
 import NotificationService from "@selldone/components-vue/plugins/notification/NotificationService.ts";
 
-import UWidgetHeader from "@selldone/components-vue/ui/widget/header/UWidgetHeader.vue";
 import { MapHelper } from "@selldone/core-js/helper";
 import { ShopOptionsHelper } from "@selldone/core-js/helper/shop/ShopOptionsHelper";
 import KalioAddressSheet from "@app-storefront/components/kalio/checkout/KalioAddressSheet.vue";
 import { t } from "../../../components/kalio/i18n/kalio-i18n";
+import NxIcon from "../../../components/bakini/noir/NxIcon.vue";
 
 /* The fields an address keeps (Selldone's address book). */
 const FIELDS = ["country", "state", "state_code", "city", "address", "location", "no", "unit", "name", "phone", "message", "postal"];
 
 export default {
   name: "StorefrontUserAddresses",
-  components: { UWidgetHeader, KalioAddressSheet },
+  components: { KalioAddressSheet, NxIcon },
   inject: ["$shop"],
 
   data() {
@@ -161,6 +132,25 @@ export default {
   },
 
   methods: {
+    t,
+    /* Bakini Noir: the card's icon from the address's own name. */
+    iconOf(address) {
+      const title = (address.title || "").toLowerCase();
+      if (/work|office|shop|store|studio/.test(title)) return "store";
+      if (/home|house|flat|apartment/.test(title) || !title) return "home";
+      return "pin";
+    },
+    /* The address in the mockup's lines: street and unit; city, state and
+       postcode; the country. */
+    linesOf(a) {
+      const street = [[a.address, a.no].filter(Boolean).join(" "), a.unit].filter(Boolean).join(", ");
+      const place = [a.city, [a.state_code || a.state, a.postal].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+      let country = a.country;
+      try {
+        country = a.country ? new Intl.DisplayNames([document.documentElement.lang || "en"], { type: "region" }).of(a.country) : "";
+      } catch (e) {}
+      return [street, place, country].filter(Boolean);
+    },
     getFullAddress(address) {
       return MapHelper.GenerateFullAddressFromMapInfo(address);
     },

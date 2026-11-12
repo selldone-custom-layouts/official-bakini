@@ -113,7 +113,7 @@ export default ({mode}: any) => {
           darkTokens({
             darkSelector: "html.bk-dark",
             include: [/\/style\//, /\/StorefrontApp\.vue/, /\/components\//, /\/pages\//, /\/layouts\//],
-            exclude: [/\/node_modules\//, /\/modules\/pagebuilder\//, /\/theme-switcher\//, /\/style\/noir\//, /\/style\/bakini-noir\.scss/, /\/components\/bakini\/noir\//],
+            exclude: [/\/node_modules\//, /\/modules\/pagebuilder\//, /\/theme-switcher\//, /\/style\/noir\//, /\/style\/bakini-noir[\w-]*\.scss/, /\/components\/bakini\/noir\//],
             lightVars: [],
             card: "#1c1419",
             raise: "#261b22",

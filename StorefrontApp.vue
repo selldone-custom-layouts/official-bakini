@@ -565,6 +565,11 @@ export default {
 <style src="./style/noir/buy.css"></style>
 <style src="./style/noir/read.css"></style>
 <style lang="scss" src="./style/bakini-noir.scss"></style>
+<style lang="scss" src="./style/bakini-noir-shop.scss"></style>
+<style lang="scss" src="./style/bakini-noir-product.scss"></style>
+<style lang="scss" src="./style/bakini-noir-buy.scss"></style>
+<style lang="scss" src="./style/bakini-noir-read.scss"></style>
+<style lang="scss" src="./style/bakini-noir-account.scss"></style>
 
 <style lang="scss">
 /*

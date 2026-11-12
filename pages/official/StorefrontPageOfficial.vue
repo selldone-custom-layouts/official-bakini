@@ -13,22 +13,14 @@
   -->
 
 <!--
-  Kalio (5 November 2026): About us, Terms, Privacy and Contact in the
-  shop's own page frame: the trail "molino › Terms of use" and the page,
-  where Selldone put them in a floating card with a "Back" circle and its
-  own breadcrumb.
+  Bakini Noir: About, Terms, Privacy and Contact in the Layout's own frame;
+  each page draws its own head (b/pages-read.js), so the frame is only the
+  slot Selldone fills above it and the page.
 -->
-<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
+<template>
   <div class="k-official">
     <slot name="header"></slot>
-    <div class="bk-wrap">
-      <nav :aria-label="t('pages.breadcrumb', 'Breadcrumb')" class="bk-crumbs">
-        <router-link :to="{ path: '/' }">{{ t("pages.home", "Home") }}</router-link>
-        <span aria-hidden="true" class="ms bk-chev">chevron_right</span>
-        <span aria-current="page">{{ page_name }}</span>
-      </nav>
-      <router-view class="k-official__body" />
-    </div>
+    <router-view class="k-official__body" />
   </div>
 </template>
 

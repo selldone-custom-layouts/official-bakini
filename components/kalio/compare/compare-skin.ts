@@ -7,7 +7,7 @@ import { t } from "../i18n/kalio-i18n";
 export const SKIN = {
   /** The page's heading (and the tab's title). */
   get title(): string {
-    return t("bakini.k.compare.title", "Compare products");
+    return t("bakini.n.cmp.title", "Compare");
   },
   /** A small line over the heading, or none. */
   eyebrow: null as string | null,

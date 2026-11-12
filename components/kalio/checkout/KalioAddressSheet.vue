@@ -35,8 +35,9 @@
     <div class="k-sheet k-addr">
       <div class="k-sheet__head">
         <div>
+          <!-- Bakini Noir (map-b): the eyebrow over the serif heading. -->
+          <p class="k-addr__eyebrow">{{ lede || t("address.lede.default", "Your address, for the receipt and the seller.") }}</p>
           <h2>{{ heading || t("address.title.go", "Where should it go?") }}</h2>
-          <p>{{ lede || t("address.lede.default", "Your address, for the receipt and the seller.") }}</p>
         </div>
         <button :aria-label="t('common.close', 'Close')" class="k-sheet__x" type="button" @click="$emit('update:modelValue', false)">
           <v-icon>close</v-icon>

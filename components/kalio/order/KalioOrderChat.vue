@@ -176,9 +176,11 @@ export default {
   },
 
   methods: {
+    /* Bakini Noir: the shop's replies carry the shop's mark (the mockup's
+       "b" avatar), never a staff member's photo. */
     avatar(message) {
-      if (message.user_id) return this.getUserAvatar(message.user_id);
-      return this.brandMark;
+      if (message.officer || !message.user_id) return this.brandMark;
+      return this.getUserAvatar(message.user_id);
     },
     time(at) {
       return new Date(at).toLocaleTimeString(this.$i18n?.locale || "en", { hour: "numeric", minute: "2-digit" });

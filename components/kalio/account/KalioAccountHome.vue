@@ -1,139 +1,123 @@
 <!--
-  Kalio — the account's Overview (design B, 4 November 2026).
-
-  The latest order as a card (its five steps with the times Selldone
-  records, its lines, total, how it is paid and what to do next), beside
-  four numbers (orders, saved with deals, wallet, gift cards) and a
-  reminder when an order waits for payment; then the last few orders,
-  "Buy again" and the delivery addresses.
+  Bakini Noir — the account's Overview (bakio-design/account-b.html): the
+  last order (its photos, number and date, the way · window and how it is
+  paid, and the mockup's four steps with a label under each; "View order"),
+  then the saved address and the profile side by side, then "Order again"
+  with the last order's products (compact rows with their + box). No order
+  yet: the mockup's "No orders yet" card. Nothing shows as an empty box: a
+  card without data is left out (no address: a line that asks for one).
 -->
 <template>
-  <div class="k-ahome">
-    <div class="k-ahome__grid">
-      <!-- The latest order -->
-      <section v-if="latest" class="k-ahome__latest">
-        <p class="k-eyebrow">{{ t("account.home.latestOrder", "Latest order") }}</p>
-        <div class="k-ahome__head">
-          <router-link :to="orderRoute(latest)" class="k-ahome__code">{{ code(latest) }}</router-link>
-          <span class="k-ahome__when">{{ when(latest.reserved_at) }}</span>
-          <span :class="`-${tone.tone}`" class="k-tag">
-            <span v-if="tone.tone === 'go'" class="k-tag__beat"></span>
-            <v-icon v-else-if="tone.icon" size="15">{{ tone.icon }}</v-icon>
-            {{ tone.word }}
-          </span>
+  <div class="nx-ahome">
+    <!-- The last order -->
+    <div v-if="latest" class="gcard last">
+      <div class="gc-hd">
+        <h2>{{ t("bakini.n.acc.lastOrder", "Last order") }}</h2>
+        <router-link :to="orderRoute(latest)" class="link">{{ t("bakini.n.acc.viewOrder", "View order") }}<nx-icon name="arrow" cls="flip-rtl" /></router-link>
+      </div>
+      <div class="last-in">
+        <div v-if="thumbs.length" class="last-thumbs">
+          <span v-for="th in thumbs" :key="th.key" :style="{ '--bk-hue': hueOf(th.category) }" class="th"><img v-if="th.src" :src="th.src" alt="" class="cut" loading="lazy" /></span>
         </div>
-
-        <ol v-if="!['pay', 'off'].includes(tone.tone)" :aria-label="t('orders.progress', 'Order progress')" class="k-ahome__steps">
-          <li v-for="(state, i) in states" :key="state.code" :class="stepClass(i)">
-            <i aria-hidden="true"><v-icon v-if="stepClass(i) === '-done'" size="15">check</v-icon></i>
-            <b>{{ $t(state.name) }}</b>
-            <small v-if="stepTime(i)">{{ stepTime(i) }}</small>
-          </li>
-        </ol>
-
-        <!-- The lines: from the list at once (picture, name, how many), with
-             prices and sellers once the full order is read. -->
-        <ul v-if="lines.length" class="k-ahome__lines">
-          <li v-for="line in lines" :key="line.key">
-            <span class="k-ahome__pic"><img v-if="line.src" :src="line.src" alt="" loading="lazy" /></span>
-            <span class="k-ahome__name">
-              <b v-if="line.title">{{ line.title }}</b>
-              <span v-else aria-hidden="true" class="k-ahome__nameghost"></span>
-              <small v-if="line.price != null">{{ line.count }} × <u-price :amount="line.price" :currency="line.currency" /><template v-if="line.seller"> · {{ line.seller }}</template></small>
-              <small v-else>{{ t("account.home.quantity", "Quantity {count}", { count: line.count }) }}</small>
-            </span>
-            <u-price v-if="line.total != null" :amount="line.total" :currency="line.currency" class="k-ahome__amount" />
-          </li>
-          <li v-if="moreLines" class="k-ahome__morelines">{{ t("account.home.moreLines", { one: "and {n} more", other: "and {n} more" }, { n: moreLines }) }}</li>
-        </ul>
-
-        <footer class="k-ahome__foot">
-          <div class="k-ahome__sum">
-            <u-price :amount="latest.price" :currency="latest.currency" />
-            <small>{{ footWords }}</small>
-          </div>
-          <router-link :to="orderRoute(latest)" class="k-btn -line">
-            <v-icon size="17">chat_bubble_outline</v-icon>{{ latest.chat?.length ? t("orders.messages", "Messages") : t("orders.askShop", "Ask the shop") }}
-            <span v-if="latest.chat?.length" class="k-dot">{{ latest.chat.length }}</span>
-          </router-link>
-          <button v-if="['ok', 'off'].includes(tone.tone)" :disabled="busy_again" class="k-btn -line" type="button" @click="buyAgain">
-            <v-progress-circular v-if="busy_again" indeterminate size="16" width="2" />
-            <v-icon v-else size="17">{{ again_done ? "check" : "replay" }}</v-icon>{{ again_done ? t("orders.inYourBasket", "In your bag") : t("orders.buyAgain", "Buy again") }}
-          </button>
-          <router-link v-if="tone.tone === 'pay'" :to="orderRoute(latest)" class="k-btn -pay"><v-icon size="17">lock</v-icon>{{ t("orders.payNow", "Pay now") }}</router-link>
-          <router-link v-else :to="orderRoute(latest)" class="k-btn -main">{{ t("orders.viewOrder", "View order") }}</router-link>
-        </footer>
-      </section>
-
-      <section v-else-if="account.loaded" class="k-ahome__latest -empty">
-        <v-icon size="34">shopping_bag</v-icon>
-        <h2>{{ t("account.home.empty.title", "No orders yet") }}</h2>
-        <p>{{ t("bakini.k.account.emptyText", "Fill a bag from the departments; your orders and where they are show up here.") }}</p>
-        <router-link :to="{ path: '/' }" class="k-btn -main">{{ t("account.startShopping", "Start shopping") }}</router-link>
-      </section>
-      <section v-else aria-busy="true" class="k-ahome__latest -wait"><span class="k-board__ghost"></span><span class="k-board__ghost"></span></section>
-
-      <!-- The numbers -->
-      <aside class="k-ahome__tiles">
-        <router-link :to="ordersRoute" class="k-tile">
-          <span class="k-tile__ico"><v-icon size="20">receipt_long</v-icon></span>
-          <b>{{ account.loaded ? account.total : "–" }}</b>
-          <span>{{ ordersWords }}</span>
-        </router-link>
-        <div class="k-tile -save">
-          <span class="k-tile__ico"><v-icon size="20">sell</v-icon></span>
-          <b><u-price :amount="saved" :currency="currency" /></b>
-          <span>{{ savedWords }}</span>
+        <div class="last-t">
+          <b>{{ t("bakini.n.acc.orderOn", "Order {code} · {date}", { code: code(latest), date: longDate(latest.reserved_at || latest.created_at) }) }}</b>
+          <span class="muted">{{ lastLine }}</span>
         </div>
-        <router-link :to="sectionRoute('USER_WALLETS_PAGE')" class="k-tile">
-          <span class="k-tile__ico"><v-icon size="20">account_balance_wallet</v-icon></span>
-          <b><u-price :amount="wallet.amount" :currency="wallet.currency" /></b>
-          <span>{{ t("account.home.tile.wallet", "in your wallet") }}</span>
-        </router-link>
-        <router-link :to="sectionRoute('USER_GIFTCARDS_PAGE')" class="k-tile">
-          <span class="k-tile__ico"><v-icon size="20">card_giftcard</v-icon></span>
-          <b>{{ account.giftcards ?? "–" }}</b>
-          <span>{{ t("account.home.tile.giftcards", { one: "gift card", other: "gift cards" }, { n: account.giftcards ?? 0 }) }}</span>
-        </router-link>
-        <router-link v-if="waiting" :to="orderRoute(waiting)" class="k-tile -wide -pay">
-          <span class="k-tile__ico"><v-icon size="20">lock_clock</v-icon></span>
-          <span class="k-tile__words">
-            <b>{{ t("account.home.waiting.title", "{code} is waiting for payment", { code: code(waiting) }) }}</b>
-            <span><u-price :amount="waiting.price" :currency="waiting.currency" /> · {{ t("account.home.waiting.keep", "pay to keep it") }}</span>
-          </span>
-          <span class="k-btn -pay -sm">{{ t("orders.pay", "Pay") }}</span>
-        </router-link>
-      </aside>
+      </div>
+      <ol v-if="tone.tone !== 'off'" :aria-label="t('bakini.n.ord.progress', 'Order progress')" class="tl">
+        <li v-for="(s, i) in steps" :key="s.key" :aria-current="i === stepAt ? 'step' : undefined" :class="stepClass(i)">
+          <span class="tl-dot"><nx-icon :name="stepClass(i) === 'done' ? 'check' : s.icon" /></span>
+          <span class="tl-l">{{ s.label }}</span>
+        </li>
+      </ol>
+      <p v-else class="nx-ahome__off"><nx-icon name="close" />{{ tone.word }}</p>
+      <div v-if="tone.tone === 'pay'" class="nx-ahome__pay">
+        <span>{{ t("bakini.n.acc.waitingPay", "This order is waiting for payment.") }}</span>
+        <router-link :to="orderRoute(latest)" class="btn sm"><nx-icon name="lock" />{{ t("bakini.n.acc.payNow", "Pay now") }}</router-link>
+      </div>
     </div>
 
-    <!-- The last orders -->
-    <section v-if="account.total > 1" class="k-sec">
-      <header class="k-sec__head">
-        <h2>{{ t("orders.history", "Order history") }}</h2>
-        <router-link :to="ordersRoute" class="k-sec__link">{{ t("account.home.allOrders", "All orders") }}<v-icon class="k-flip" size="18">chevron_right</v-icon></router-link>
-      </header>
-      <kalio-orders-board :limit="5" compact mode="table" />
-    </section>
-
-    <kalio-buy-again class="k-sec" />
-
-    <!-- Addresses -->
-    <section v-if="account.addresses" class="k-sec">
-      <header class="k-sec__head">
-        <h2>{{ t("account.home.addresses", "Delivery addresses") }}</h2>
-        <router-link v-if="account.addresses.length" :to="sectionRoute('USER_ADDRESSES_PAGE')" class="k-sec__link">
-          {{ t("account.home.allAddresses", "All {n}", { n: account.addresses.length }) }}<v-icon class="k-flip" size="18">chevron_right</v-icon>
-        </router-link>
-      </header>
-      <div class="k-ahome__addrs">
-        <router-link v-for="address in account.addresses.slice(0, 3)" :key="address.id" :to="sectionRoute('USER_ADDRESSES_PAGE')" class="k-addrcard">
-          <b><v-icon size="18">place</v-icon>{{ address.title || t("account.address.untitled", "Address") }}</b>
-          <span>{{ addressLine(address) }}</span>
-          <small v-if="address.name || address.phone">{{ [address.name, address.phone].filter(Boolean).join(" · ") }}</small>
-        </router-link>
-        <router-link :to="sectionRoute('USER_ADDRESSES_PAGE')" class="k-addrcard -add"><v-icon size="20">add</v-icon>{{ t("account.addAddress", "Add an address") }}</router-link>
+    <div v-else-if="account.loaded" class="empty">
+      <span class="ec"><nx-icon name="box" /></span>
+      <h3>{{ t("bakini.n.acc.noOrders", "No orders yet") }}</h3>
+      <p>{{ t("bakini.n.acc.noOrdersP", "When you place an order, it appears here with its delivery window and progress.") }}</p>
+      <div class="acts">
+        <router-link :to="{ path: '/' }" class="btn">{{ t("bakini.n.acc.startShopping", "Start shopping") }}</router-link>
       </div>
-    </section>
+    </div>
+    <div v-else aria-busy="true" class="gcard last nx-ahome__wait"><span></span><span></span></div>
+
+    <div class="desk-two">
+      <!-- The saved address -->
+      <div class="gcard">
+        <div class="gc-hd">
+          <h2>{{ t("bakini.n.acc.address", "Saved address") }}</h2>
+          <router-link :to="sectionRoute('USER_ADDRESSES_PAGE')" class="link">{{ address ? t("bakini.n.acc.manage", "Manage") : t("bakini.n.acc.add", "Add") }}</router-link>
+        </div>
+        <div class="ilines">
+          <template v-if="address">
+            <div class="iline">
+              <nx-icon name="home" />
+              <div>
+                <b>{{ address.name || address.title || t("bakini.n.acc.addressUntitled", "Address") }}</b><span>{{ addressLine(address) }}</span>
+              </div>
+            </div>
+            <div v-if="address.phone" class="iline">
+              <nx-icon name="phone" />
+              <div>
+                <b>{{ address.phone }}</b><span>{{ t("bakini.n.acc.receiverPhone", "Receiver phone") }}</span>
+              </div>
+            </div>
+          </template>
+          <div v-else class="iline">
+            <nx-icon name="pin" />
+            <div>
+              <b>{{ account.addresses ? t("bakini.n.acc.noAddress", "No saved address yet") : t("bakini.n.acc.moment", "One moment…") }}</b
+              ><span>{{ t("bakini.n.acc.noAddressP", "Save one and pick it at checkout in a tap.") }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- The profile -->
+      <div class="gcard">
+        <div class="gc-hd">
+          <h2>{{ t("bakini.n.acc.profile", "Profile") }}</h2>
+          <router-link :to="sectionRoute('USER_PROFILE_PAGE')" class="link">{{ t("bakini.n.acc.edit", "Edit") }}</router-link>
+        </div>
+        <div class="ilines">
+          <div class="iline">
+            <nx-icon name="user" />
+            <div>
+              <b>{{ user?.name }}</b><span>{{ t("bakini.n.acc.name", "Name") }}</span>
+            </div>
+          </div>
+          <div v-if="user?.email" class="iline">
+            <nx-icon name="mail" />
+            <div>
+              <b>{{ user.email }}</b><span>{{ t("bakini.n.acc.emailFor", "Email for order updates") }}</span>
+            </div>
+          </div>
+          <div v-if="user?.phone" class="iline">
+            <nx-icon name="phone" />
+            <div>
+              <b>{{ user.phone }}</b><span>{{ t("bakini.n.acc.phone", "Phone") }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order again -->
+    <div v-if="again.length" class="gcard">
+      <div class="gc-hd">
+        <h2>{{ t("bakini.n.acc.again", "Order again") }}</h2>
+        <span class="muted">{{ t("bakini.n.acc.fromLast", "From your last order") }}</span>
+      </div>
+      <div class="again">
+        <nx-mini v-for="p in again" :key="p.id" :product="p" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -143,8 +127,10 @@ import CurrencyMixin from "@selldone/components-vue/mixin/currency/CurrencyMixin
 import { reorder } from "../kalio-basket";
 import { t } from "../i18n/kalio-i18n";
 import { productImage, productsById, vendors } from "../kalio-catalog";
-import KalioBuyAgain from "./KalioBuyAgain.vue";
-import KalioOrdersBoard from "./KalioOrdersBoard.vue";
+import NxIcon from "../../bakini/noir/NxIcon.vue";
+import NxMini from "../../bakini/noir/NxMini.vue";
+import { hueOf } from "../../bakini/noir/noir";
+import { longDate, noirStepAt, noirStepClass, noirSteps, orderLine } from "../../bakini/noir/account/noir-account";
 import {
   STATES,
   account,
@@ -165,7 +151,7 @@ const LINES = 4;
 
 export default {
   name: "KalioAccountHome",
-  components: { KalioOrdersBoard, KalioBuyAgain },
+  components: { NxIcon, NxMini },
   mixins: [CurrencyMixin],
   inject: ["$shop"],
 
@@ -181,6 +167,44 @@ export default {
   },
 
   computed: {
+    // ▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅ Bakini Noir ▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅
+    user() {
+      return this.USER();
+    },
+    steps() {
+      return noirSteps();
+    },
+    stepAt() {
+      return noirStepAt((this.detail || this.latest)?.delivery_state);
+    },
+    /* Up to three of the last order's photos. */
+    thumbs() {
+      const items = (this.detail?.items || this.latest?.items || []).slice(0, 3);
+      return items.map((item, i) => {
+        const product = item.product || this.catalogue.get(item.product_id);
+        return {
+          key: i,
+          src: this.detail ? this.image(item) : (product && productImage(product, true)) || this.getProductImage(item.product_id),
+          category: product?.category_id,
+        };
+      });
+    },
+    lastLine() {
+      return orderLine(this.$shop, this.latest, this.detail);
+    },
+    address() {
+      return (account.addresses || [])[0] || null;
+    },
+    /* The last order's products, as the shop sells them now. */
+    again() {
+      const items = this.detail?.items || this.latest?.items || [];
+      const ids = [...new Set(items.map((it) => it.product_id))];
+      /* The shop's listing when it has the product; else the order's own copy. */
+      return ids
+        .map((id) => this.catalogue.get(id) || items.find((it) => it.product_id === id && it.product?.title)?.product)
+        .filter((p) => p && p.status !== "Close")
+        .slice(0, 3);
+    },
     currency() {
       return this.latest?.currency || this.GetUserSelectedCurrency()?.code || this.$shop.currency;
     },
@@ -290,6 +314,9 @@ export default {
   },
 
   methods: {
+    t,
+    hueOf,
+    longDate,
     when,
     code(order) {
       return orderCode(this, order);
@@ -301,10 +328,7 @@ export default {
       return { name: window.$storefront.routes[name] };
     },
     stepClass(i) {
-      const at = stepOf(this.latest);
-      if (i < at || (i === at && at === this.states.length - 1)) return "-done";
-      if (i === at) return "-now";
-      return "";
+      return noirStepClass(i, this.stepAt, this.steps.length - 1);
     },
     /** The times Selldone records: placed, sent, delivered. */
     stepTime(i) {
@@ -331,8 +355,16 @@ export default {
       }
     },
     addressLine(a) {
-      const street = [a.address, a.no ? t("account.address.no", "No. {no}", { no: String(a.no) }) : null, a.unit ? t("account.address.unit", "Unit {unit}", { unit: String(a.unit) }) : null].filter(Boolean).join(", ");
-      return [street, [a.city, a.postal].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+      const street = [a.address, a.no, a.unit].filter(Boolean).join(", ");
+      const place = [a.city, [a.state_code || a.state, a.postal].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+      return [street, place, a.country ? this.countryName(a.country) : null].filter(Boolean).join(", ");
+    },
+    countryName(code) {
+      try {
+        return new Intl.DisplayNames([document.documentElement.lang || "en"], { type: "region" }).of(code) || code;
+      } catch (e) {
+        return code;
+      }
     },
     async buyAgain() {
       this.busy_again = true;

@@ -1,0 +1,250 @@
+/* Bakini Noir — the Layout's own touches for the content pages (journal,
+   story, About, Terms, Privacy, Contact, FAQ, 404) and the sign-in sheet,
+   on top of style/noir/*.css (the B mockup's read.css and friends). */
+
+/* ── A story's own text (the shop writes it): the mockup's base rules take
+   list bullets and margins away everywhere inside .nx; the story keeps them.
+   Its links are the only underlined words on the site. ── */
+.nx .prose {
+  ul,
+  ol {
+    margin: 0 0 1.15em;
+    padding-inline-start: 1.4em;
+  }
+  ul {
+    list-style: disc;
+  }
+  ol {
+    list-style: decimal;
+  }
+  li {
+    margin: 0 0 0.35em;
+  }
+  li::marker {
+    color: var(--bk-gold);
+  }
+  h3 {
+    font: 700 19px/1.3 var(--bk-ft);
+    color: var(--bk-ink);
+    margin: 1.4em 0 0.4em;
+  }
+  h2:first-child,
+  h3:first-child,
+  p:first-child {
+    margin-top: 0;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 18px;
+    margin: 0.6em 0 1.2em;
+  }
+  blockquote {
+    margin: 1.2em 0;
+    padding-inline-start: 18px;
+    box-shadow: inset 2px 0 0 var(--bk-gold);
+    color: var(--bk-ink);
+    font: italic 400 22px/1.4 var(--bk-fd);
+  }
+  [dir="rtl"] & blockquote {
+    box-shadow: inset -2px 0 0 var(--bk-gold);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 1.2em;
+    font-size: 15px;
+  }
+  th,
+  td {
+    padding: 8px 10px;
+    text-align: start;
+    box-shadow: inset 0 -1px 0 var(--bk-line);
+  }
+  strong,
+  b {
+    color: var(--bk-ink);
+  }
+}
+/* The shop's own page text in About and Contact: the same reading type, a
+   little smaller. */
+.nx .nx-own {
+  font-size: 16px;
+  color: var(--bk-mut);
+  max-width: 560px;
+}
+.nx .ct-form .nx-own {
+  max-width: none;
+  margin-bottom: 18px;
+}
+/* An FAQ answer the shop wrote with markup. */
+.nx .nx-faq-a {
+  padding: 0 72px 22px 22px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--bk-mut);
+}
+
+/* ── "More stories" under the journal ── */
+.nx .nx-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 26px;
+}
+
+/* ── Loading: calm shapes in the page's own surfaces ── */
+.nx .nx-skel {
+  pointer-events: none;
+}
+.nx .nx-skel .post .post-ph,
+.nx .nx-skel .ar-cover,
+.nx .nx-skel__line {
+  display: block;
+  background: linear-gradient(100deg, var(--bk-s1) 30%, var(--bk-s2) 50%, var(--bk-s1) 70%);
+  background-size: 300% 100%;
+  animation: nx-rd-shine 1.4s ease-in-out infinite;
+}
+.nx .nx-skel .post {
+  min-height: 300px;
+}
+.nx .nx-skel .post .post-ph {
+  height: 190px;
+}
+.nx .nx-skel__line {
+  height: 18px;
+  border-radius: 9px;
+  margin: 12px auto;
+  max-width: 520px;
+}
+.nx .nx-skel__line.-t {
+  height: 54px;
+  max-width: 640px;
+  border-radius: 16px;
+}
+.nx .nx-skel__line.-fq {
+  height: 64px;
+  max-width: none;
+  border-radius: 22px;
+  margin: 0 0 12px;
+}
+@keyframes nx-rd-shine {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nx .nx-skel .post .post-ph,
+  .nx .nx-skel .ar-cover,
+  .nx .nx-skel__line {
+    animation: none;
+  }
+}
+
+/* ── A story that is not there ── */
+.nx .nx-gone {
+  padding-block: clamp(40px, 8vw, 96px);
+  max-width: 720px;
+}
+
+/* ── Sending failed (Contact) ── */
+.nx .nx-fail {
+  margin-top: 14px;
+  color: var(--bk-warn);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* ── Selldone's comments under a story, in the Noir column ── */
+.nx .ar-com .nx-comments {
+  color: var(--bk-ink);
+  font-family: var(--bk-ft);
+}
+.nx .ar-com .nx-comments .v-card,
+.nx .ar-com .nx-comments .v-sheet {
+  background: var(--bk-s1) !important;
+  color: var(--bk-ink) !important;
+  box-shadow: inset 0 0 0 1px var(--bk-line) !important;
+  border-radius: 20px !important;
+}
+
+/* ── The sign-in sheet: the mockup's card inside the mockup's dialog ── */
+.nx .dialog.nx-lg {
+  width: min(460px, calc(100vw - 32px));
+  background: transparent;
+  box-shadow: none;
+  border-radius: 34px;
+}
+.nx .nx-lg .lg-card {
+  position: relative;
+  width: 100%;
+  display: grid;
+  gap: 18px;
+}
+.nx .nx-lg .nx-lg__x {
+  position: absolute;
+  top: 14px;
+  inset-inline-end: 14px;
+  right: auto;
+  z-index: 3;
+  background: var(--bk-s2);
+}
+.nx .nx-lg .nx-lg__x:hover {
+  background: var(--bk-s3);
+}
+.nx .nx-lg .lg-wm {
+  justify-self: center;
+}
+.nx .nx-lg .lg-note .t-act {
+  font-weight: 700;
+}
+.nx .nx-lg .link {
+  color: var(--bk-act-text);
+  font-weight: 700;
+  font-size: 14px;
+}
+.nx .nx-lg .nx-lg__sms .v-card {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+@media (max-width: 760px) {
+  .nx .dialog.nx-lg {
+    width: 100%;
+    border-radius: 0;
+    background: transparent;
+  }
+  .nx .nx-lg .lg-card {
+    border-radius: var(--bk-r-xl) var(--bk-r-xl) 0 0;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* A story's links are the only underlined words on the site. Selldone's
+   own "a { text-decoration: none !important }" sits in a cascade layer,
+   which no unlayered rule can beat, so the line is drawn as a 1px
+   background under each line of the link instead. */
+.nx .prose a {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  padding-bottom: 2px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* The mockup's headings wrap as they come; the shared "balance" rule
+   (kalio-tokens.scss) moved words between lines. */
+.nx-journal,
+.nx-article,
+.nx-about,
+.nx-legal,
+.nx-contact,
+.nx-faq,
+.nx-404,
+.nx-signin {
+  h1,
+  h2,
+  h3 {
+    text-wrap: wrap;
+  }
+}

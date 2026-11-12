@@ -22,7 +22,12 @@ import { locale, t } from "../i18n/kalio-i18n";
 
 declare const window: any;
 
-export const ACCOUNT_STYLE: "home" | "desk" = (import.meta as any).env?.VITE_KALIO_ACCOUNT === "desk" ? "desk" : "home";
+/* Bakini Noir: the B mockup's desk has an Overview (account-b.html), so the
+   Overview route is always on ("home" here is what the router reads to
+   route /user to KalioAccountHome); the orders list keeps design A's cards
+   (ORDERS_DESK). VITE_KALIO_ACCOUNT is no longer read. */
+export const ACCOUNT_STYLE: "home" | "desk" = "home";
+export const ORDERS_DESK = true;
 
 /** The Overview page (design B); design A sends /user to the orders. */
 export const ACCOUNT_HOME = "KalioAccountHome";

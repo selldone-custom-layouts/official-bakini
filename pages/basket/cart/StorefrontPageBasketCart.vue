@@ -12,287 +12,405 @@
   - Tread carefully, for you're treading on dreams.
   -->
 
-<!--
-  Kalio — the basket page (design C, drawn on 4 November 2026 in
-  ../kalio-design/basket-page-options/ and basket-flow-options/).
 
-  The lines by seller, the shopper's details in three small cards (Delivery method,
-  Where, Who) and "Often added" on the left; on the right a receipt: the
-  total large, what the shopper saves, every line of the bill Selldone
-  works out, the discount code, and Pay. On a phone the receipt follows
-  the details and a bar with the total and Pay stays at the foot of the
-  window.
+<!--
+  Bakini Noir — the bag and the checkout (bakio-design/cart-b.html,
+  checkout-b.html; b/pages-buy.js cart and checkout). One Selldone basket
+  page in two stages (noir-cart.ts): the bag (rows with − n + and Remove,
+  the delivery ways to choose now or later, the receipt and "Checkout",
+  "Often added") and the checkout (?step=checkout: step pills, then
+  numbered glass cards — Contact, Delivery method and its time window,
+  Delivery address or the pickup counter, Billing, Note — and the floating
+  receipt with "Place order · pay $X on delivery", what is still missing
+  named above it). Empty: a calm card, "Continue shopping" and the
+  collections.
 
   Everything that works is Selldone's and stays as it was in the script
-  below: the bill, the basket config (address, delivery, billing, custom
-  form, guest email), coupons and lottery prizes (shown when the shopper
-  has some), the club, the wallet, the
-  shipping options, the payment dialog and the service order.
+  below: the bill, the basket config (receiver, delivery, billing, the
+  shop's checkout questions, the guest's email), coupons and prizes, the
+  shipping options, the address sheet (map on or off), the payment window
+  and the service order.
 -->
 <template>
-  <div class="k-cart">
-    <div class="k-wrap k-cart__wrap">
-      <nav :aria-label="t('common.back', 'Back')" class="k-cart__crumbs">
-        <a href="#" @click.prevent="$router.go(-1)"><v-icon class="k-flip" size="16">chevron_left</v-icon>{{ t("basket.keepShopping", "Keep shopping") }}</a>
-      </nav>
-
-      <div class="k-cart__head">
-        <h1 class="k-cart__title">{{ t("bakini.k.basket.checkout", "Checkout") }}</h1>
-        <span v-if="seller_count > 1" class="k-cart__one">
-          <v-icon size="18">storefront</v-icon>{{ t("basket.sellers", { one: "{n} seller, one bag and one checkout.", other: "{n} sellers, one bag and one checkout." }, { n: seller_count }) }}
-        </span>
-        <s-shop-share-order-button v-if="basket?.items?.length" :basket="basket" class="k-cart__share" />
+  <div class="nx nx-cartpage">
+    <!-- ▆▆▆▆ Empty ▆▆▆▆ -->
+    <section v-if="!(basket && basket.items && basket.items.length)" class="wrap cart">
+      <div class="cart-hd">
+        <nav :aria-label="t('bakini.n.co.crumbs', 'Breadcrumb')" class="crumbs">
+          <router-link :to="{ path: '/' }">{{ t("bakini.n.co.home", "Home") }}</router-link><nx-icon name="right" /><span aria-current="page">{{ t("bakini.n.co.bag", "Bag") }}</span>
+        </nav>
+        <h1 class="serif">{{ t("bakini.n.co.your", "Your") }}{{ " " }}<em>{{ t("bakini.n.co.bagEm", "bag.") }}</em></h1>
       </div>
+      <div class="empty">
+        <span class="ec"><nx-icon name="bag" /></span>
+        <h3>{{ t("bakini.n.co.emptyT", "Your bag is empty") }}</h3>
+        <p>{{ t("bakini.n.co.emptyP", "Every pastry is sold individually — pick one piece or a few to begin.") }}</p>
+        <div class="acts">
+          <router-link :to="shopTo" class="btn">{{ t("bakini.n.co.continue", "Continue shopping") }}</router-link>
+        </div>
+      </div>
+      <div v-if="noir.cats.length" class="cat-chips nx-cart-cats">
+        <router-link v-for="c in noir.cats" :key="c.id" :to="catTo(c)" class="chip"><img v-if="catImg(c)" :src="catImg(c)" alt="" /><bdi>{{ c.title || c.name }}</bdi></router-link>
+      </div>
+    </section>
 
-      <!-- Walio 1.1.0 (checkout design B): where the shopper is, as steps.
-           Each step is done when Selldone has what it needs: the items, an
-           address (or nothing to deliver), a way to send the receipt. -->
-      <ol v-if="basket?.items?.length" :aria-label="t('bakini.k.basket.steps', 'Checkout steps')" class="w-stepper">
-        <li v-for="(st, i) in steps" :key="st.key" :class="st.state" class="w-stepper__s">
-          <span v-if="i" aria-hidden="true" class="w-stepper__ln"></span>
-          <i aria-hidden="true"><v-icon v-if="st.state === '-done'" size="16">check</v-icon><template v-else>{{ i + 1 }}</template></i>
-          <span>{{ st.label }}</span>
-        </li>
-      </ol>
+    <!-- ▆▆▆▆ Bag ▆▆▆▆ -->
+    <template v-else-if="nx_stage === 'bag'">
+      <section class="wrap cart">
+        <div class="cart-hd">
+          <nav :aria-label="t('bakini.n.co.crumbs', 'Breadcrumb')" class="crumbs">
+            <router-link :to="{ path: '/' }">{{ t("bakini.n.co.home", "Home") }}</router-link><nx-icon name="right" /><span aria-current="page">{{ t("bakini.n.co.bag", "Bag") }}</span>
+          </nav>
+          <h1 class="serif">{{ t("bakini.n.co.your", "Your") }}{{ " " }}<em>{{ t("bakini.n.co.bagEm", "bag.") }}</em></h1>
+        </div>
+        <div class="cart-grid">
+          <div class="cart-main">
+            <div class="gcard cart-rows">
+              <div v-for="it in nx_lines" :key="it.id" :style="{ '--bk-hue': hueOf(it.product?.category_id) }" class="crow">
+                <router-link :to="productTo({ id: it.product_id })" aria-hidden="true" class="th" tabindex="-1"><img :src="nx_img(it)" alt="" class="cut" /></router-link>
+                <div class="crow-t">
+                  <p v-if="nx_cat(it)" class="eyebrow"><bdi>{{ nx_cat(it) }}</bdi></p>
+                  <router-link :to="productTo({ id: it.product_id })" class="nm">{{ it.product?.title }}</router-link>
+                  <p class="meta">
+                    <span class="money">{{ nx_money(it.price) }}</span>{{ " " }}<span v-if="it.dis > 0" class="was money">{{ nx_money(it.price + it.dis) }}</span>
+                    {{ " · " + t("bakini.n.co.per", "per {unit}", { unit: nx_unit(it) }) }}<template v-if="it.dis > 0">{{ " · " }}<span class="gold">{{ t("bakini.n.co.save", "Save {amount}", { amount: nx_money(it.dis) }) }}</span></template>
+                  </p>
+                </div>
+                <div class="crow-q">
+                  <nx-line-qb :item="it" />
+                  <button :aria-label="t('bakini.n.co.removeOf', 'Remove {name}', { name: it.product?.title || '' })" class="crow-rm" type="button" @click="nx_remove(it)">
+                    <nx-icon name="trash" /><span>{{ t("bakini.n.co.remove", "Remove") }}</span>
+                  </button>
+                </div>
+                <span class="crow-lt money">{{ nx_money(it.price * nx_shown(it)) }}</span>
+              </div>
+            </div>
 
-      <nav v-if="filtered_types.length > 1" :aria-label="t('basket.types', 'Bags')" class="k-cart__types">
-        <button
-          v-for="item in filtered_types"
-          :key="item.code"
-          :class="{ '-on': type === item.code }"
-          :disabled="!item.enable"
-          type="button"
-          @click="type = item.code"
-        >
-          {{ $t(item.name) }}<em>{{ getCount(item.code) }}</em>
-        </button>
-      </nav>
+            <div v-if="transportation_list.length && has_delivery && !isService" class="gcard cart-dl">
+              <div class="gc-hd">
+                <h2>{{ t("bakini.n.co.delivery", "Delivery") }}</h2>
+                <span class="muted">{{ t("bakini.n.co.chooseNow", "Choose now or at checkout") }}</span>
+              </div>
+              <div class="dpv">
+                <button
+                  v-for="way in transportation_list"
+                  :key="way.type + (way.id || '')"
+                  :aria-pressed="delivery_info?.type === way.type ? 'true' : 'false'"
+                  class="dpv-o"
+                  type="button"
+                  @click="nx_pick_way(way)"
+                >
+                  <span class="dm-ic"><nx-icon :name="wayIcon(way.type)" /></span>
+                  <span class="dm-t"
+                    ><b>{{ wayTitleOf(way) }}</b><span v-if="way.time_spans?.length">{{ way.time_spans.join(" · ") }}</span></span
+                  >
+                  <span class="dm-fee">{{ nx_way_fee(way) }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
 
-      <div v-if="basket && basket.items && basket.items.length" class="k-cart__grid">
-        <!-- ▆▆▆▆▆▆▆▆ Left: lines, details, often added ▆▆▆▆▆▆▆▆ -->
-        <div class="k-cart__main">
-          <!-- Tario: the checkout reads as numbered steps. -->
-          <h2 class="t-step"><span>1</span>{{ t("bakini.basket.review", "Review your items") }}</h2>
-          <kalio-cart-lines :basket="basket" />
+          <aside class="cart-side">
+            <div :class="{ '-busy': busy_bill || refreshing_price }" class="rc-card">
+              <h2 class="serif">{{ t("bakini.n.co.receipt", "Receipt") }}</h2>
+              <div v-if="bill" class="rcpt">
+                <div class="ln">
+                  <span>{{ t("bakini.n.co.full", "Items at full price") }}</span><span class="money">{{ nx_money(nx_rc.full) }}</span>
+                </div>
+                <div v-if="nx_rc.save > 0" class="ln save">
+                  <span>{{ nx_save_label }}</span><span class="money">−{{ nx_money(nx_rc.save) }}</span>
+                </div>
+                <div v-if="nx_rc.offer > 0" class="ln save">
+                  <span>{{ t("bakini.n.co.offers", "Offers") }}</span><span class="money">−{{ nx_money(nx_rc.offer) }}</span>
+                </div>
+                <div class="ln">
+                  <span>{{ t("bakini.n.co.deliveryOf", "Delivery · {way}", { way: nx_delivery_label }) }}</span>
+                  <span>{{ nx_rc.delivery > 0 ? nx_money(nx_rc.delivery) : nx_rc.delivery === 0 ? t("bakini.n.co.free", "Free") : t("bakini.n.co.atCheckout", "At checkout") }}</span>
+                </div>
+                <div class="ln tot">
+                  <span>{{ t("bakini.n.co.total", "Total") }}</span><span class="money">{{ nx_money(nx_rc.total) }}</span>
+                </div>
+              </div>
+              <p v-else-if="!busy_bill" class="rc-pay"><nx-icon name="info" /><span>{{ t("bakini.n.co.billError", "We could not work out the bill. Please reload the page.") }}</span></p>
+              <button class="btn lg block" type="button" @click="nx_go_checkout">{{ t("bakini.n.co.checkout", "Checkout") }}<nx-icon name="arrow" /></button>
+              <p v-if="nx_cod_only" class="rc-pay"><nx-icon name="cash" /><span>{{ t("bakini.n.co.codNote", "Cash on delivery — pay the courier when it arrives.") }}</span></p>
+            </div>
+          </aside>
+        </div>
+      </section>
+      <nx-row
+        v-if="nx_often.length"
+        :accent="t('bakini.n.co.oftenEm', 'with your bag.')"
+        :eyebrow="t('bakini.n.co.oftenEyebrow', 'Often added')"
+        :items="nx_often"
+        :title="t('bakini.n.co.oftenH', 'Pairs well')"
+      />
+    </template>
 
+    <!-- ▆▆▆▆ Checkout ▆▆▆▆ -->
+    <div v-else class="co-stage">
+      <section class="wrap co-top">
+        <div class="co-title">
+          <div>
+            <nav :aria-label="t('bakini.n.co.crumbs', 'Breadcrumb')" class="crumbs">
+              <a href="#" @click.prevent="nx_go_bag">{{ t("bakini.n.co.bag", "Bag") }}</a><nx-icon name="right" /><span aria-current="page">{{ t("bakini.n.co.checkout", "Checkout") }}</span>
+            </nav>
+            <h1 class="serif">{{ t("bakini.n.co.check", "Check") }}<em>{{ t("bakini.n.co.out", "out.") }}</em></h1>
+          </div>
+          <ol :aria-label="t('bakini.n.co.steps', 'Checkout steps')" class="steps">
+            <li v-for="(s, i) in nx_steps" :key="s.key" :aria-current="s.state === 'cur' ? 'step' : undefined" :class="['sp', s.state]">
+              <a v-if="s.key === 'bag'" href="#" @click.prevent="nx_go_bag"
+                ><span class="sp-n"><nx-icon name="check" /></span>{{ s.label }}</a
+              >
+              <a v-else :href="'#' + s.anchor" @click.prevent="nx_scroll_to(s.anchor)"
+                ><span class="sp-n"><nx-icon v-if="s.state === 'done'" name="check" /><template v-else>{{ i + 1 }}</template></span>{{ s.label }}</a
+              >
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="wrap co">
+        <div class="co-main">
+          <!-- 1. Contact -->
+          <section id="co-details" class="gcard">
+            <div class="gc-hd">
+              <span class="gc-n">1</span>
+              <h2>{{ t("bakini.n.co.contact", "Contact") }}</h2>
+              <a v-if="!user" class="link" href="#" @click.prevent="NeedLogin">{{ t("bakini.n.co.signIn", "Sign in") }}</a>
+            </div>
+            <template v-if="user">
+              <p class="muted gc-sub">{{ t("bakini.n.co.signedAs", "Signed in as {name}.", { name: user.name || user.email || "" }) }}</p>
+            </template>
+            <p v-else-if="busy_user" class="muted gc-sub">{{ t("bakini.n.co.checking", "Checking your sign-in…") }}</p>
+            <p v-else-if="has_guest_payment" class="muted gc-sub">{{ t("bakini.n.co.noAccount", "No account needed — we only use these for this order.") }}</p>
+            <p v-else class="muted gc-sub">{{ t("bakini.n.co.signInToOrder", "Sign in to place the order.") }}</p>
+            <div class="fgrid">
+              <label id="co-f-email" :class="['fld', { err: nx_touched.email && !nx_email_ok }]">
+                <span>{{ t("bakini.n.co.email", "Email") }}</span>
+                <input
+                  :disabled="!!user || (!user && !has_guest_payment)"
+                  :value="nx_email"
+                  autocomplete="email"
+                  inputmode="email"
+                  name="email"
+                  placeholder="you@example.com"
+                  type="email"
+                  @blur="nx_save_contact"
+                  @input="nx_email = $event.target.value"
+                />
+                <small class="hint">{{ nx_touched.email && !nx_email_ok ? t("bakini.n.co.emailHint", "Add a valid email") : "" }}</small>
+              </label>
+              <label v-if="has_delivery && !isService" id="co-f-phone" :class="['fld', { err: nx_touched.phone && !nx_phone_ok }]">
+                <span>{{ t("bakini.n.co.phone", "Phone") }}</span>
+                <input :value="nx_phone" autocomplete="tel" dir="ltr" name="phone" placeholder="+1 …" type="tel" @blur="nx_save_contact" @input="nx_phone = $event.target.value" />
+                <small class="hint">{{ nx_touched.phone && !nx_phone_ok ? t("bakini.n.co.phoneHint", "Add a phone number") : "" }}</small>
+              </label>
+            </div>
+            <button v-if="!user && !has_guest_payment" class="btn" style="margin-top: 14px" type="button" @click="NeedLogin">{{ t("bakini.n.co.signIn", "Sign in") }}</button>
+          </section>
+
+          <!-- 2. Delivery method and its window (Selldone's shipping options) -->
+          <section v-if="has_delivery && !isService && bill" id="co-delivery" class="gcard">
+            <div class="gc-hd">
+              <span class="gc-n">2</span>
+              <h2>{{ t("bakini.n.co.method", "Delivery method") }}</h2>
+              <button class="link" type="button" @click="delivery_sheet = true">{{ t("bakini.n.co.allDetails", "All details") }}</button>
+            </div>
+            <s-shop-connect-shipping-options
+              :basket="basket"
+              :start-package-index="0"
+              @change="
+                (connect_shippings) => {
+                  delivery_info.connect_shippings = connect_shippings;
+                  setBasketConfig();
+                }
+              "
+            ></s-shop-connect-shipping-options>
+            <s-order-shipping-vendors-options
+              :basket="basket"
+              :deliveryInfo="delivery_info"
+              :start-package-index="bill?.connect_shipping_options?.length"
+              @set-basket-config="setBasketConfig"
+            ></s-order-shipping-vendors-options>
+            <s-order-shipping-stores-options
+              v-if="!delivery_sheet"
+              :basket="basket"
+              :delivery-info="delivery_info"
+              :start-package-index="bill?.connect_shipping_options?.length + bill?.vendor_shipping_options?.length"
+              @set-basket-config="setBasketConfig"
+            ></s-order-shipping-stores-options>
+          </section>
+
+          <!-- 3. Delivery address, or the pickup counter -->
+          <section v-if="has_delivery" id="co-address" class="gcard">
+            <div class="gc-hd">
+              <span class="gc-n">{{ has_delivery && !isService && bill ? 3 : 2 }}</span>
+              <h2>{{ nx_is_pickup ? t("bakini.n.co.pickupCounter", "Pickup counter") : isService ? t("bakini.n.co.serviceAddress", "Service address") : t("bakini.n.co.address", "Delivery address") }}</h2>
+            </div>
+            <div v-if="nx_is_pickup" class="addr-card pk">
+              <span class="dm-ic"><nx-icon name="store" /></span>
+              <div>
+                <b><bdi>{{ receiver_info?.name || receiver_info?.title || nx_pickup_point?.name }}</bdi></b>
+                <span
+                  ><bdi>{{ [receiver_info?.address, receiver_info?.city, receiver_info?.postal].filter(Boolean).join(", ") }}</bdi
+                  ><template v-if="receiver_info?.message || nx_pickup_point?.message">{{ " · " + (nx_pickup_point?.message || "") }}</template></span
+                >
+              </div>
+            </div>
+            <div v-else-if="nx_has_address" class="addr-card">
+              <span class="dm-ic"><nx-icon name="pin" /></span>
+              <div>
+                <b v-if="receiver_info.name"><bdi>{{ receiver_info.name }}</bdi></b>
+                <span><bdi>{{ address_line }}</bdi><template v-if="receiver_info.city">{{ ", " + [receiver_info.city, receiver_info.state, receiver_info.postal].filter(Boolean).join(" ") }}</template></span>
+                <span v-if="receiver_info.phone" dir="ltr">{{ receiver_info.phone }}</span>
+              </div>
+              <button class="btn ghost sm" type="button" @click="openAddress()"><nx-icon name="edit" />{{ t("bakini.n.co.change", "Change") }}</button>
+            </div>
+            <div v-else :class="['addr-card', 'none', { err: nx_touched.address }]">
+              <span class="dm-ic"><nx-icon name="pin" /></span>
+              <div>
+                <b>{{ t("bakini.n.co.noAddress", "No delivery address yet") }}</b>
+                <span>{{ no_map ? t("bakini.n.co.noAddressP0", "Add the receiver and the street.") : t("bakini.n.co.noAddressP", "Drop a pin on the map, then add the receiver and street.") }}</span>
+              </div>
+              <button class="btn sm" type="button" @click="openAddress()"><nx-icon name="pin" />{{ no_map ? t("bakini.n.co.addAddress", "Add your address") : t("bakini.n.co.addOnMap", "Add on the map") }}</button>
+            </div>
+          </section>
+
+          <!-- 4. Billing -->
+          <section id="co-billing" class="gcard">
+            <div class="gc-hd">
+              <span class="gc-n">{{ (has_delivery && !isService && bill ? 3 : 2) + (has_delivery ? 1 : 0) }}</span>
+              <h2>{{ t("bakini.n.co.billing", "Billing") }}</h2>
+            </div>
+            <div class="bill">
+              <button :aria-pressed="!nx_billing_custom ? 'true' : 'false'" class="bill-o" type="button" @click="nx_set_billing(false)">
+                <span class="rd"></span
+                ><span
+                  ><b>{{ t("bakini.n.co.same", "Same as delivery") }}</b
+                  ><span>{{ nx_is_pickup ? t("bakini.n.co.sameReceiver", "Use the receiver details") : t("bakini.n.co.sameAddress", "Use the delivery address") }}</span></span
+                >
+              </button>
+              <button :aria-pressed="nx_billing_custom ? 'true' : 'false'" class="bill-o" type="button" @click="nx_set_billing(true)">
+                <span class="rd"></span
+                ><span
+                  ><b>{{ t("bakini.n.co.other", "Different billing address") }}</b><span>{{ t("bakini.n.co.otherP", "Add another name and address") }}</span></span
+                >
+              </button>
+            </div>
+            <s-shop-billing-address-form
+              v-if="nx_billing_custom"
+              v-model="billing"
+              :receiver-info="receiver_info"
+              class="nx-billform"
+              force-show-form
+              @change="setBasketConfig"
+            ></s-shop-billing-address-form>
+          </section>
+
+          <!-- 5. Note for the bakery (the receiver's note) -->
+          <section v-if="has_delivery && !isService" id="co-note" class="gcard">
+            <div class="gc-hd">
+              <span class="gc-n">{{ (has_delivery && !isService && bill ? 4 : 3) + (has_delivery ? 1 : 0) }}</span>
+              <h2>{{ t("bakini.n.co.note", "Note for the bakery") }}</h2>
+              <span class="muted">{{ t("bakini.n.co.optional", "Optional") }}</span>
+            </div>
+            <label class="fld">
+              <span class="vh">{{ t("bakini.n.co.note", "Note for the bakery") }}</span>
+              <textarea
+                :placeholder="t('bakini.n.co.notePh', 'Anything about this order — for example a door code or a pickup time.')"
+                :value="nx_note_value"
+                name="note"
+                @blur="setBasketConfig"
+                @input="nx_note_value = $event.target.value"
+              ></textarea>
+            </label>
+          </section>
+
+          <!-- The shop's own checkout questions (Selldone) -->
+          <s-order-checkout-form
+            :key="'socf-' + basket?.id"
+            v-model="form"
+            :country="receiver_info?.country ? receiver_info.country : billing?.country"
+            class="nx-coform"
+            @changed="setBasketConfig"
+          ></s-order-checkout-form>
+
+          <!-- Coupons and prizes, only when the shopper has some -->
           <s-storefront-coupons-list
             v-if="!isSubscription"
             v-model="basket.coupon"
             :basket="basket"
-            class="k-cart__offers"
+            class="nx-offers"
             return-object
             selectable
             @loading="(val) => (refreshing_price = val)"
             @update:model-value="selectCoupon"
           ></s-storefront-coupons-list>
-
           <s-storefront-lottery-prizes-list
             v-if="!isSubscription"
             v-model="basket.lottery"
             :basket="basket"
-            class="k-cart__offers"
+            class="nx-offers"
             return-object
             selectable
             @loading="(val) => (refreshing_price = val)"
             @update:model-value="selectLottery"
           ></s-storefront-lottery-prizes-list>
-
-          <h2 class="t-step"><span>2</span>{{ t("bakini.k.basket.deliveryContact", "Delivery & contact") }}</h2>
-          <div :class="`-n${detail_cards}`" class="k-cart__details">
-            <!-- Delivery method (and when): "When · Truck" read as nonsense
-                 to the owner (6 November 2026); the method is the heading's
-                 subject, the time its chip. -->
-            <section v-if="show_when" class="k-cart__detail">
-              <h3><span class="k-cart__ico"><v-icon size="18">local_shipping</v-icon></span>{{ t("basket.delivery.title", "Delivery method") }}</h3>
-              <p>{{ when_text }}</p>
-              <div class="k-cart__chips">
-                <span v-if="when_chip" class="k-cart__chip -on">{{ when_chip }}</span>
-                <button class="k-cart__chip" type="button" @click="delivery_sheet = true">
-                  {{ when_chip ? t("basket.change", "Change") : t("basket.choose", "Choose") }}
-                </button>
-              </div>
-            </section>
-
-            <!-- Where -->
-            <section v-if="has_delivery" :class="{ '-todo': !is_valid_location }" class="k-cart__detail">
-              <h3><span class="k-cart__ico"><v-icon size="18">place</v-icon></span>{{ t("basket.where.title", "Where") }}</h3>
-              <template v-if="is_valid_location && receiver_info?.address">
-                <p class="k-cart__addr">
-                  <b v-if="receiver_info.name">{{ receiver_info.name }}</b>
-                  {{ address_line }}
-                  <span v-if="receiver_info.phone" class="k-cart__phone">{{ receiver_info.phone }}</span>
-                </p>
-                <p v-if="error_message_payment" class="k-cart__need">
-                  <v-icon size="16">error_outline</v-icon>{{ error_message_payment }}
-                </p>
-                <button class="k-cart__link" type="button" @click="openAddress()">
-                  {{ error_message_payment ? t("basket.where.addMissing", "Add the missing details") : t("basket.change", "Change") }}
-                </button>
-              </template>
-              <template v-else>
-                <p>
-                  {{
-                    isService
-                      ? t("basket.where.service", "Where the service takes place.")
-                      : all_is_pickup
-                        ? t("basket.where.billing", "Your billing address.")
-                        : t("bakini.k.address.lede", "Your address, for the receipt and the delivery.")
-                  }}
-                </p>
-                <button class="k-cart__map" type="button" @click="openAddress()">
-                  <v-icon size="18">place</v-icon>{{ no_map ? t("basket.addAddress", "Add your address") : t("basket.where.addOnMap", "Add on the map") }}
-                </button>
-              </template>
-            </section>
-
-            <!-- Who -->
-            <section class="k-cart__detail">
-              <h3><span class="k-cart__ico"><v-icon size="18">mail_outline</v-icon></span>{{ t("basket.who.title", "Who") }}</h3>
-              <template v-if="user">
-                <div class="k-cart__user">
-                  <img :src="getUserAvatar(user.id)" alt="" height="36" width="36" />
-                  <span>
-                    <b>{{ user.name }}</b>
-                    <small>{{ user.email || user.phone }}</small>
-                  </span>
-                </div>
-              </template>
-              <!-- Back from signing in (Google and the rest come back to this
-                   page), the account is still on its way: not "Sign in". -->
-              <p v-else-if="busy_user" class="k-cart__user -wait">
-                <v-progress-circular indeterminate size="18" width="2" />{{ t("basket.who.checking", "Checking your sign-in…") }}
-              </p>
-              <template v-else-if="has_guest_payment">
-                <p>
-                  {{ t("basket.who.receipt", "We send the receipt here.") }}
-                  <button class="k-cart__link -inline" type="button" @click="NeedLogin">{{ t("common.signIn", "Sign in") }}</button>
-                </p>
-                <input
-                  v-model.trim="guest_email"
-                  :class="{ '-error': guest_email_touched && !guest_email_ok }"
-                  :aria-label="t('basket.who.email', 'Email')"
-                  autocomplete="email"
-                  class="k-cart__input"
-                  inputmode="email"
-                  :placeholder="t('basket.who.email', 'Email')"
-                  type="email"
-                  @blur="onGuestEmail"
-                />
-                <small v-if="guest_email_touched && !guest_email_ok" class="k-cart__need">
-                  <v-icon size="16">error_outline</v-icon>{{ t("basket.who.emailHint", "Enter an email like name@example.com") }}
-                </small>
-              </template>
-              <template v-else>
-                <p>{{ t("basket.who.signInToOrder", "Sign in to place the order.") }}</p>
-                <button class="k-btn k-btn--solid" type="button" @click="NeedLogin">{{ t("common.signIn", "Sign in") }}</button>
-              </template>
-            </section>
-          </div>
-
-          <!-- Billing address and the shop's own checkout questions -->
-          <section v-if="canPayAndComplete" class="k-cart__more">
-            <p class="k-eyebrow">{{ t("basket.billing", "Billing") }}</p>
-            <s-shop-billing-address-form
-              v-model="billing"
-              :receiver-info="receiver_info"
-              @change="setBasketConfig"
-            ></s-shop-billing-address-form>
-          </section>
-          <s-order-checkout-form
-            :key="'socf-' + basket?.id /*Force update*/"
-            v-model="form"
-            :country="receiver_info?.country ? receiver_info.country : billing?.country"
-            class="k-cart__form"
-            @changed="setBasketConfig"
-          ></s-order-checkout-form>
         </div>
 
-        <!-- ▆▆▆▆▆▆▆▆ Right: the receipt ▆▆▆▆▆▆▆▆ -->
-        <aside class="k-cart__side">
-          <div :class="{ '-busy': busy_bill || refreshing_price }" class="k-cart__receipt">
-            <u-loading-progress v-if="busy_save"></u-loading-progress>
-            <h2 class="t-step -summary"><span>3</span>{{ t("bakini.k.basket.summary", "Order summary") }} <small>· {{ t("bakini.basket.count", { one: "{n} item", other: "{n} items" }, { n: units }) }}</small></h2>
-            <div class="k-cart__top">
-              <p class="k-cart__total">
-                <u-loading-ellipsis v-if="busy_bill" css-mode light></u-loading-ellipsis>
-                <u-price v-else :amount="final_price" :currency="basket.currency"></u-price>
-                <small v-if="isSubscription && subscription_period_obj">/ {{ $t(subscription_period_obj.title) }}</small>
-              </p>
-              <span v-if="saved_total >= 0.01" class="k-cart__save">
-                {{ save_words[0] }}<u-price :amount="saved_total" :currency="basket.currency"></u-price>{{ save_words[1] }}
-              </span>
+        <!-- The floating receipt -->
+        <aside id="co-pay" class="co-side">
+          <div :class="['rc-card', 'float', { '-busy': busy_bill || refreshing_price || busy_save }]">
+            <div class="rc-hd">
+              <h2 class="serif">{{ t("bakini.n.co.yourOrder", "Your order") }}</h2>
+              <a class="link" href="#" @click.prevent="nx_go_bag">{{ t("bakini.n.co.editBag", "Edit bag") }}</a>
             </div>
-
-            <div v-if="bill" class="k-cart__rows">
-              <p class="k-cart__row">
-                <span>{{ t("basket.receipt.items", "Items ({n})", { n: units }) }}</span><u-price :amount="raw_items_price" :currency="basket.currency"></u-price>
-              </p>
-              <p v-if="total_items_discount" class="k-cart__row -save">
-                <span>{{ t("basket.receipt.youSave", "You save") }}</span><span>−<u-price :amount="total_items_discount" :currency="basket.currency"></u-price></span>
-              </p>
-              <p v-if="total_offers_amount" class="k-cart__row -save">
-                <span>{{ t("basket.receipt.offers", "Offers") }}</span><span>−<u-price :amount="total_offers_amount" :currency="basket.currency"></u-price></span>
-              </p>
-              <p v-if="cross_selling_discount > 0" class="k-cart__row -save">
-                <span>{{ t("basket.receipt.boughtTogether", "Bought together") }}</span><span>−<u-price :amount="cross_selling_discount" :currency="basket.currency"></u-price></span>
-              </p>
-              <p v-if="discount_code_amount > 0" class="k-cart__row -save">
-                <span>{{ discount_code?.code ? t("basket.receipt.codeNamed", "Code {code}", { code: discount_code.code }) : t("basket.receipt.code", "Code") }}</span>
-                <span>−<u-price :amount="discount_code_amount" :currency="basket.currency"></u-price></span>
-              </p>
-              <p v-if="customer_club_discount > 0" class="k-cart__row -save">
-                <span>{{ t("basket.receipt.club", "Club") }}</span><span>−<u-price :amount="customer_club_discount" :currency="basket.currency"></u-price></span>
-              </p>
-              <p v-if="coupon" class="k-cart__row -save">
-                <span>{{ coupon.title || $t("global.commons.coupon") }}</span>
-                <span>−<u-price :amount="coupon_discount" :currency="basket.currency"></u-price></span>
-              </p>
-              <p v-if="prize" class="k-cart__row -save">
-                <span>{{ prize.title || $t("global.commons.prize") }}</span>
-                <span v-if="prize.discount || prize.amount">−<u-price :amount="prize_discount" :currency="basket.currency"></u-price></span>
-                <span v-else-if="prize.product">{{ prize.product.title }}</span>
-              </p>
-              <p v-if="wallet" class="k-cart__row -save">
-                <span>{{ $t("global.commons.my_wallet") }}</span><span>−<u-price :amount="wallet" :currency="basket.currency"></u-price></span>
-              </p>
-              <p v-if="!isService && receiver_info && is_valid_location" :class="{ '-free': shipping_cost === 0 }" class="k-cart__row">
-                <span>{{ all_is_pickup ? t("basket.receipt.pickup", "Pickup") : t("basket.receipt.delivery", "Delivery") }}</span>
-                <u-price v-if="shipping_cost > 0" :amount="shipping_cost" :currency="basket.currency"></u-price>
-                <span v-else-if="shipping_cost === 0">{{ t("shipping.free", "Free") }}</span>
-                <span v-else>{{ t("shipping.paidOnDelivery", "Paid on delivery") }}</span>
-              </p>
-              <p v-if="bill.tax" class="k-cart__row">
-                <span>{{ $t("global.commons.tax") }}</span><u-price :amount="bill.tax" :currency="basket.currency"></u-price>
-              </p>
-              <p v-if="bill.tax_shipping" class="k-cart__row">
-                <span>{{ $t("global.commons.shipping_tax") }}</span><u-price :amount="bill.tax_shipping" :currency="basket.currency"></u-price>
-              </p>
+            <div class="rc-items">
+              <div v-for="it in nx_lines" :key="it.id" :style="{ '--bk-hue': hueOf(it.product?.category_id) }" class="rc-it">
+                <span class="th"><img :src="nx_img(it)" alt="" class="cut" /><i>{{ nx_shown(it) }}</i></span>
+                <span class="nm">{{ it.product?.title }}</span>
+                <span class="money">{{ nx_money(it.price * nx_shown(it)) }}</span>
+              </div>
             </div>
-            <p v-else-if="!busy_bill" class="k-cart__need">
-              <v-icon size="16">error_outline</v-icon>{{ t("basket.receipt.billError", "We could not work out the bill. Please reload the page.") }}
+            <div v-if="bill" class="rcpt">
+              <div class="ln">
+                <span>{{ t("bakini.n.co.full", "Items at full price") }}</span><span class="money">{{ nx_money(nx_rc.full) }}</span>
+              </div>
+              <div v-if="nx_rc.save > 0" class="ln save">
+                <span>{{ nx_save_label }}</span><span class="money">−{{ nx_money(nx_rc.save) }}</span>
+              </div>
+              <div v-if="nx_rc.offer > 0" class="ln save">
+                <span>{{ t("bakini.n.co.offers", "Offers") }}</span><span class="money">−{{ nx_money(nx_rc.offer) }}</span>
+              </div>
+              <div v-if="discount_code_amount > 0" class="ln save">
+                <span>{{ discount_code?.code ? t("bakini.n.co.codeNamed", "Code {code}", { code: discount_code.code }) : t("bakini.n.co.code", "Code") }}</span
+                ><span class="money">−{{ nx_money(discount_code_amount) }}</span>
+              </div>
+              <div v-if="coupon && coupon_discount > 0" class="ln save">
+                <span>{{ coupon.title || $t("global.commons.coupon") }}</span><span class="money">−{{ nx_money(coupon_discount) }}</span>
+              </div>
+              <div v-if="customer_club_discount > 0" class="ln save">
+                <span>{{ t("bakini.n.co.club", "Club") }}</span><span class="money">−{{ nx_money(customer_club_discount) }}</span>
+              </div>
+              <div v-if="wallet" class="ln save">
+                <span>{{ $t("global.commons.my_wallet") }}</span><span class="money">−{{ nx_money(wallet) }}</span>
+              </div>
+              <div v-if="!isService" class="ln">
+                <span>{{ nx_delivery_label }}</span>
+                <span>{{ nx_rc.delivery > 0 ? nx_money(nx_rc.delivery) : nx_rc.delivery === 0 ? t("bakini.n.co.free", "Free") : t("bakini.n.co.atDoor", "On delivery") }}</span>
+              </div>
+              <div v-if="bill.tax" class="ln">
+                <span>{{ $t("global.commons.tax") }}</span><span class="money">{{ nx_money(bill.tax) }}</span>
+              </div>
+              <div class="ln tot">
+                <span>{{ nx_cod_only ? t("bakini.n.co.payOnDelivery", "Pay on delivery") : t("bakini.n.co.total", "Total") }}</span><span class="money">{{ nx_money(nx_rc.total) }}</span>
+              </div>
+            </div>
+            <p v-if="nx_way_line" class="rc-line">
+              <nx-icon :name="wayIcon(nx_way?.type)" /><span>{{ nx_way_line }}</span>
             </p>
-
-            <!-- Lottery prize with sizes: the shopper picks one -->
-            <v-menu v-if="prize_available_variants && lottery_win_selected_variant">
-              <template v-slot:activator="{ props }">
-                <div class="k-cart__prize" v-bind="props">
-                  <variant-item-mini :product-variant="lottery_win_selected_variant" force-enable selected />
-                  <v-icon>expand_more</v-icon>
-                </div>
-              </template>
-              <v-sheet class="py-2" color="#fff">
-                <variant-item-mini
-                  v-for="(product_variant, index) in prize_available_variants"
-                  :key="index"
-                  :product-variant="product_variant"
-                  :selected="product_variant === lottery_win_selected_variant"
-                  class="m-2"
-                  @select="lottery_win_selected_variant = product_variant"
-                />
-              </v-sheet>
-            </v-menu>
-
-            <div v-if="!isSubscription" class="k-cart__code">
+            <div v-if="!isSubscription" class="nx-code">
               <s-discount-code-input
                 v-model="basket.discount_code"
                 :basket="basket"
@@ -300,160 +418,80 @@
                 @loading="(val) => (refreshing_price = val)"
                 @update:model-value="selectDiscountCode"
               />
-              <p v-if="discount_code" class="k-cart__code-info">
-                <b>{{ discount_code.title }}</b> {{ discount_code.description }}
-              </p>
             </div>
-
-            <div v-if="bill?.user_messages?.length" class="k-cart__messages">
-              <p v-for="(msg, i) in bill.user_messages" :key="i"><v-icon size="16">info</v-icon><span v-html="msg"></span></p>
+            <div v-if="nx_missing.length" class="rc-miss" data-miss role="status">
+              <b>{{ t("bakini.n.co.beforePlace", "Before you place the order, add:") }}</b>
+              <ul>
+                <li v-for="x in nx_missing" :key="x.key">
+                  <button type="button" @click="nx_goto(x.key)">{{ x.label }}</button>
+                </li>
+              </ul>
             </div>
-
-            <p v-if="extra_shipping_counts" class="k-cart__note">
-              <v-icon size="16">local_shipping</v-icon>
-              {{ $t("basket_page.extra_shipping_count", { count: has_custom_delivery ? 1 + extra_shipping_counts : extra_shipping_counts }) }}
+            <div v-if="nx_no_gateway" class="pay-none-c">
+              <span class="ec"><nx-icon name="lock" /></span>
+              <div>
+                <b>{{ t("bakini.n.co.noPayT", "This shop is not taking payment right now") }}</b>
+                <span>{{ nx_facts.phone ? t("bakini.n.co.noPayP", "Your bag is saved. Please try again later, or contact the bakery on {phone}.", { phone: nx_facts.phone }) : t("bakini.n.co.noPayP0", "Your bag is saved. Please try again later.") }}</span>
+              </div>
+            </div>
+            <p v-else-if="pay_blocker && !nx_missing.length" class="rc-pay"><nx-icon name="info" /><span>{{ pay_blocker }}</span></p>
+            <button v-if="!nx_no_gateway" :disabled="busy_submit" class="btn lg block" type="button" @click="nx_place">
+              <span v-if="busy_save || busy_bill || busy_submit" class="nx-spin" aria-hidden="true"></span>{{ nx_place_label }}
+            </button>
+            <p class="rc-pay">
+              <nx-icon name="lock" /><span>{{
+                nx_cod_only
+                  ? nx_is_pickup
+                    ? t("bakini.n.co.cashPickup", "Nothing is charged online. You pay in cash at the counter or to the courier.")
+                    : t("bakini.n.co.cash", "Nothing is charged online. You pay the courier in cash.")
+                  : t("bakini.n.co.secure", "You choose how to pay in the next step.")
+              }}</span>
             </p>
-
-            <!-- Pay, or what is still needed to pay -->
-            <div
-              v-intersect="(isIntersecting) => (intersect_payment_btn = isIntersecting)"
-              class="k-cart__pay"
-            >
-              <p v-if="pay_blocker" class="k-cart__need -center">
-                <v-icon size="16">error_outline</v-icon>{{ pay_blocker }}
-              </p>
-              <button
-                :class="{ '-off': !can_press_pay }"
-                :disabled="busy_submit"
-                class="k-cart__go"
-                type="button"
-                @click="onPay"
-              >
-                <v-progress-circular v-if="busy_save || busy_bill || busy_submit" indeterminate size="20" width="2" />
-                <v-icon v-else size="20">{{ is_service_need_pricing ? "check_circle" : "lock" }}</v-icon>
-                {{ pay_label }}
-                <template v-if="final_price > 0 && !is_service_need_pricing">
-                  <span aria-hidden="true" class="k-cart__dot">·</span>
-                  <u-price :amount="final_price" :currency="basket.currency"></u-price>
-                </template>
-              </button>
-              <p v-if="can_pay_cod" class="k-cart__note -center">
-                <v-icon size="16">payments</v-icon>{{ $t("basket_page.can_pay_cod_message") }}
-              </p>
-            </div>
-
-            <u-payment-stripe-split
-              v-if="canPayAndComplete && !isService"
-              :basket="basket"
-              :country-code="receiver_info?.country"
-            ></u-payment-stripe-split>
           </div>
         </aside>
-
-        <kalio-often-added :count="4" class="k-cart__often" />
-      </div>
-
-      <!-- Kalio: an empty basket is a starting point, so it offers the way back
-           to the aisles instead of only announcing itself. The heading keeps
-           the translated platform string. -->
-      <div v-else class="k-basket-empty bk-empty -page">
-        <span aria-hidden="true" class="bk-empty__ic"><span class="ms">shopping_bag</span></span>
-        <h1 class="bk-empty__t">{{ t("bakini.basket.emptyT", "Your bag is empty") }}</h1>
-        <p class="bk-empty__p">{{ t("bakini.basket.emptyP", "Find something you love and it will wait for you here.") }}</p>
-        <router-link :to="{ name: window.$storefront.routes.SHOP_PAGE, query: { sort: 'newest' } }" class="bk-btn">{{ t("bakini.basket.continue", "Continue shopping") }}</router-link>
-        <router-link :to="{ name: window.$storefront.routes.SHOP_PAGE, query: { filter: JSON.stringify({ only_has_discount: true }) } }" class="bk-btn -line">{{ t("bakini.basket.shopDeals", "Shop today’s deals") }}</router-link>
-      </div>
-
-      <div v-if="busy_shop" class="busy-overlay">
-        <div class="text-h4 font-weight-thin">
-          <v-icon class="me-2" size="large">hourglass_empty</v-icon>
-          {{ $t("global.commons.waiting") }}...
-        </div>
-      </div>
+      </section>
     </div>
 
-    <!-- On a phone: the total and Pay stay at the foot of the window
-         while the receipt's own button is out of view. -->
-    <div
-      v-if="basket?.items?.length && !intersect_payment_btn"
-      class="k-cart__bar"
-    >
-      <span class="k-cart__bar-total">
-        <small>{{ t("basket.bar.total", "Total") }}</small>
-        <u-price :amount="final_price" :currency="basket.currency"></u-price>
-      </span>
-      <button :class="{ '-off': !can_press_pay }" class="k-cart__go" type="button" @click="onPay">
-        <v-icon size="20">{{ is_service_need_pricing ? "check_circle" : "lock" }}</v-icon>{{ pay_label_short }}
-      </button>
-    </div>
-
-    <!-- ▆▆▆▆▆▆▆▆ When: the shipping options, in a sheet ▆▆▆▆▆▆▆▆ -->
-    <v-dialog
-      v-if="basket && !isService"
-      v-model="delivery_sheet"
-      :fullscreen="$vuetify.display.xs"
-      class="k-sheet-dialog"
-      content-class="k-sheet-host"
-      eager
-      max-width="580"
-      scrollable
-      :transition="$vuetify.display.xs ? 'dialog-bottom-transition' : 'dialog-transition'"
-    >
-      <div class="k-sheet">
-        <div class="k-sheet__head">
-          <div>
-            <h2>{{ t("shipping.sheet.title", "How should it reach you?") }}</h2>
-            <p>{{ t("shipping.sheet.lede", "The delivery method, and a day and time if you want one.") }}</p>
+    <!-- ▆▆▆▆ The delivery sheet (delivery-b): every way, its windows, the counter ▆▆▆▆ -->
+    <teleport to="body">
+      <div class="nx nx-buy-layers">
+        <div :class="['scrim', { open: delivery_sheet }]" @click="delivery_sheet = false"></div>
+        <div id="dlsheet" :class="['dialog', { open: delivery_sheet }]" aria-labelledby="dl-t" aria-modal="true" role="dialog" style="--bk-dw: 720px" @keydown.esc="delivery_sheet = false">
+          <button :aria-label="t('bakini.n.co.close', 'Close')" class="iconbtn x" type="button" @click="delivery_sheet = false"><nx-icon name="close" /></button>
+          <div v-if="delivery_sheet && basket && bill" class="sh-in">
+            <p class="eyebrow">{{ t("bakini.n.co.delivery", "Delivery") }}</p>
+            <h2 id="dl-t" class="sh-h">{{ t("bakini.n.co.howReach", "How should it reach you?") }}</h2>
+            <s-order-shipping-stores-options
+              :basket="basket"
+              :delivery-info="delivery_info"
+              :start-package-index="bill?.connect_shipping_options?.length + bill?.vendor_shipping_options?.length"
+              class="nx-dlsheet"
+              @set-basket-config="setBasketConfig"
+            ></s-order-shipping-stores-options>
+            <div class="sh-foot">
+              <button class="btn lg" type="button" @click="delivery_sheet = false">{{ t("bakini.n.co.done", "Done") }}</button>
+            </div>
           </div>
-          <button :aria-label="t('common.close', 'Close')" class="k-sheet__x" type="button" @click="delivery_sheet = false">
-            <v-icon>close</v-icon>
-          </button>
-        </div>
-        <div class="k-sheet__body">
-          <s-shop-connect-shipping-options
-            :basket="basket"
-            :start-package-index="0"
-            @change="
-              (connect_shippings) => {
-                delivery_info.connect_shippings = connect_shippings;
-                setBasketConfig();
-              }
-            "
-          ></s-shop-connect-shipping-options>
-          <s-order-shipping-vendors-options
-            :basket="basket"
-            :deliveryInfo="delivery_info"
-            :start-package-index="bill?.connect_shipping_options?.length"
-            @set-basket-config="setBasketConfig"
-          ></s-order-shipping-vendors-options>
-          <s-order-shipping-stores-options
-            :basket="basket"
-            :delivery-info="delivery_info"
-            :start-package-index="bill?.connect_shipping_options?.length + bill?.vendor_shipping_options?.length"
-            @set-basket-config="setBasketConfig"
-          ></s-order-shipping-stores-options>
-          <p v-if="extra_shipping_counts" class="k-cart__note">
-            <v-icon size="16">info</v-icon>{{ $t("basket_page.extra_shipping_message") }}
-          </p>
-        </div>
-        <div class="k-sheet__foot">
-          <button class="k-sheet__go" type="button" @click="delivery_sheet = false">{{ t("common.done", "Done") }}</button>
         </div>
       </div>
-    </v-dialog>
+    </teleport>
 
-    <!-- ▆▆▆▆▆▆▆▆ Where: the address sheet (replaces Selldone's full-screen map) ▆▆▆▆▆▆▆▆ -->
+    <!-- ▆▆▆▆ The address sheet (map-b; map on or off) ▆▆▆▆ -->
     <kalio-address-sheet
       v-if="has_delivery"
       v-model="address_sheet"
       :center="center"
       :countries="$shop.countries?.length ? $shop.countries : null"
-      :heading="isService ? t('address.title.service', 'Where should we come?') : all_is_pickup ? t('address.title.billing', 'Your billing address') : t('address.title.go', 'Where should it go?')"
-      :lede="isService ? t('address.lede.service', 'The address for the service.') : t('bakini.k.address.lede', 'Your address, for the receipt and the delivery.')"
+      :heading="isService ? t('bakini.n.co.whereService', 'Where should we come?') : no_map ? t('bakini.n.co.yourAddress', 'Your address') : t('bakini.n.co.setPin', 'Set the pin')"
+      :lede="t('bakini.n.co.addressLede', 'Delivery address')"
       :no-map="no_map"
-      :receiver-info="receiver_info"
+      :receiver-info="nx_receiver_is_pickup ? {} : receiver_info"
       @save="onClickSetLocation"
     />
+
+    <div v-if="busy_shop" class="busy-overlay">
+      <div class="text-h4 font-weight-thin">{{ $t("global.commons.waiting") }}...</div>
+    </div>
   </div>
 </template>
 
@@ -497,6 +535,10 @@ import KalioCartLines from "../../../components/kalio/checkout/KalioCartLines.vu
 import KalioOftenAdded from "../../../components/kalio/KalioOftenAdded.vue";
 import KalioAddressSheet from "../../../components/kalio/checkout/KalioAddressSheet.vue";
 import { formatDate, t } from "../../../components/kalio/i18n/kalio-i18n";
+import NoirCart from "../../../components/bakini/noir/buy/noir-cart";
+import NxIcon from "../../../components/bakini/noir/NxIcon.vue";
+import NxLineQb from "../../../components/bakini/noir/NxLineQb.vue";
+import NxRow from "../../../components/bakini/noir/NxRow.vue";
 
 export default {
   name: "StorefrontPageBasketCart",
@@ -508,9 +550,13 @@ export default {
     AuthMixin,
     ClubMixin,
     DateMixin,
+    NoirCart,
   ],
 
   components: {
+    NxIcon,
+    NxLineQb,
+    NxRow,
     KalioCartLines,
     KalioOftenAdded,
     KalioAddressSheet,
@@ -1506,229 +1552,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.receipt {
-  position: relative;
-  padding: 12px !important;
-
-  &.dark {
-    .receipt-container {
-      //background-image: linear-gradient(-20deg, var(--theme-dark) 0%, var(--theme-deep-dark) 100%);
-      background-image: linear-gradient(
-        160deg,
-        var(--color-bg-1) 0%,
-        var(--color-bg-2) 100%
-      );
-      color: #fff;
-
-      .total-price-after-discount {
-        .label {
-          color: rgba(255, 255, 255, 0.9);
-        }
-      }
-
-      .total-price-after-discount {
-        .label {
-          color: #ffffff;
-        }
-
-        .value {
-          color: #ffffff;
-        }
-      }
-    }
-  }
-
-  //-----------------------------------------------------------
-
-  --spacer-border-color: #333; /* Default border color */
-  --spacer-bg-color: #333; /* Default background color */
-  --spacer-text-color: #fff; /* Default text color */
-
-  &.dark {
-    --spacer-border-color: #fff; /* Dark mode border color */
-    --spacer-bg-color: #fff; /* Dark mode background color */
-    --spacer-text-color: #000; /* Dark mode text color */
-  }
-
-  ::v-deep(.spacer-line) {
-    display: block;
-    border-bottom: thick double var(--spacer-border-color); /* Variable border color */
-    width: 80%;
-    margin: 0 auto;
-    position: relative;
-
-    &::before {
-      content: attr(caption); /* Get text from the caption attribute */
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      border-radius: 4px;
-      transform: translate(-50%, -40%);
-      background: var(--spacer-bg-color); /* Variable background color */
-      padding: 0 10px;
-      font-size: 12px; /* Adjust font size as needed */
-      font-weight: 600;
-      color: var(--spacer-text-color); /* Variable text color */
-      white-space: nowrap; /* Prevent text wrapping */
-    }
-  }
-  //-----------------------------------------------------------
-
-  .text-success {
-    color: #2ab27b !important;
-  }
-
-  .receipt-bg {
-    width: 100%;
-    padding: 4px 4px 4px 4px !important;
-    max-width: 100%;
-
-    background-image: linear-gradient(-20deg, #fefefe 0%, #f1f1f1 100%);
-
-    border-radius: 22px;
-
-    &.success {
-      background-image: linear-gradient(-60deg, #16a085 0%, #afb42b 100%);
-    }
-
-    &.error {
-      background-image: linear-gradient(to top, #f77062 0%, #fe5196 100%);
-    }
-  }
-
-  .receipt-container {
-    text-align: start !important;
-    padding: 12px;
-    //background-image: linear-gradient(-20deg, #fefefe 0%, #f1f1f1 100%);
-    background: #fff;
-    border-radius: 16px;
-
-    .total-price {
-      font-size: 1.2rem;
-      font-weight: 400;
-    }
-
-    .total-discount {
-      font-size: 1rem;
-      font-weight: 400;
-      color: #2ab27b;
-    }
-
-    .total-price-after-discount {
-      margin-top: 14px;
-      text-align: center;
-      font-size: 1.5rem;
-
-      .label {
-        color: #6c757d;
-        font-weight: 400;
-        font-size: 1.1rem;
-      }
-
-      .value {
-        color: #444;
-        font-weight: 500;
-      }
-    }
-  }
-
-  .select-address-button {
-    display: block;
-    font-size: 1.1em;
-    min-height: 54px;
-    min-width: 164px;
-    margin: 12px 0;
-  }
-
-  .select-time-button {
-    display: inline-block;
-    font-size: 0.9rem;
-    min-height: 36px;
-
-    padding: 4px 12px !important;
-    @media screen and (max-width: 900px) {
-      font-size: 0.7rem;
-    }
-  }
-
-  .data-row {
-    padding: 6px 0;
-
-    p {
-      margin: 0;
-    }
-  }
-
-  .bg-danger-match {
-    background-color: #dc3545 !important;
-    background-image: linear-gradient(
-      to right,
-      #fa6179 0%,
-      #dc3545 20%,
-      #dc3545 80%,
-      #fa6279 100%
-    ) !important;
-  }
-}
-
-.busy-overlay {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.69);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
-
-.s--shop-basket-buy-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  cursor: pointer;
-  user-select: none;
-  position: fixed !important;
-  border-radius: 0 !important;
-  margin: 0 !important;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  z-index: 80;
-  color: white !important;
-  font-size: 1rem;
-  transition: all 0.35s linear;
-  background: #2ab27b;
-  min-height: 48px;
-
-  p {
-    padding: 10px;
-  }
-
-  &.is-mobile {
-    p {
-      font-size: 0.9rem;
-      max-width: calc(100% - 80px);
-    }
-  }
-
-  &:hover {
-    opacity: 0.8;
-  }
-
-  &.-up {
-    bottom: 92px;
-    left: 8px;
-    right: 8px;
-    width: calc(100% - 16px);
-    border-radius: 8px !important;
-    border: 1px solid #249567;
-    transition: all 0.35s;
-  }
-}
-</style>
