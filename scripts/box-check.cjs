@@ -25,7 +25,7 @@ const PAGES = (process.env.PAGES ||
   "home=/,category=/action-camera-category,deals=/?filter=%7B%22only_has_discount%22%3Atrue%7D,search=/?search=wireless,product=/product/710091,product2=/product/710058,compare=/comparison?list=p710091_p710089,blog=/blog,404=/no-such-page,faq=/faq,contact=/contact-us")
   .split(",").map((s) => s.split("="));
 const WIDTHS = (process.env.WIDTHS || "1440,390").split(",").map(Number);
-const SHOP = process.env.SHOP || "digini-hzgablru";
+const SHOP = process.env.SHOP || "bakio";
 const CART = process.env.CART || ".bk-act.-cart";
 const STATES = process.env.STATES !== "0";
 

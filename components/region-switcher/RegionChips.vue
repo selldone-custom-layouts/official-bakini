@@ -93,9 +93,13 @@ export default {
       void this.$shop;
       return singleChoice();
     },
+    /* The currency's name as a count of it reads ("US dollars"), in the visitor's language. */
     currencyName() {
       try {
-        return new Intl.DisplayNames([this.lang || "en"], { type: "currency" }).of(this.cur) || this.cur;
+        const part = new Intl.NumberFormat(this.lang || "en", { style: "currency", currency: this.cur, currencyDisplay: "name" })
+          .formatToParts(2)
+          .find((x) => x.type === "currency");
+        return part?.value || this.cur;
       } catch {
         return this.cur;
       }

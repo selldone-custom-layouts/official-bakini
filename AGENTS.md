@@ -22,36 +22,36 @@ the owner's controlled clone, fork, or release branch.
 
 ## Theme (palette, brand colour, light or dark, the visitor switcher)
 
-When a merchant asks for a theme ("use the yellow theme", "my brand colour is #F5C400", "make it dark"), edit **one file only**: `components/bakini/bakini-theme.settings.ts`. Nothing else needs to change, and the colours are made readable automatically (buttons, the round search button, links, the round logo, dark mode). Bakini paints every action with one colour (deep violet by default); savings stay magenta in every palette.
+When a merchant asks for a theme ("use the yellow theme", "my brand colour is #F5C400", "make it light"), edit **one file only**: `components/bakini/bakini-theme.settings.ts`. Nothing else needs to change, and the colours are made readable automatically (buttons, links, chosen states, dark mode). Bakini Noir paints every action with one colour (deep caramel by default) on a dark stage; gold stays for small type and hairlines in every palette.
 
 | Setting | Allowed values |
 | --- | --- |
-| `palette` | `"bakini"` (Bakini violet; the default), `"ocean"`, `"emerald"`, `"ruby"`, `"copper"` |
+| `palette` | `"caramel"` (the brand; the default), `"cassis"`, `"pistachio"`, `"sapphire"`, `"gold"` (Gold-safe) |
 | `brandColor` | any `"#RRGGBB"`; when set it replaces `palette` |
-| `mode` | `"light"` or `"dark"` |
-| `themeSwitcher` | `"showcase"` (the visitor switcher shows only on Bakini's own showcase shop, Digini 15549; the default), `"on"` (the merchant's visitors get the Theme row in the footer), `"off"` |
+| `mode` | `"dark"` (the Noir stage; the default) or `"light"` (the ivory version) |
+| `themeSwitcher` | `"showcase"` (the visitor switcher shows only on the Layout's own showcase shop, Bakio 15740; the default), `"on"` (the merchant's visitors get the Theme row in the footer), `"off"` |
 | `textOnBrand` | only with `brandColor`: `"auto"` (a light brand such as yellow keeps its colour, with dark words on it) or `"white"` (white words; a light colour is darkened) |
 
 Worked examples (change only these lines; leave the rest of the file as it is):
 
 - **"Use the yellow theme"**: no tested palette is yellow, so use a brand colour: `brandColor: "#F5C400", textOnBrand: "auto"`.
 - **"My brand colour is #F5C400"**: `brandColor: "#F5C400", textOnBrand: "auto"`. Use `textOnBrand: "white"` if they want white words; the colour is then darkened.
-- **"Make it dark"**: `mode: "dark"`.
+- **"Make it light"**: `mode: "light"`.
 - **"Let visitors switch themes"**: `themeSwitcher: "on"`.
 - **"Remove the switcher"**: `themeSwitcher: "off"`. On a merchant's own shop it is already hidden with `"showcase"`.
-- **"Go back to the original colours"**: remove `brandColor` and set `palette: "bakini", mode: "light"`.
+- **"Go back to the original colours"**: remove `brandColor` and set `palette: "caramel", mode: "dark"`.
 
-The switcher itself is the shared package in `components/theme-switcher/` (the same code as every other Layout; see its PORTING.md in the kit). Bakini's palettes and tokens are in `components/bakini/bakini-theme.ts`; do not edit them for a merchant's theme.
+The switcher itself is the shared package in `components/theme-switcher/` (the same code as every other Layout; see its PORTING.md in the kit). Bakini's palettes are in `components/bakini/bakini-theme.ts` and its grounds, lines and words for both modes in `style/bakini-theme.scss`; do not edit them for a merchant's theme.
 
 Then release and check:
 
 1. Build and upload: `LAYOUT_ID=<your Layout id> SELLDONE_CLI_SRC=<cli clone> bash scripts/release.sh <new version> desk`. Put the version live.
 2. Check the contrast on the live shop. It must print `TOTAL 0`:
    ```sh
-   PAGES="home=/,category=/<a category>,product=/product/<id>" node components/theme-switcher/tools/contrast-audit.cjs https://<your shop> ".bk-header"
+   PAGES="home=/,category=/<a category>,product=/product/<id>" node components/theme-switcher/tools/contrast-audit.cjs https://<your shop> ".bk-footer"
    ```
-3. If the visitor switcher is on, also run the kit's `ring-sweep.cjs` in light and dark (`STORAGE='{"bakini-theme":"{\\"palette\\":\\"bakini\\",\\"mode\\":\\"dark\\"}"}'`). The switcher is the Theme row in the footer.
+3. If the visitor switcher is on, also run the kit's `ring-sweep.cjs` in light and dark (`STORAGE='{"bakini-theme":"{\\"palette\\":\\"caramel\\",\\"mode\\":\\"light\\"}"}'`). The switcher is the Theme row in the footer.
 
 ## Words and languages
 
-Bakini's own words go through `t("bakini.<area>.<name>", "English")` (`components/kalio/i18n/kalio-i18n.ts`, the shared i18n runtime). The English is `components/kalio/i18n/base/en.ts` (the shared Kalio words) plus `bakini.en.ts` (Bakini's own, `bakini.*`); Arabic, Hindi and Danish are `base/<code>.ts` + `bakini.<code>.ts`, merged by `lang-<code>.ts` and listed in `index.ts` (`LOADERS`); each is fetched only when a visitor picks it. To add a language the shop enables: translate `bakini.en.ts` to `bakini.<code>.ts` (same keys, keep every `{…}`, add the language's plural forms), copy `base/<code>.ts` from the shared set, add `lang-<code>.ts` and one `LOADERS` line. A new visible word always gets a `t()` key; a word still in English after a language pick is an unwrapped string. Use logical CSS (`margin-inline`, `inset-inline`, `text-align: start`) so a right-to-left language mirrors.
+Bakini's own words go through `t("bakini.<area>.<name>", "English")` (`components/kalio/i18n/kalio-i18n.ts`, the shared i18n runtime). The English is `components/kalio/i18n/base/en.ts` (the shared Kalio words) plus `bakini.en.ts` (Bakini's own, `bakini.*`), both generated from the code by the kit's `i18n-extract.cjs`; Arabic is `base/ar.ts` + `bakini.ar.ts`, merged by `lang-ar.ts` and listed in `index.ts` (`LOADERS`), fetched only when a visitor picks it. The basket is a **bag** everywhere ("Add to bag", "Your bag"), in the Layout's words and in Selldone's own English strings (`components/kalio/kalio-brand.ts`, `bagWords()`). To add a language the shop enables: translate `bakini.en.ts` to `bakini.<code>.ts` (same keys, keep every `{…}`, add the language's plural forms), copy `base/<code>.ts` from the shared set, add `lang-<code>.ts` and one `LOADERS` line. A new visible word always gets a `t()` key; a word still in English after a language pick is an unwrapped string. Use logical CSS (`margin-inline`, `inset-inline`, `text-align: start`) so a right-to-left language mirrors.
