@@ -815,7 +815,7 @@ const en: Record<string, string> = {
   "bakini.n.rd.replies": "The bakery replies by email.",
   "bakini.n.rd.s1": "Add exactly the pastries you want{ex}.",
   "bakini.n.rd.s1T": "Choose piece by piece",
-  "bakini.n.rd.s1ex": " — one {a}, two {b}, a single {c}",
+  "bakini.n.rd.s1ex": " — one {a}, one {b}, a single {c}",
   "bakini.n.rd.s2": "Choose how it reaches you at checkout.",
   "bakini.n.rd.s2T": "Pick how it reaches you",
   "bakini.n.rd.s3": "Cash on delivery — nothing is charged online.",

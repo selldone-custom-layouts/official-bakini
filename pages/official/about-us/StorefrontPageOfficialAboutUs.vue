@@ -215,7 +215,7 @@ export default {
     steps() {
       const f = this.f;
       const u = this.units;
-      const ex = u.length >= 3 ? t("bakini.n.rd.s1ex", " — one {a}, two {b}, a single {c}", { a: u[0], b: u[1] + "s", c: u[2] }) : "";
+      const ex = u.length >= 3 ? t("bakini.n.rd.s1ex", " — one {a}, one {b}, a single {c}", { a: u[0], b: u[1], c: u[2] }) : "";
       const ways: string[] = [];
       if (f.courier) ways.push(f.courier.windows.length ? t("bakini.n.rd.wCourier", "courier in a window that suits you") : t("bakini.n.rd.wCourierPlain", "courier delivery"));
       if (f.shipping) ways.push(t("bakini.n.rd.wShipping", "{name}", { name: f.shipping.title.toLowerCase() }));
