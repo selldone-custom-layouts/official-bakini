@@ -770,3 +770,19 @@ html.bk-dark .s--storefront-master-payment-dialog,
 .s--storefront-master-payment-dialog .container-btn .-right-side-container img {
   display: none !important;
 }
+
+/* The checkout's column never grows past the page (Selldone's coupon list
+   and checkout form ask for a fixed width). */
+.nx .co-main,
+.nx .co-side {
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+.nx .co-main > * {
+  min-width: 0;
+  max-width: 100%;
+}
+.nx .co-main .v-container {
+  max-width: 100% !important;
+  padding-inline: 0 !important;
+}

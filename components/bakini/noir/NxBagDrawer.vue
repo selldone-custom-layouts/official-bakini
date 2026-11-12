@@ -67,7 +67,7 @@
       </div>
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; flex-wrap: wrap">
         <router-link :to="bagTo" class="link" @click="close">{{ t("bakini.n.bag.view", "View bag") }}</router-link>
-        <router-link :to="bagTo" class="btn lg" @click="close">{{ t("bakini.n.bag.checkout", "Checkout") }}<nx-icon name="arrow" /></router-link>
+        <router-link :to="checkoutTo" class="btn lg" @click="close">{{ t("bakini.n.bag.checkout", "Checkout") }}<nx-icon name="arrow" /></router-link>
       </div>
     </div>
   </aside>
@@ -127,6 +127,9 @@ export default {
     },
     bagTo() {
       return { name: window.$storefront.routes.BASKET_PAGE, params: { type: "PHYSICAL" } };
+    },
+    checkoutTo() {
+      return { ...this.bagTo, query: { step: "checkout" } };
     },
     shopTo() {
       return catalogueRoute({});

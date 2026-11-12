@@ -368,3 +368,78 @@
     font-size: 11.5px;
   }
 }
+
+/* ── Selldone's own sections inside the desk (profile, wallet, gift cards,
+   returns, reviews, saved): their widgets as the mockup's glass cards ── */
+.nx .desk-main > .v-container,
+.nx .desk-main > div > .v-container {
+  max-width: none !important;
+  padding: 0 !important;
+}
+.nx .desk-main .widget-box {
+  margin: 0 0 16px !important;
+  max-width: none !important;
+  border: 0 !important;
+  border-radius: var(--bk-r-xl) !important;
+  padding: clamp(18px, 2.4vw, 28px) !important;
+  background: linear-gradient(165deg, var(--bk-g-hi, transparent), var(--bk-g-lo, transparent)), var(--bk-s1) !important;
+  box-shadow: inset 0 0 0 1px var(--bk-line), inset 0 1px 0 var(--bk-g-edge, transparent) !important;
+  color: var(--bk-ink) !important;
+  font-family: var(--bk-ft);
+}
+.nx .desk-main .widget-box::before,
+.nx .desk-main .widget-box::after {
+  display: none !important;
+}
+.nx .desk-main .widget-box .text-uppercase {
+  text-transform: none !important;
+}
+.nx .desk-main .widget-box h3,
+.nx .desk-main .widget-box h2,
+.nx .desk-main .widget-box .widget-header h2,
+.nx .desk-main .widget-box .u--widget-header h2 {
+  font-family: var(--bk-fd) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+}
+.nx .desk-main .widget-box .v-btn {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+  border-radius: 999px !important;
+}
+.nx .desk-main .widget-box .v-btn--variant-text,
+.nx .desk-main .widget-box .v-btn--variant-plain {
+  color: var(--bk-act-text) !important;
+}
+.nx .desk-main .widget-box .v-chip {
+  border-radius: 999px !important;
+  background: var(--bk-s2) !important;
+  color: var(--bk-ink-2) !important;
+  box-shadow: inset 0 0 0 1px var(--bk-line-2);
+}
+.nx .desk-main .widget-box .v-chip__underlay,
+.nx .desk-main .widget-box .v-btn__overlay {
+  opacity: 0 !important;
+}
+.nx .desk-main .widget-box .border-between,
+.nx .desk-main .widget-box .dashed-flex-space {
+  border-color: var(--bk-line) !important;
+}
+.nx .desk-main .widget-box .avatar-gradient {
+  background: var(--bk-act) !important;
+}
+.nx .desk-main .widget-box .text-muted,
+.nx .desk-main .widget-box .text-subtitle-2,
+.nx .desk-main .widget-box small {
+  color: var(--bk-mut) !important;
+}
+.nx .desk-main .widget-box .v-btn.tnt {
+  background: var(--bk-s2) !important;
+  color: var(--bk-ink) !important;
+  box-shadow: inset 0 0 0 1px var(--bk-line-2) !important;
+}
+.nx .desk-main .widget-box .v-btn.tnt .v-icon {
+  color: var(--bk-mut) !important;
+}

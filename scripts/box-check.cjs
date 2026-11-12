@@ -19,14 +19,14 @@
 // Prints each finding and "TOTAL n". Deliver at 0.
 const PW = process.env.PW || "D:/Kalio Sample Shop Claude/kalio-marketplace/node_modules/playwright";
 const { chromium } = require(PW);
-const base = (process.argv[2] || "http://localhost:9132").replace(/\/$/, "");
-const WAIT = process.argv[3] || ".bk-cats";
+const base = (process.argv[2] || "http://localhost:9135").replace(/\/$/, "");
+const WAIT = process.argv[3] || ".ftr";
 const PAGES = (process.env.PAGES ||
-  "home=/,category=/action-camera-category,deals=/?filter=%7B%22only_has_discount%22%3Atrue%7D,search=/?search=wireless,product=/product/710091,product2=/product/710058,compare=/comparison?list=p710091_p710089,blog=/blog,404=/no-such-page,faq=/faq,contact=/contact-us")
+  "home=/,category=/croissants-category,deals=/?filter=%7B%22only_has_discount%22%3Atrue%7D,search=/?search=pistachio,product=/product/720375,product2=/product/720359,compare=/comparison?list=p720375_p720378_p720380,blog=/blog,404=/no-such-page,faq=/faq,contact=/contact-us,about=/about-us")
   .split(",").map((s) => s.split("="));
 const WIDTHS = (process.env.WIDTHS || "1440,390").split(",").map(Number);
 const SHOP = process.env.SHOP || "bakio";
-const CART = process.env.CART || ".bk-act.-cart";
+const CART = process.env.CART || ".bag-btn";
 const STATES = process.env.STATES !== "0";
 
 function audit() {
@@ -158,22 +158,23 @@ const fillCart = (pg) =>
       await push(pg, "/");
       await pg.waitForTimeout(3500);
       if (!mob) {
-        await pg.click(".bk-nav__b[data-dd=shop]").catch(() => {});
+        await pg.click(".hdr-nav [aria-controls=mega]").catch(() => {});
         await pg.waitForTimeout(800);
         report(`${w} shop-menu`, await pg.evaluate(audit));
         await pg.keyboard.press("Escape");
-        await pg.click(".bk-nav__b[data-dd=shop]").catch(() => {});
       } else {
-        await pg.click(".bk-burger").catch(() => {});
+        await pg.click(".menu-btn").catch(() => {});
         await pg.waitForTimeout(900);
         report(`${w} phone-menu`, await pg.evaluate(audit));
-        await pg.click(".bk-menu .bk-x").catch(() => {});
+        await pg.keyboard.press("Escape");
       }
       await pg.waitForTimeout(500);
-      const opened = await pg.evaluate(() => { const b = [...document.querySelectorAll(".bk-card .bk-btn")].find((x) => /Choose options/i.test(x.textContent)); if (b) { b.scrollIntoView(); b.click(); } return !!b; });
+      await push(pg, "/croissants-category");
+      await pg.waitForTimeout(3500);
+      const opened = await pg.evaluate(() => { const b = document.querySelector(".pc-look"); if (b) { b.scrollIntoView(); b.click(); } return !!b; });
       if (opened) {
         await pg.waitForTimeout(3500);
-        report(`${w} quick-buy`, await pg.evaluate(audit));
+        report(`${w} quick-look`, await pg.evaluate(audit));
         await pg.keyboard.press("Escape");
         await pg.waitForTimeout(600);
       }
