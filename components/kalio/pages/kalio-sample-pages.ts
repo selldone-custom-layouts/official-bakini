@@ -25,16 +25,16 @@ export interface Section {
 export function termsSample(shop: string): { short: string[]; sections: Section[] } {
   return {
     short: [
-      t("medio.k.terms.short.sells", "{shop} sells every product on this site itself.", { shop }),
-      t("medio.k.terms.short.pay", "You pay at checkout, or on delivery where it is offered."),
-      t("medio.k.terms.short.report", "Report a damaged or wrong item within 14 days."),
-      t("medio.k.terms.short.thread", "Each order has a message thread with our team."),
+      t("bakini.k.terms.short.sells", "{shop} sells every product on this site itself.", { shop }),
+      t("bakini.k.terms.short.pay", "You pay at checkout, or on delivery where it is offered."),
+      t("bakini.k.terms.short.report", "Report a damaged or wrong item within 14 days."),
+      t("bakini.k.terms.short.thread", "Each order has a message thread with our team."),
     ],
     sections: [
       {
         title: t("sample.terms.who.title", "Who we are"),
         text: [
-          t("medio.k.terms.who.p1", "{shop} is an online electronics store. We sell, pack and send every product on this site ourselves.", { shop }),
+          t("bakini.k.terms.who.p1", "{shop} is a pastry shop. We bake, pack and send every product on this site ourselves.", { shop }),
         ],
       },
       {
@@ -47,25 +47,25 @@ export function termsSample(shop: string): { short: string[]; sections: Section[
       {
         title: t("sample.terms.orders.title", "Orders and prices"),
         text: [
-          t("medio.k.terms.orders.p1", "Prices are shown with taxes as stated at checkout. An order is placed when you confirm it, and accepted when we confirm it."),
+          t("bakini.k.terms.orders.p1", "Prices are shown with taxes as stated at checkout. An order is placed when you confirm it, and accepted when we confirm it."),
         ],
       },
       {
         title: t("sample.terms.payment.title", "Payment"),
         text: [
-          t("medio.k.terms.payment.p1", "You pay at checkout, or on delivery where cash on delivery is offered. Card payments are handled by the payment provider and are not stored by {shop}.", { shop }),
+          t("bakini.k.terms.payment.p1", "You pay at checkout, or on delivery where cash on delivery is offered. Card payments are handled by the payment provider and are not stored by {shop}.", { shop }),
         ],
       },
       {
         title: t("sample.terms.delivery.title", "Delivery"),
         text: [
-          t("medio.k.terms.delivery.p1", "Delivery times and costs are shown before you pay. You can follow the order and message us from your account."),
+          t("bakini.k.terms.delivery.p1", "Delivery times and costs are shown before you pay. You can follow the order and message us from your account."),
         ],
       },
       {
         title: t("sample.terms.returns.title", "Returns and refunds"),
         text: [
-          t("medio.k.terms.returns.p1", "If something arrives damaged or wrong, tell us from the order page within 14 days. Opened software and personal-care items can be refunded but not returned."),
+          t("bakini.k.terms.returns.p1", "If something arrives damaged or wrong, tell us from the order page within 14 days. Opened software and personal-care items can be refunded but not returned."),
         ],
       },
       {
@@ -80,7 +80,7 @@ export function privacySample(shop: string): { short: string[]; sections: Sectio
   return {
     short: [
       t("sample.privacy.short.use", "We use your details to take and deliver orders."),
-      t("medio.k.privacy.short.couriers", "Couriers see only what they need to deliver it."),
+      t("bakini.k.privacy.short.couriers", "Couriers see only what they need to deliver it."),
       t("sample.privacy.short.sell", "We do not sell your data."),
       t("sample.privacy.short.cookies", "You choose which optional cookies to allow."),
     ],
@@ -94,14 +94,14 @@ export function privacySample(shop: string): { short: string[]; sections: Sectio
       {
         title: t("sample.privacy.why.title", "Why we use it"),
         text: [
-          t("medio.k.privacy.why.p1", "To take and deliver your orders, to answer your messages about an order, to keep the shop secure and to improve it."),
+          t("bakini.k.privacy.why.p1", "To take and deliver your orders, to answer your messages about an order, to keep the shop secure and to improve it."),
           t("sample.privacy.why.p2", "Sample paragraph: a fuller explanation would go here, written in plain words, with an example for each use."),
         ],
       },
       {
         title: t("sample.privacy.who.title", "Who sees it"),
         text: [
-          t("medio.k.privacy.who.p1", "The courier who delivers your order sees what they need to bring it. Payment providers handle card details. We do not sell your data."),
+          t("bakini.k.privacy.who.p1", "The courier who delivers your order sees what they need to bring it. Payment providers handle card details. We do not sell your data."),
         ],
       },
       {
@@ -115,7 +115,7 @@ export function privacySample(shop: string): { short: string[]; sections: Sectio
       {
         title: t("sample.privacy.cookies.title", "Cookies"),
         text: [
-          t("sample.privacy.cookies.p1", "Essential cookies keep you signed in and your basket full. Anything optional is your choice, below."),
+          t("sample.privacy.cookies.p1", "Essential cookies keep you signed in and your bag full. Anything optional is your choice, below."),
         ],
       },
     ],
@@ -123,23 +123,22 @@ export function privacySample(shop: string): { short: string[]; sections: Sectio
 }
 
 export function aboutSample(shop: string) {
+  /* Bakini: sample copy for a pastry shop that has not written its own page
+     yet. Only plain, general words: no history, awards, names or counts (the
+     brief's rule); the page shows the "sample text" label with it. */
   return {
-    title: t("medio.k.about.title", "Tech, made simple to buy"),
-    lead: t("medio.k.about.lead", "Buying electronics should be easy: clear specs, honest prices and someone to ask. We keep the things we would recommend to a friend in one store, with one basket and one checkout."),
+    title: t("bakini.k.about.title", "Pastries, one at a time"),
+    lead: t("bakini.k.about.lead", "A counter of individual pastries: pick the pieces you like, for today or to share, and we bring them to you or keep them ready at the counter."),
     text: [
-      t("medio.k.about.p1", "{shop} picks every product it sells, lists its specifications in full and keeps prices plain, with the saving marked when there is one. We pack and send every order ourselves, and answer every message from the order page.", { shop }),
+      t("bakini.k.about.p1", "{shop} bakes its pastries in collections and sells each piece on its own, with the price and any saving marked plainly. Every order can be delivered or picked up, and every order page has a message thread with the bakery.", { shop }),
     ],
     values: [
-      { title: t("sample.about.values.prices.title", "Clear prices"), text: t("medio.k.about.prices", "The price you see is the one you pay, with the saving and the old price marked plainly.") },
-      { title: t("medio.k.about.specs.title", "Specs you can compare"), text: t("medio.k.about.specs", "Every product lists its specifications, and Compare puts them side by side.") },
-      { title: t("medio.k.about.packed.title", "Packed with care"), text: t("medio.k.about.packed", "We pack each order ourselves and tell you where it is on the way.") },
-      { title: t("sample.about.values.people.title", "People you can reach"), text: t("medio.k.about.people", "Every order has a message thread with our team.") },
+      { title: t("sample.about.values.prices.title", "Clear prices"), text: t("bakini.k.about.prices", "The price you see is the one you pay, with the saving and the old price marked plainly.") },
+      { title: t("bakini.k.about.specs.title", "Every detail listed"), text: t("bakini.k.about.specs", "Each pastry lists its ingredients, allergens and how to keep it, and Compare puts them side by side.") },
+      { title: t("bakini.k.about.packed.title", "Packed with care"), text: t("bakini.k.about.packed", "Each order is boxed at the counter and sent in the delivery window you choose.") },
+      { title: t("sample.about.values.people.title", "People you can reach"), text: t("bakini.k.about.people", "Every order has a message thread with the bakery.") },
     ],
-    timeline: [
-      { when: t("sample.about.timeline.spring.when", "Spring"), text: t("medio.k.about.spring", "The first departments open. (Example.)") },
-      { when: t("sample.about.timeline.summer.when", "Summer"), text: t("medio.k.about.summer", "Same-day delivery starts in town. (Example.)") },
-      { when: t("sample.about.timeline.today.when", "Today"), text: t("medio.k.about.today", "Every department, one checkout. (Example.)") },
-    ],
+    timeline: [],
     sign: t("sample.about.sign", "— the {shop} team", { shop }),
   };
 }

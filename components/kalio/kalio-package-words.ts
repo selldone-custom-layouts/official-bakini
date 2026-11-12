@@ -15,7 +15,8 @@ export function packageWords(): string[] {
     t("region.currency", "Currency"),
     t("region.done", "Done"),
     t("region.close", "Close"),
-    t("region.note", "Prices everywhere change at once: shelves, filters, basket and checkout."),
+    t("region.note", "Prices everywhere change at once: cards, filters, bag and checkout."),
+    t("region.only", "Prices and totals are in {currency}.", { currency: "US dollars" }),
     // Selldone components that Kalio patches (patches/modules-components.kalio.patch) and that call the global t()
     t("compare.fab.close", "Close the comparison"),
     t("compare.fab.open", { one: "Compare {n} product", other: "Compare {n} products" }, { n: 2 }),

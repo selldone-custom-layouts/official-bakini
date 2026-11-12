@@ -17,7 +17,7 @@
  */
 
 @use "../pages/product/product";
-@use "medio-theme"; // Medio: the theme tokens (palettes, light / dark) everything reads
+@use "bakini-theme"; // Bakini: the theme tokens (palettes, light / dark) everything reads
 @use "kalio-tokens"; // Kalio: tokens, type and shared pieces
 @use "kalio-platform"; // Kalio: skin for Selldone's own components
 @use "kalio-sections"; // Kalio: the sections Kalio owns outright
@@ -31,14 +31,13 @@
 @use "walio-pages"; // Walio 1.1.0: every page after the home (the B mockups, product A)
 @use "kalio-compare"; // the compare page (design 1, 8 November 2026)
 @use "listing-motion"; // the results grid's loading motion (reusable; components/kalio/listing-motion.ts)
-@use "medio-base"; // Medio: base pieces (buttons, rounds, section heads, empty states, drawers)
-@use "medio-pages"; // Medio: every page after the home, in the same dress
-@use "medio"; // Medio: base pieces, header, footer, menus, cards, rails, the list row
-@use "medio-home"; // Medio: the home page
-@use "medio-hero-slider"; // Medio: the home hero as a photo slider (11 Nov 2026)
-@use "medio-shop"; // Medio: the category hub and the results pages
-@use "medio-pdp"; // Medio: the product page
-@use "medio-dress"; // Medio: the 404, Help & Support and the shared pages' touches, last
+@use "bakini-base"; // Bakini: base pieces (buttons, rounds, section heads, empty states, drawers)
+@use "bakini-pages"; // Bakini: every page after the home, in the same dress
+@use "bakini"; // Bakini: base pieces, header, footer, menus, cards, rails, the list row
+@use "bakini-home"; // Bakini: the home page
+@use "bakini-shop"; // Bakini: the category hub and the results pages
+@use "bakini-pdp"; // Bakini: the product page
+@use "bakini-dress"; // Bakini: the 404, Help & Support and the shared pages' touches, last
 
 // --------------------------------------------------------
 .add-marginal-side-menu-open {

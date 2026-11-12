@@ -66,7 +66,7 @@ export default {
     placeholder() {
       return this.aisle
         ? t("compare.add.searchAisle", "Search {aisle}…", { aisle: this.aisle.toLowerCase() })
-        : t("medio.k.compare.searchProducts", "Search products…");
+        : t("bakini.k.compare.searchProducts", "Search products…");
     },
   },
 

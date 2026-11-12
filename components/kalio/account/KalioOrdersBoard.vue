@@ -43,11 +43,11 @@
       <span v-for="n in compact ? 2 : 3" :key="n" class="k-board__ghost"></span>
     </div>
 
-    <!-- Medio: a guest whose device holds no order is not an error (Selldone
+    <!-- Bakini: a guest whose device holds no order is not an error (Selldone
          refuses the read when the shop takes no guest orders). -->
     <div v-else-if="account.failed && !account.orders.length && !USER()" class="k-board__empty">
       <v-icon size="28">receipt_long</v-icon>
-      <p>{{ t("medio.orders.device", "No orders on this device yet. Sign in to see the orders on your account.") }}</p>
+      <p>{{ t("bakini.orders.device", "No orders on this device yet. Sign in to see the orders on your account.") }}</p>
       <button class="k-btn k-btn--solid" type="button" @click="askSignIn">{{ t("common.signIn", "Sign in") }}</button>
     </div>
 
@@ -147,7 +147,7 @@
 
             <button v-if="['ok', 'off'].includes(standing(order).tone)" :disabled="busy[order.id]" class="k-btn -line" type="button" @click="buyAgain(order)">
               <v-progress-circular v-if="busy[order.id]" indeterminate size="16" width="2" />
-              <v-icon v-else size="17">{{ done[order.id] ? "check" : "replay" }}</v-icon>{{ done[order.id] ? t("orders.inYourBasket", "In your basket") : t("orders.buyAgain", "Buy again") }}
+              <v-icon v-else size="17">{{ done[order.id] ? "check" : "replay" }}</v-icon>{{ done[order.id] ? t("orders.inYourBasket", "In your bag") : t("orders.buyAgain", "Buy again") }}
             </button>
             <router-link v-else-if="standing(order).tone === 'pay'" :to="orderRoute(order)" class="k-btn -line">{{ t("orders.viewOrder", "View order") }}</router-link>
             <router-link v-else :to="orderRoute(order)" class="k-btn -line">{{ t("orders.trackIt", "Track it") }}</router-link>

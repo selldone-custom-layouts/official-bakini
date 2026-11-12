@@ -149,7 +149,7 @@ export default {
         });
       if (moving) return t("account.summary.moving", { one: "One order is on its way to you.", other: "{n} orders are on their way to you." }, { n: moving });
       if (paying) return t("account.summary.paying", { one: "One order is waiting for payment.", other: "{n} orders are waiting for payment." }, { n: paying });
-      if (!account.total) return t("medio.k.account.none", "No orders yet. Your first order is a few taps away.");
+      if (!account.total) return t("bakini.k.account.none", "No orders yet. Your first order is a few taps away.");
       return tones[0] === "ok" ? t("account.summary.allDelivered", "Everything you ordered has reached you.") : t("account.summary.default", "Your orders, money and addresses in one place.");
     },
   },

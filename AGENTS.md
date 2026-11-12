@@ -22,14 +22,14 @@ the owner's controlled clone, fork, or release branch.
 
 ## Theme (palette, brand colour, light or dark, the visitor switcher)
 
-When a merchant asks for a theme ("use the yellow theme", "my brand colour is #F5C400", "make it dark"), edit **one file only**: `components/medio/medio-theme.settings.ts`. Nothing else needs to change, and the colours are made readable automatically (buttons, the round search button, links, the round logo, dark mode). Medio paints every action with one colour (deep violet by default); savings stay magenta in every palette.
+When a merchant asks for a theme ("use the yellow theme", "my brand colour is #F5C400", "make it dark"), edit **one file only**: `components/bakini/bakini-theme.settings.ts`. Nothing else needs to change, and the colours are made readable automatically (buttons, the round search button, links, the round logo, dark mode). Bakini paints every action with one colour (deep violet by default); savings stay magenta in every palette.
 
 | Setting | Allowed values |
 | --- | --- |
-| `palette` | `"medio"` (Medio violet; the default), `"ocean"`, `"emerald"`, `"ruby"`, `"copper"` |
+| `palette` | `"bakini"` (Bakini violet; the default), `"ocean"`, `"emerald"`, `"ruby"`, `"copper"` |
 | `brandColor` | any `"#RRGGBB"`; when set it replaces `palette` |
 | `mode` | `"light"` or `"dark"` |
-| `themeSwitcher` | `"showcase"` (the visitor switcher shows only on Medio's own showcase shop, Digini 15549; the default), `"on"` (the merchant's visitors get the Theme row in the footer), `"off"` |
+| `themeSwitcher` | `"showcase"` (the visitor switcher shows only on Bakini's own showcase shop, Digini 15549; the default), `"on"` (the merchant's visitors get the Theme row in the footer), `"off"` |
 | `textOnBrand` | only with `brandColor`: `"auto"` (a light brand such as yellow keeps its colour, with dark words on it) or `"white"` (white words; a light colour is darkened) |
 
 Worked examples (change only these lines; leave the rest of the file as it is):
@@ -39,19 +39,19 @@ Worked examples (change only these lines; leave the rest of the file as it is):
 - **"Make it dark"**: `mode: "dark"`.
 - **"Let visitors switch themes"**: `themeSwitcher: "on"`.
 - **"Remove the switcher"**: `themeSwitcher: "off"`. On a merchant's own shop it is already hidden with `"showcase"`.
-- **"Go back to the original colours"**: remove `brandColor` and set `palette: "medio", mode: "light"`.
+- **"Go back to the original colours"**: remove `brandColor` and set `palette: "bakini", mode: "light"`.
 
-The switcher itself is the shared package in `components/theme-switcher/` (the same code as every other Layout; see its PORTING.md in the kit). Medio's palettes and tokens are in `components/medio/medio-theme.ts`; do not edit them for a merchant's theme.
+The switcher itself is the shared package in `components/theme-switcher/` (the same code as every other Layout; see its PORTING.md in the kit). Bakini's palettes and tokens are in `components/bakini/bakini-theme.ts`; do not edit them for a merchant's theme.
 
 Then release and check:
 
 1. Build and upload: `LAYOUT_ID=<your Layout id> SELLDONE_CLI_SRC=<cli clone> bash scripts/release.sh <new version> desk`. Put the version live.
 2. Check the contrast on the live shop. It must print `TOTAL 0`:
    ```sh
-   PAGES="home=/,category=/<a category>,product=/product/<id>" node components/theme-switcher/tools/contrast-audit.cjs https://<your shop> ".md-header"
+   PAGES="home=/,category=/<a category>,product=/product/<id>" node components/theme-switcher/tools/contrast-audit.cjs https://<your shop> ".bk-header"
    ```
-3. If the visitor switcher is on, also run the kit's `ring-sweep.cjs` in light and dark (`STORAGE='{"medio-theme":"{\\"palette\\":\\"medio\\",\\"mode\\":\\"dark\\"}"}'`). The switcher is the Theme row in the footer.
+3. If the visitor switcher is on, also run the kit's `ring-sweep.cjs` in light and dark (`STORAGE='{"bakini-theme":"{\\"palette\\":\\"bakini\\",\\"mode\\":\\"dark\\"}"}'`). The switcher is the Theme row in the footer.
 
 ## Words and languages
 
-Medio's own words go through `t("medio.<area>.<name>", "English")` (`components/kalio/i18n/kalio-i18n.ts`, the shared i18n runtime). The English is `components/kalio/i18n/base/en.ts` (the shared Kalio words) plus `medio.en.ts` (Medio's own, `medio.*`); Arabic, Hindi and Danish are `base/<code>.ts` + `medio.<code>.ts`, merged by `lang-<code>.ts` and listed in `index.ts` (`LOADERS`); each is fetched only when a visitor picks it. To add a language the shop enables: translate `medio.en.ts` to `medio.<code>.ts` (same keys, keep every `{…}`, add the language's plural forms), copy `base/<code>.ts` from the shared set, add `lang-<code>.ts` and one `LOADERS` line. A new visible word always gets a `t()` key; a word still in English after a language pick is an unwrapped string. Use logical CSS (`margin-inline`, `inset-inline`, `text-align: start`) so a right-to-left language mirrors.
+Bakini's own words go through `t("bakini.<area>.<name>", "English")` (`components/kalio/i18n/kalio-i18n.ts`, the shared i18n runtime). The English is `components/kalio/i18n/base/en.ts` (the shared Kalio words) plus `bakini.en.ts` (Bakini's own, `bakini.*`); Arabic, Hindi and Danish are `base/<code>.ts` + `bakini.<code>.ts`, merged by `lang-<code>.ts` and listed in `index.ts` (`LOADERS`); each is fetched only when a visitor picks it. To add a language the shop enables: translate `bakini.en.ts` to `bakini.<code>.ts` (same keys, keep every `{…}`, add the language's plural forms), copy `base/<code>.ts` from the shared set, add `lang-<code>.ts` and one `LOADERS` line. A new visible word always gets a `t()` key; a word still in English after a language pick is an unwrapped string. Use logical CSS (`margin-inline`, `inset-inline`, `text-align: start`) so a right-to-left language mirrors.

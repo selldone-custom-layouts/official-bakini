@@ -63,12 +63,12 @@
       "
     >
       <s-header-section v-if="custom_header_code"></s-header-section>
-      <medio-header
+      <bakini-header
         v-else
         :show-search="!!show_search_box"
         @clear="onClear"
         @search="onSearch"
-      ></medio-header>
+      ></bakini-header>
     </template>
 
     <!-- Kalio: the search box lives in the Kalio header. -->
@@ -149,7 +149,7 @@
           :dark="!is_light_footer"
           class="m-0"
         />
-        <medio-footer v-else />
+        <bakini-footer v-else />
       </template>
 
       <!-- ▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆ Basket Indicator ▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆ -->
@@ -182,8 +182,8 @@
 </template>
 
 <script lang="ts">
-import MedioHeader from "../components/medio/shell/MedioHeader.vue";
-import MedioFooter from "../components/medio/shell/MedioFooter.vue";
+import BakiniHeader from "../components/bakini/shell/BakiniHeader.vue";
+import BakiniFooter from "../components/bakini/shell/BakiniFooter.vue";
 import SStorefrontTopMenu from "@selldone/components-vue/storefront/menu/header/SStorefrontTopMenu.vue";
 import SHeaderSection from "@selldone/components-vue/storefront/header/section/SHeaderSection.vue";
 import TemplateMixin from "@selldone/components-vue/mixin/template/TemplateMixin.ts";
@@ -216,8 +216,8 @@ export default {
     SHeaderSection,
     SStorefrontTopMenu,
 
-    MedioHeader,
-    MedioFooter,
+    BakiniHeader,
+    BakiniFooter,
 
     SStorefrontListingCompareBar: defineAsyncComponent(
       () =>

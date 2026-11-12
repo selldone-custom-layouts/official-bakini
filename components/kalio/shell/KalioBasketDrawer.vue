@@ -50,7 +50,7 @@
             class="k-bdrawer__qty"
             role="group"
           >
-            <button :aria-label="shown(item) > 1 ? t('cart.qty.fewer', 'One fewer') : t('cart.qty.remove', 'Remove from basket')" type="button" @click="step(item, -1)">
+            <button :aria-label="shown(item) > 1 ? t('cart.qty.fewer', 'One fewer') : t('cart.qty.remove', 'Remove from bag')" type="button" @click="step(item, -1)">
               <v-icon size="16">{{ shown(item) > 1 ? "remove" : "delete_outline" }}</v-icon>
             </button>
             <output aria-live="polite">{{ shown(item) }}</output>
@@ -71,7 +71,7 @@
 import { ProductType } from "@selldone/core-js/enums/product/ProductType";
 import { settling, shownCount, stepTo } from "../kalio-basket";
 import { productImage } from "../kalio-catalog";
-import { colourName } from "../../medio/medio";
+import { colourName } from "../../bakini/bakini";
 import { money } from "../../region-switcher/region";
 import KalioOftenAdded from "../KalioOftenAdded.vue";
 
@@ -126,7 +126,7 @@ export default {
       return productImage(product, true);
     },
 
-    /* Medio is one shop, not a marketplace: the line says its size or
+    /* Bakini is one shop, not a marketplace: the line says its size or
        colour, never a seller. */
     meta(item) {
       return sizeOf(item.variant) || (item.variant?.color ? colourName(item.variant.color) : null);

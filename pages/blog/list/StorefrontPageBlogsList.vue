@@ -21,8 +21,8 @@
       <nav :aria-label="t('pages.breadcrumb', 'Breadcrumb')" class="k-official__crumbs">
         <router-link :to="{ path: '/' }">{{ t("pages.home", "Home") }}</router-link>
         <v-icon class="k-flip" size="16">chevron_right</v-icon>
-        <router-link v-if="filtered" :to="homeRoute">{{ t("medio.k.blog.name", "Tips and guides") }}</router-link>
-        <span v-else>{{ t("medio.k.blog.name", "Tips and guides") }}</span>
+        <router-link v-if="filtered" :to="homeRoute">{{ t("bakini.k.blog.name", "Tips and guides") }}</router-link>
+        <span v-else>{{ t("bakini.k.blog.name", "Tips and guides") }}</span>
         <template v-if="filtered">
           <v-icon class="k-flip" size="16">chevron_right</v-icon>
           <span>{{ heading }}</span>
@@ -31,7 +31,7 @@
 
       <section class="k-journal__hero">
         <div>
-          <p class="k-journal__eyebrow">{{ filtered ? t("medio.k.blog.name", "Tips and guides") : t("medio.k.blog.shopGuides", "{shop} guides", { shop: shopTitle }) }}</p>
+          <p class="k-journal__eyebrow">{{ filtered ? t("bakini.k.blog.name", "Tips and guides") : t("bakini.k.blog.shopGuides", "{shop} guides", { shop: shopTitle }) }}</p>
           <h1>{{ heading }}</h1>
           <p>{{ lede }}</p>
         </div>
@@ -41,7 +41,7 @@
       </section>
 
       <kalio-sample-note v-if="demo" class="k-journal__note">
-        {{ t("medio.k.blog.demoNote", "These guides came with the shop's demo content to show the page. They are not real {shop} articles.", { shop: shopTitle }) }}
+        {{ t("bakini.k.blog.demoNote", "These guides came with the shop's demo content to show the page. They are not real {shop} articles.", { shop: shopTitle }) }}
       </kalio-sample-note>
 
       <div class="k-journal__cols">
@@ -90,9 +90,9 @@
 
           <div v-else class="k-board__empty k-journal__empty">
             <v-icon size="30">menu_book</v-icon>
-            <h2>{{ filtered ? t("medio.k.blog.emptyFilteredT", "No guides here yet") : t("medio.k.blog.emptyT", "No guides yet") }}</h2>
-            <p>{{ filtered ? t("medio.k.blog.emptyFilteredP", "Nothing matches this yet. The latest guides are one tap away.") : t("medio.k.blog.emptyP", "{shop} has not written any guides yet.", { shop: shopTitle }) }}</p>
-            <router-link v-if="filtered" :to="homeRoute" class="k-btn k-btn--line">{{ t("medio.home.allGuides", "All guides") }}</router-link>
+            <h2>{{ filtered ? t("bakini.k.blog.emptyFilteredT", "No guides here yet") : t("bakini.k.blog.emptyT", "No guides yet") }}</h2>
+            <p>{{ filtered ? t("bakini.k.blog.emptyFilteredP", "Nothing matches this yet. The latest guides are one tap away.") : t("bakini.k.blog.emptyP", "{shop} has not written any guides yet.", { shop: shopTitle }) }}</p>
+            <router-link v-if="filtered" :to="homeRoute" class="k-btn k-btn--line">{{ t("bakini.home.allGuides", "All guides") }}</router-link>
           </div>
 
           <nav v-if="pageCount > 1" :aria-label="t('blog.pages', 'Pages')" class="k-journal__pages">
@@ -128,7 +128,7 @@
 
           <section class="k-jbox -ask">
             <h2>{{ t("blog.ask.title", "Got a question?") }}</h2>
-            <p>{{ t("medio.k.blog.askText", "Ask us anything about a product before you order.") }}</p>
+            <p>{{ t("bakini.k.blog.askText", "Ask us anything about a product before you order.") }}</p>
             <router-link :to="{ name: window.$storefront.routes.SHOP_CONTACT_US }" class="k-btn k-btn--line">
               {{ t("contact.shop", "Contact the shop") }}
             </router-link>
@@ -212,21 +212,21 @@ export default {
       if (this.current_author_id) return this.articles[0]?.user?.name || this.current_author || t("blog.heading.author", "Author");
       if (this.current_tag) return `#${this.current_tag}`;
       if (this.current_search) return t("blog.heading.search", "“{query}”", { query: String(this.current_search) });
-      return t("medio.k.blog.name", "Tips and guides");
+      return t("bakini.k.blog.name", "Tips and guides");
     },
     lede() {
-      if (this.current_category) return this.category?.description || t("medio.k.blog.ledeTopic", "Every guide on this topic, newest first.");
-      if (this.current_author_id) return t("medio.k.blog.ledeAuthor", "Every guide by this author, newest first.");
-      if (this.current_tag || this.current_search) return t("medio.k.blog.ledeMatch", "The guides that match, newest first.");
-      return t("medio.k.blog.lede", "Buying guides and how-tos: what to look for, how to set it up and how to make it last.");
+      if (this.current_category) return this.category?.description || t("bakini.k.blog.ledeTopic", "Every story on this topic, newest first.");
+      if (this.current_author_id) return t("bakini.k.blog.ledeAuthor", "Every story by this author, newest first.");
+      if (this.current_tag || this.current_search) return t("bakini.k.blog.ledeMatch", "The stories that match, newest first.");
+      return t("bakini.k.blog.lede", "Notes from the counter: how each collection is made, kept and best enjoyed.");
     },
     /* "12 guides so far": the words around the number, which the template
        sets in bold, so a language can put the number where it reads. */
     count_words() {
       const n = this.total;
       const text = this.filtered
-        ? t("medio.k.blog.count", { one: "{n} guide", other: "{n} guides" }, { n })
-        : t("medio.k.blog.countAll", { one: "{n} guide so far", other: "{n} guides so far" }, { n });
+        ? t("bakini.k.blog.count", { one: "{n} guide", other: "{n} guides" }, { n })
+        : t("bakini.k.blog.countAll", { one: "{n} guide so far", other: "{n} guides so far" }, { n });
       const num = formatNumber(n);
       const at = text.indexOf(num);
       if (at < 0) return ["", num, text];

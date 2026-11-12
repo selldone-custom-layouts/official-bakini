@@ -17,3 +17,5 @@ yarn-error.log*
 *.sln
 *.sw?
 /Backend/bootstrap/cache/
+/dist.zip
+/modules/

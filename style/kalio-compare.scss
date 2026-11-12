@@ -38,7 +38,7 @@
   --c-accent-deep-t: var(--k-green-deep-t);
   --c-sale-t: var(--k-coral-t);
   --c-ok-t: var(--c-ok);
-  --c-on-accent: var(--md-on-brand, #fff);
+  --c-on-accent: var(--bk-on-brand, #fff);
   --c-soft: var(--k-green-soft);
   --c-ink: var(--k-ink);
   --c-ink-2: var(--k-ink-2);
@@ -685,7 +685,7 @@
   }
 
   &__stars .v-icon {
-    color: var(--md-deco, var(--c-line-2)) !important;
+    color: var(--bk-deco, var(--c-line-2)) !important;
 
     &.-on {
       color: var(--c-star) !important;
@@ -1123,7 +1123,7 @@
   --c-head-track: -0.01em;
   --c-h1: 34px;
   --c-diff-bg: #fff8e1;
-  --c-share-bg: var(--md-navy);
+  --c-share-bg: var(--bk-navy);
   --c-share-ink: #c9d6ea;
   --c-share-head: #d8ccff;
   --c-star: var(--k-amber);
@@ -1144,17 +1144,17 @@
   }
 
   &__row.-diff &__c {
-    box-shadow: inset 3px 0 0 var(--md-buy);
+    box-shadow: inset 3px 0 0 var(--bk-buy);
   }
 
   &__share,
   &__empty {
     .k-cmp__btn.-main {
       background: #ffffff;
-      color: var(--md-on-yellow) !important; /* navy on yellow in both modes */
+      color: var(--bk-on-yellow) !important; /* navy on yellow in both modes */
 
       .v-icon {
-        color: var(--md-on-yellow) !important; /* navy on yellow in both modes */
+        color: var(--bk-on-yellow) !important; /* navy on yellow in both modes */
       }
 
       &:hover {

@@ -14,7 +14,7 @@
     <div class="k-cookies__row">
       <span>
         <b>{{ t("cookies.essential", "Essential") }}</b>
-        <small>{{ t("cookies.essentialText", "Sign-in, basket and checkout. Always on.") }}</small>
+        <small>{{ t("cookies.essentialText", "Sign-in, bag and checkout. Always on.") }}</small>
       </span>
       <span class="k-cookies__fixed"><v-icon size="16">lock</v-icon>{{ t("cookies.alwaysOn", "Always on") }}</span>
     </div>

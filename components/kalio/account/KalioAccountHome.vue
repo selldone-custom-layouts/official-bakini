@@ -58,7 +58,7 @@
           </router-link>
           <button v-if="['ok', 'off'].includes(tone.tone)" :disabled="busy_again" class="k-btn -line" type="button" @click="buyAgain">
             <v-progress-circular v-if="busy_again" indeterminate size="16" width="2" />
-            <v-icon v-else size="17">{{ again_done ? "check" : "replay" }}</v-icon>{{ again_done ? t("orders.inYourBasket", "In your basket") : t("orders.buyAgain", "Buy again") }}
+            <v-icon v-else size="17">{{ again_done ? "check" : "replay" }}</v-icon>{{ again_done ? t("orders.inYourBasket", "In your bag") : t("orders.buyAgain", "Buy again") }}
           </button>
           <router-link v-if="tone.tone === 'pay'" :to="orderRoute(latest)" class="k-btn -pay"><v-icon size="17">lock</v-icon>{{ t("orders.payNow", "Pay now") }}</router-link>
           <router-link v-else :to="orderRoute(latest)" class="k-btn -main">{{ t("orders.viewOrder", "View order") }}</router-link>
@@ -66,9 +66,9 @@
       </section>
 
       <section v-else-if="account.loaded" class="k-ahome__latest -empty">
-        <v-icon size="34">shopping_basket</v-icon>
+        <v-icon size="34">shopping_bag</v-icon>
         <h2>{{ t("account.home.empty.title", "No orders yet") }}</h2>
-        <p>{{ t("medio.k.account.emptyText", "Fill a basket from the departments; your orders and where they are show up here.") }}</p>
+        <p>{{ t("bakini.k.account.emptyText", "Fill a bag from the departments; your orders and where they are show up here.") }}</p>
         <router-link :to="{ path: '/' }" class="k-btn -main">{{ t("account.startShopping", "Start shopping") }}</router-link>
       </section>
       <section v-else aria-busy="true" class="k-ahome__latest -wait"><span class="k-board__ghost"></span><span class="k-board__ghost"></span></section>

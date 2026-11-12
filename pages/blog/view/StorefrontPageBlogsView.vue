@@ -21,7 +21,7 @@
       <nav :aria-label="t('pages.breadcrumb', 'Breadcrumb')" class="k-official__crumbs">
         <router-link :to="{ path: '/' }">{{ t("pages.home", "Home") }}</router-link>
         <v-icon class="k-flip" size="16">chevron_right</v-icon>
-        <router-link :to="journalRoute()">{{ t("medio.k.blog.name", "Tips and guides") }}</router-link>
+        <router-link :to="journalRoute()">{{ t("bakini.k.blog.name", "Tips and guides") }}</router-link>
         <template v-if="topic">
           <v-icon class="k-flip" size="16">chevron_right</v-icon>
           <router-link :to="journalRoute({ category: category.id })">{{ topic }}</router-link>
@@ -36,9 +36,9 @@
     <div v-else-if="failed" class="k-post__col">
       <div class="k-board__empty k-journal__empty">
         <v-icon size="30">menu_book</v-icon>
-        <h2>{{ t("medio.k.blog.post.notFoundT", "We can't find this guide") }}</h2>
-        <p>{{ t("medio.k.blog.post.notFoundP", "It may have been moved or taken down. The rest of the guides is still here.") }}</p>
-        <router-link :to="journalRoute()" class="k-btn k-btn--solid">{{ t("medio.k.blog.post.back", "Back to the guides") }}</router-link>
+        <h2>{{ t("bakini.k.blog.post.notFoundT", "We can't find this guide") }}</h2>
+        <p>{{ t("bakini.k.blog.post.notFoundP", "It may have been moved or taken down. The rest of the guides is still here.") }}</p>
+        <router-link :to="journalRoute()" class="k-btn k-btn--solid">{{ t("bakini.k.blog.post.back", "Back to the guides") }}</router-link>
       </div>
     </div>
 
@@ -53,7 +53,7 @@
           <span><v-icon size="17">schedule</v-icon>{{ t("blog.post.minRead", { one: "{n} min read", other: "{n} min read" }, { n: minutes }) }}</span>
         </p>
         <kalio-sample-note v-if="demo">
-          {{ t("medio.k.blog.post.demoNote", "This guide came with the shop's demo content to show the page. It is not a real {shop} article.", { shop: shopTitle }) }}
+          {{ t("bakini.k.blog.post.demoNote", "This guide came with the shop's demo content to show the page. It is not a real {shop} article.", { shop: shopTitle }) }}
         </kalio-sample-note>
       </header>
 
@@ -67,7 +67,7 @@
 
         <section v-if="list.length" class="k-post__shop">
           <header>
-            <h2>{{ named ? t("medio.k.blog.post.shop", "Shop the guide") : t("blog.onOffer", "On offer this week") }}</h2>
+            <h2>{{ named ? t("bakini.k.blog.post.shop", "Shop the guide") : t("blog.onOffer", "On offer this week") }}</h2>
             <button
               v-if="addable.length > 1"
               :disabled="adding || allIn"
@@ -76,7 +76,7 @@
               @click="addAll"
             >
               <v-icon size="20">{{ allIn ? "check" : "shopping_basket" }}</v-icon>
-              <template v-if="allIn">{{ t("blog.post.allIn", "All in your basket") }}</template>
+              <template v-if="allIn">{{ t("blog.post.allIn", "All in your bag") }}</template>
               <template v-else>{{ addall_words[0] }}<u-price :amount="addableTotal" :currency="currency" />{{ addall_words[1] }}</template>
             </button>
           </header>
@@ -93,7 +93,7 @@
           <a :href="mailto" class="k-chip"><v-icon size="18">mail_outline</v-icon>{{ t("blog.post.email", "Email") }}</a>
           <span class="k-post__spacer"></span>
           <router-link :to="journalRoute()" class="k-more">
-            <v-icon class="k-flip" size="20">chevron_left</v-icon>{{ t("medio.home.allGuides", "All guides") }}
+            <v-icon class="k-flip" size="20">chevron_left</v-icon>{{ t("bakini.home.allGuides", "All guides") }}
           </router-link>
         </footer>
 
@@ -114,7 +114,7 @@
     </article>
 
     <section v-if="more.length" class="k-wrap k-post__more">
-      <h2>{{ t("medio.k.blog.post.more", "More guides") }}</h2>
+      <h2>{{ t("bakini.k.blog.post.more", "More guides") }}</h2>
       <div class="k-post__morerow">
         <router-link v-for="note in more" :key="note.id" :to="postRoute(note)" class="k-post__card">
           <span class="k-post__cardpic">
@@ -141,7 +141,7 @@ import KalioSampleNote from "@app-storefront/components/kalio/pages/KalioSampleN
 import KalioMiniProduct from "@app-storefront/components/kalio/pages/KalioMiniProduct.vue";
 import KalioQuickBuy from "@app-storefront/components/kalio/KalioQuickBuy.vue";
 import { addVariant, basketLine, hasSizes, mayBuy, pendingLine, quickAdd, shownCount } from "@app-storefront/components/kalio/kalio-basket";
-import { catalogueById, variantDimension } from "@app-storefront/components/medio/medio";
+import { catalogueById, variantDimension } from "@app-storefront/components/bakini/bakini";
 import { priceOf, productsById } from "@app-storefront/components/kalio/kalio-catalog";
 import {
   dateParts,
@@ -227,7 +227,7 @@ export default {
       return `mailto:?subject=${encodeURIComponent(this.article?.title || "")}&body=${encodeURIComponent(location.href)}`;
     },
     /* Products "Add all" can put straight in the basket: no choice to make,
-       or (Medio) a colour, which goes in as its first colour in stock. */
+       or (Bakini) a colour, which goes in as its first colour in stock. */
     addable() {
       return this.list.filter((product) => !hasSizes(product) || this.firstColour(product));
     },

@@ -42,9 +42,9 @@ import { currentCurrency } from "../region-switcher/region";
 import CurrencyMixin from "@selldone/components-vue/mixin/currency/CurrencyMixin.ts";
 import { addVariant, hasSizes, quickAdd } from "./kalio-basket";
 import { priceOf, productImage, productSrcset, dropSrcset } from "./kalio-catalog";
-import { catalogue, variantDimension } from "../medio/medio";
+import { catalogue, variantDimension } from "../bakini/bakini";
 
-/* Medio: the catalogue read once (medio.ts), and what goes with the basket:
+/* Bakini: the catalogue read once (bakini.ts), and what goes with the basket:
    other departments first (a mouse for a laptop, not a second laptop), in
    stock, a colour product going in with its first colour in stock. A
    product whose choice is a capacity or size opens its page instead. */

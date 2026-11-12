@@ -19,7 +19,7 @@
       <h2 :id="headingId" class="k-offers__title">
         {{ items_show.length > 1 ? t("offers.soldByCount", { one: "Sold by {n} seller", other: "Sold by {n} sellers" }, { n: items_show.length }) : t("offers.soldBy", "Sold by") }}
       </h2>
-      <p v-if="items_show.length > 1" class="k-offers__hint">{{ t("offers.hint", "Choose who your basket line comes from.") }}</p>
+      <p v-if="items_show.length > 1" class="k-offers__hint">{{ t("offers.hint", "Choose who your bag line comes from.") }}</p>
     </header>
 
     <div :aria-labelledby="headingId" class="k-offers__list" role="radiogroup">

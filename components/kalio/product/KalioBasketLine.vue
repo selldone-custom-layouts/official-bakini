@@ -18,14 +18,14 @@
     <p class="k-basket-line__cap">
       <i aria-hidden="true"></i>
       <template v-if="shown > 0">
-        {{ t("pdp.basket.inBasket", { one: "{n} in your basket", other: "{n} in your basket" }, { n: shown }) }}
+        {{ t("pdp.basket.inBasket", { one: "{n} in your bag", other: "{n} in your bag" }, { n: shown }) }}
       </template>
-      <template v-else>{{ t("pdp.basket.removing", "Taking it out of your basket…") }}</template>
+      <template v-else>{{ t("pdp.basket.removing", "Taking it out of your bag…") }}</template>
     </p>
     <div class="k-basket-line__row">
-      <div :aria-label="t('pdp.basket.qty', 'Quantity in basket')" class="k-basket-line__qty" role="group">
+      <div :aria-label="t('pdp.basket.qty', 'Quantity in bag')" class="k-basket-line__qty" role="group">
         <button
-          :aria-label="shown > 1 ? t('pdp.basket.oneFewer', 'One fewer') : t('pdp.basket.remove', 'Remove from basket')"
+          :aria-label="shown > 1 ? t('pdp.basket.oneFewer', 'One fewer') : t('pdp.basket.remove', 'Remove from bag')"
           :disabled="shown <= 0"
           type="button"
           @click="step(-1)"

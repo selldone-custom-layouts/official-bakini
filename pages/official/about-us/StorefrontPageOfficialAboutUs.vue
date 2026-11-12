@@ -31,15 +31,15 @@
        sample, marked as such. The steps are read from the shop: its
        sellers and its delivery methods. -->
   <div class="w-mag k-wrap">
-    <!-- Medio: the about-hero.webp photo slot (a named placeholder until the file exists). -->
-    <medio-slot class="md-about__hero" eager place="about-hero" />
+    <!-- Bakini: the about-hero.webp photo slot (a named placeholder until the file exists). -->
+    <bakini-slot class="bk-about__hero" eager place="about-hero" />
     <section class="w-mag__ed">
       <div>
         <p class="w-mag__eyebrow">{{ t("about.title", "About {shop}", { shop: shopTitle }) }}</p>
         <h1>{{ missing || busy ? sample.title : t("about.title", "About {shop}", { shop: shopTitle }) }}</h1>
         <div v-if="busy" aria-hidden="true" class="k-legal__loading"><span></span><span></span><span></span></div>
         <template v-else-if="missing">
-          <kalio-sample-note>{{ t("medio.about.sample", "This text is general copy written to show the page. It is not {shop}'s real story.", { shop: shopTitle }) }}</kalio-sample-note>
+          <kalio-sample-note>{{ t("bakini.about.sample", "This text is general copy written to show the page. It is not {shop}'s real story.", { shop: shopTitle }) }}</kalio-sample-note>
           <p class="w-mag__lead">{{ sample.lead }}</p>
           <p>{{ sample.text[0] }}</p>
           <p class="w-mag__sign">{{ sample.sign }}</p>
@@ -52,7 +52,7 @@
     </section>
 
     <section class="t-sec">
-      <header class="t-sec__head"><h2 class="t-sec__title">{{ t("medio.about.how", "How an order works") }}</h2></header>
+      <header class="t-sec__head"><h2 class="t-sec__title">{{ t("bakini.about.how", "How an order works") }}</h2></header>
       <ol class="w-mag__how">
         <li v-for="(st, i) in how" :key="st.t">
           <i>{{ i + 1 }}</i>
@@ -75,11 +75,11 @@
     <section id="contact" class="t-sec w-mag__contact">
       <div>
         <p class="w-mag__eyebrow">{{ t("contact.pageTitle", "Contact us") }}</p>
-        <h2>{{ t("medio.about.need", "Still need us?") }}</h2>
-        <p>{{ t("medio.about.needLine", "For an order, the fastest way is the message thread on the order page: it comes straight to our team. For anything else, write to us.") }}</p>
+        <h2>{{ t("bakini.about.need", "Still need us?") }}</h2>
+        <p>{{ t("bakini.about.needLine", "For an order, the fastest way is the message thread on the order page: it comes straight to our team. For anything else, write to us.") }}</p>
       </div>
       <div class="w-mag__acts">
-        <router-link :to="{ name: window.$storefront.routes.SHOP_CONTACT_US }" class="t-btn -main">{{ t("medio.about.write", "Write to us") }}</router-link>
+        <router-link :to="{ name: window.$storefront.routes.SHOP_CONTACT_US }" class="t-btn -main">{{ t("bakini.about.write", "Write to us") }}</router-link>
         <router-link :to="catalogueRoute" class="t-btn -line">{{ t("account.startShopping", "Start shopping") }}</router-link>
       </div>
     </section>
@@ -88,16 +88,16 @@
 
 <script lang="ts">
 import KalioSampleNote from "@app-storefront/components/kalio/pages/KalioSampleNote.vue";
-import MedioSlot from "@app-storefront/components/medio/MedioSlot.vue";
+import BakiniSlot from "@app-storefront/components/bakini/BakiniSlot.vue";
 import { aboutSample, plainText } from "@app-storefront/components/kalio/pages/kalio-sample-pages";
 import { aisles, catalogueRoute, countProducts, productImage, vendors } from "@app-storefront/components/kalio/kalio-catalog";
 import { waysOf } from "@app-storefront/components/walio/walio-home";
-import { photoOf, wayWords, withPhoto } from "@app-storefront/components/medio/medio";
+import { photoOf, wayWords, withPhoto } from "@app-storefront/components/bakini/bakini";
 import { locale, t } from "@app-storefront/components/kalio/i18n/kalio-i18n";
 
 export default {
   name: "StorefrontPageOfficialAboutUs",
-  components: { KalioSampleNote, MedioSlot },
+  components: { KalioSampleNote, BakiniSlot },
   inject: ["$shop"],
 
   data: () => ({
@@ -113,10 +113,10 @@ export default {
 
   computed: {
     shopTitle() {
-      return this.$shop?.title || t("medio.about.thisShop", "This shop");
+      return this.$shop?.title || t("bakini.about.thisShop", "This shop");
     },
     photos() {
-      /* Medio: three of the owner's portrait photos, by department. */
+      /* Bakini: three of the owner's portrait photos, by department. */
       return withPhoto(this.aisleList, "portrait")
         .slice(0, 3)
         .map((c) => photoOf(c, "portrait").src);
@@ -132,10 +132,10 @@ export default {
         list = ways.join(", ");
       }
       return [
-        { t: t("medio.about.s1", "Pick and compare"), p: t("medio.about.s1p", "Every department, with full specs and Compare side by side.") },
-        { t: t("medio.about.s2", "One checkout"), p: t("medio.about.s2p", "One basket and one payment.") },
-        { t: t("medio.about.s3", "We pack it"), p: t("medio.about.s3p", "Your order is packed as soon as it is placed.") },
-        { t: t("medio.about.s4", "Delivered your way"), p: ways.length ? t("medio.about.s4p", "{ways}, as you choose at checkout.", { ways: list }) : t("medio.about.s4none", "As you choose at checkout.") },
+        { t: t("bakini.about.s1", "Pick and compare"), p: t("bakini.about.s1p", "Every department, with full specs and Compare side by side.") },
+        { t: t("bakini.about.s2", "One checkout"), p: t("bakini.about.s2p", "One bag and one payment.") },
+        { t: t("bakini.about.s3", "We pack it"), p: t("bakini.about.s3p", "Your order is packed as soon as it is placed.") },
+        { t: t("bakini.about.s4", "Delivered your way"), p: ways.length ? t("bakini.about.s4p", "{ways}, as you choose at checkout.", { ways: list }) : t("bakini.about.s4none", "As you choose at checkout.") },
       ].map((st) => ({ ...st, p: st.p.charAt(0).toUpperCase() + st.p.slice(1) }));
     },
     sample() {

@@ -13,7 +13,7 @@
     <header v-if="kind !== 'PHYSICAL'" class="k-board__head">
       <div class="k-board__titles">
         <h2>{{ title }}</h2>
-        <p>{{ t("medio.k.orders.apart", "Kept apart from your other orders.") }}</p>
+        <p>{{ t("bakini.k.orders.apart", "Kept apart from your other orders.") }}</p>
       </div>
       <kalio-order-kinds :current="kind" />
     </header>

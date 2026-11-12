@@ -5,7 +5,7 @@
   - Web: https://selldone.com
   -->
 <!--
-  Medio — Contact us (digini-design/contact-b.html).
+  Bakini — Contact us (digini-design/contact-b.html).
 
   A message form (name, email, order number, topic, message) sent with
   Selldone's own contact form call, and beside it how else to reach the
@@ -15,79 +15,79 @@
   an order. A missing page is not an error: nothing red is shown.
 -->
 <template>
-  <div class="md-contact">
-    <h1 class="md-contact__h">{{ t("contact.pageTitle", "Contact us") }}</h1>
-    <p class="md-contact__lede">{{ t("medio.contact.lede", "Questions about a product or an order? Write to us and we'll get back to you.") }}</p>
+  <div class="bk-contact">
+    <h1 class="bk-contact__h">{{ t("contact.pageTitle", "Contact us") }}</h1>
+    <p class="bk-contact__lede">{{ t("bakini.contact.lede", "Questions about a product or an order? Write to us and we'll get back to you.") }}</p>
 
-    <div class="md-contact__cols">
-      <section aria-labelledby="md-contact-form" class="md-contact__form">
+    <div class="bk-contact__cols">
+      <section aria-labelledby="bk-contact-form" class="bk-contact__form">
         <template v-if="submitted">
-          <div class="md-empty">
-            <span class="md-empty__ic"><span class="ms">mark_email_read</span></span>
-            <p id="md-contact-form" class="md-empty__t">{{ t("medio.contact.sent", "Thanks, your message is on its way") }}</p>
-            <p class="md-empty__p">{{ t("medio.contact.sentLine", "We usually answer within a working day, at the email you gave us.") }}</p>
-            <button class="md-btn -line" type="button" @click="submitted = false">{{ t("medio.contact.another", "Send another message") }}</button>
+          <div class="bk-empty">
+            <span class="bk-empty__ic"><span class="ms">mark_email_read</span></span>
+            <p id="bk-contact-form" class="bk-empty__t">{{ t("bakini.contact.sent", "Thanks, your message is on its way") }}</p>
+            <p class="bk-empty__p">{{ t("bakini.contact.sentLine", "We usually answer within a working day, at the email you gave us.") }}</p>
+            <button class="bk-btn -line" type="button" @click="submitted = false">{{ t("bakini.contact.another", "Send another message") }}</button>
           </div>
         </template>
         <form v-else novalidate @submit.prevent="sendForm">
-          <h2 id="md-contact-form">{{ t("medio.contact.formTitle", "Send us a message") }}</h2>
-          <div class="md-form">
-            <label class="md-field">
-              <span>{{ t("medio.contact.name", "Name") }}</span>
-              <input v-model.trim="name" :placeholder="t('medio.contact.namePh', 'Your name')" autocomplete="name" type="text" />
+          <h2 id="bk-contact-form">{{ t("bakini.contact.formTitle", "Send us a message") }}</h2>
+          <div class="bk-form">
+            <label class="bk-field">
+              <span>{{ t("bakini.contact.name", "Name") }}</span>
+              <input v-model.trim="name" :placeholder="t('bakini.contact.namePh', 'Your name')" autocomplete="name" type="text" />
             </label>
-            <label :class="{ '-bad': tried && !emailOk }" class="md-field">
+            <label :class="{ '-bad': tried && !emailOk }" class="bk-field">
               <span>{{ t("basket.who.email", "Email") }}</span>
               <input v-model.trim="email" autocomplete="email" placeholder="you@example.com" type="email" />
-              <small v-if="tried && !emailOk">{{ t("medio.contact.emailBad", "Please enter your email, so we can answer.") }}</small>
+              <small v-if="tried && !emailOk">{{ t("bakini.contact.emailBad", "Please enter your email, so we can answer.") }}</small>
             </label>
-            <label class="md-field">
-              <span>{{ t("medio.contact.order", "Order number (optional)") }}</span>
-              <input v-model.trim="order" :placeholder="t('medio.contact.orderPh', 'e.g. {n}', { n: '1042' })" type="text" />
+            <label class="bk-field">
+              <span>{{ t("bakini.contact.order", "Order number (optional)") }}</span>
+              <input v-model.trim="order" :placeholder="t('bakini.contact.orderPh', 'e.g. {n}', { n: '1042' })" type="text" />
             </label>
-            <label class="md-field">
+            <label class="bk-field">
               <span>{{ t("blog.heading.topic", "Topic") }}</span>
               <select v-model="category">
                 <option v-for="tp in topics" :key="tp.v" :value="tp.v">{{ tp.label }}</option>
               </select>
             </label>
-            <label :class="{ '-bad': tried && !message }" class="md-field -wide">
-              <span>{{ t("medio.contact.message", "Message") }}</span>
-              <textarea v-model="message" :placeholder="t('medio.contact.messagePh', 'How can we help?')" rows="5"></textarea>
-              <small v-if="tried && !message">{{ t("medio.contact.messageBad", "Please write your message.") }}</small>
+            <label :class="{ '-bad': tried && !message }" class="bk-field -wide">
+              <span>{{ t("bakini.contact.message", "Message") }}</span>
+              <textarea v-model="message" :placeholder="t('bakini.contact.messagePh', 'How can we help?')" rows="5"></textarea>
+              <small v-if="tried && !message">{{ t("bakini.contact.messageBad", "Please write your message.") }}</small>
             </label>
           </div>
-          <div class="md-contact__send">
-            <button :disabled="busy_send" class="md-btn" type="submit">
-              <span class="ms">send</span>{{ busy_send ? t("medio.contact.sending", "Sending…") : t("medio.contact.send", "Send message") }}
+          <div class="bk-contact__send">
+            <button :disabled="busy_send" class="bk-btn" type="submit">
+              <span class="ms">send</span>{{ busy_send ? t("bakini.contact.sending", "Sending…") : t("bakini.contact.send", "Send message") }}
             </button>
-            <small>{{ t("medio.contact.answer", "We usually answer within a working day.") }}</small>
+            <small>{{ t("bakini.contact.answer", "We usually answer within a working day.") }}</small>
           </div>
-          <p v-if="error" class="md-contact__err" role="alert">{{ error }}</p>
+          <p v-if="error" class="bk-contact__err" role="alert">{{ error }}</p>
         </form>
       </section>
 
-      <aside :aria-label="t('medio.contact.other', 'Other ways to reach us')" class="md-contact__side">
-        <div v-if="profile && profileText" class="md-contact__card -profile">
+      <aside :aria-label="t('bakini.contact.other', 'Other ways to reach us')" class="bk-contact__side">
+        <div v-if="profile && profileText" class="bk-contact__card -profile">
           <s-article-editor :body="profile.body" :edit="false" :enable-title="false" :only-view="true" class="k-prose" />
         </div>
         <template v-else-if="!busy">
           <kalio-sample-note />
-          <div v-for="c in samples" :key="c.title" class="md-contact__card">
-            <span class="md-contact__ic"><span class="ms">{{ c.icon }}</span></span>
+          <div v-for="c in samples" :key="c.title" class="bk-contact__card">
+            <span class="bk-contact__ic"><span class="ms">{{ c.icon }}</span></span>
             <div>
               <b>{{ c.title }}</b>
               <p>{{ c.line }}</p>
-              <span class="md-contact__more">{{ c.more }}</span>
+              <span class="bk-contact__more">{{ c.more }}</span>
             </div>
           </div>
         </template>
-        <div class="md-contact__card">
-          <span class="md-contact__ic"><span class="ms">local_shipping</span></span>
+        <div class="bk-contact__card">
+          <span class="bk-contact__ic"><span class="ms">local_shipping</span></span>
           <div>
-            <b>{{ t("medio.contact.track", "Track an order") }}</b>
-            <p>{{ t("medio.contact.trackLine", "Your orders, their status and messages are in your account.") }}</p>
-            <router-link :to="{ name: window.$storefront.routes.HISTORY_ORDERS_PHYSICAL }" class="md-link">{{ t("medio.contact.trackGo", "Track order") }}<span class="ms md-chev">chevron_right</span></router-link>
+            <b>{{ t("bakini.contact.track", "Track an order") }}</b>
+            <p>{{ t("bakini.contact.trackLine", "Your orders, their status and messages are in your account.") }}</p>
+            <router-link :to="{ name: window.$storefront.routes.HISTORY_ORDERS_PHYSICAL }" class="bk-link">{{ t("bakini.contact.trackGo", "Track order") }}<span class="ms bk-chev">chevron_right</span></router-link>
           </div>
         </div>
       </aside>
@@ -132,19 +132,19 @@ export default {
     },
     topics() {
       return [
-        { v: "A product question", label: t("medio.contact.t1", "A product question") },
-        { v: "An order I placed", label: t("medio.contact.t2", "An order I placed") },
-        { v: "Delivery or pickup", label: t("medio.contact.t3", "Delivery or pickup") },
-        { v: "Returns and refunds", label: t("medio.contact.t4", "Returns and refunds") },
-        { v: "Something else", label: t("medio.contact.t5", "Something else") },
+        { v: "A product question", label: t("bakini.contact.t1", "A product question") },
+        { v: "An order I placed", label: t("bakini.contact.t2", "An order I placed") },
+        { v: "Delivery or pickup", label: t("bakini.contact.t3", "Delivery or pickup") },
+        { v: "Returns and refunds", label: t("bakini.contact.t4", "Returns and refunds") },
+        { v: "Something else", label: t("bakini.contact.t5", "Something else") },
       ];
     },
     samples() {
       /* Sample cards (the address and number are sample data, as written). */
       return [
-        { icon: "mail", title: t("medio.contact.emailUs", "Email us"), line: "hello@medio.example", more: t("medio.contact.emailMore", "Answers within a working day") },
-        { icon: "call", title: t("medio.contact.callUs", "Call us"), line: "+1 305 555 0100", more: t("medio.contact.callMore", "Mon–Fri, 9 AM – 6 PM") },
-        { icon: "location_on", title: t("medio.contact.visit", "Visit"), line: "100 Biscayne Blvd, Miami, FL 33132", more: t("medio.contact.visitMore", "Pickup point") },
+        { icon: "mail", title: t("bakini.contact.emailUs", "Email us"), line: "hello@bakini.example", more: t("bakini.contact.emailMore", "Answers within a working day") },
+        { icon: "call", title: t("bakini.contact.callUs", "Call us"), line: "+1 305 555 0100", more: t("bakini.contact.callMore", "Mon–Fri, 9 AM – 6 PM") },
+        { icon: "location_on", title: t("bakini.contact.visit", "Visit"), line: "100 Biscayne Blvd, Miami, FL 33132", more: t("bakini.contact.visitMore", "Pickup point") },
       ];
     },
   },
@@ -188,7 +188,7 @@ export default {
         })
         .then(({ data }: any) => {
           if (data?.error) {
-            this.error = data.error_msg || t("medio.contact.failed", "That did not go through. Please try again.");
+            this.error = data.error_msg || t("bakini.contact.failed", "That did not go through. Please try again.");
             return;
           }
           this.message = "";
@@ -196,7 +196,7 @@ export default {
           this.tried = false;
           this.submitted = true;
         })
-        .catch(() => (this.error = t("medio.contact.failedLater", "That did not go through. Please try again in a moment.")))
+        .catch(() => (this.error = t("bakini.contact.failedLater", "That did not go through. Please try again in a moment.")))
         .finally(() => (this.busy_send = false));
     },
   },

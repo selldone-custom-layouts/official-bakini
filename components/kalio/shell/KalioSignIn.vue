@@ -28,15 +28,15 @@
     <div class="k-signin__card">
       <!-- ▆▆▆▆▆▆▆▆ The shop ▆▆▆▆▆▆▆▆ -->
       <aside class="k-signin__brand">
-        <p class="k-signin__mark"><medio-logo :to="null" light /></p>
-        <p class="k-signin__pitch">{{ t("medio.k.signin.pitch", "Your orders, saved items and addresses, in one place.") }}</p>
+        <p class="k-signin__mark"><bakini-logo :to="null" light /></p>
+        <p class="k-signin__pitch">{{ t("bakini.k.signin.pitch", "Your orders, saved items and addresses, in one place.") }}</p>
 
         <ul class="k-signin__perks">
           <li><v-icon size="20">local_shipping</v-icon>{{ t("signin.perks.orders", "Follow every order to your door") }}</li>
-          <li><v-icon size="20">favorite_border</v-icon>{{ t("medio.k.signin.saved", "Save products to compare and buy later") }}</li>
-          <li><v-icon size="20">place</v-icon>{{ t("medio.k.signin.addresses", "Your addresses ready at checkout") }}</li>
+          <li><v-icon size="20">favorite_border</v-icon>{{ t("bakini.k.signin.saved", "Save products to compare and buy later") }}</li>
+          <li><v-icon size="20">place</v-icon>{{ t("bakini.k.signin.addresses", "Your addresses ready at checkout") }}</li>
           <li v-if="sellerCount > 1">
-            <v-icon size="20">storefront</v-icon>{{ t("signin.perks.sellers", { one: "One basket across {n} independent seller", other: "One basket across {n} independent sellers" }, { n: sellerCount }) }}
+            <v-icon size="20">storefront</v-icon>{{ t("signin.perks.sellers", { one: "One bag across {n} independent seller", other: "One bag across {n} independent sellers" }, { n: sellerCount }) }}
           </li>
         </ul>
 
@@ -77,7 +77,7 @@
 <script>
 import { throttle } from "lodash-es";
 import SShopLogin from "@selldone/components-vue/storefront/login/SShopLogin.vue";
-import MedioLogo from "../../medio/MedioLogo.vue";
+import BakiniLogo from "../../bakini/BakiniLogo.vue";
 import { EventBus } from "@selldone/components-vue/utils/events/EventBus.ts";
 import { aisleImage, aisles, tintFor, vendors } from "../kalio-catalog";
 
@@ -99,7 +99,7 @@ const WORDS = {
 
 export default {
   name: "KalioSignIn",
-  components: { SShopLogin, MedioLogo },
+  components: { SShopLogin, BakiniLogo },
   inject: ["$shop"],
 
   data() {

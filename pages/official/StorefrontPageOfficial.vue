@@ -21,10 +21,10 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <div class="k-official">
     <slot name="header"></slot>
-    <div class="md-wrap">
-      <nav :aria-label="t('pages.breadcrumb', 'Breadcrumb')" class="md-crumbs">
+    <div class="bk-wrap">
+      <nav :aria-label="t('pages.breadcrumb', 'Breadcrumb')" class="bk-crumbs">
         <router-link :to="{ path: '/' }">{{ t("pages.home", "Home") }}</router-link>
-        <span aria-hidden="true" class="ms md-chev">chevron_right</span>
+        <span aria-hidden="true" class="ms bk-chev">chevron_right</span>
         <span aria-current="page">{{ page_name }}</span>
       </nav>
       <router-view class="k-official__body" />

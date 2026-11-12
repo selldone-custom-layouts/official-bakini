@@ -1,10 +1,10 @@
 {
   "deploy_server": "https://layouts.selldone.com",
   "deploy_path": "",
-  "package": "medio-electronics",
-  "name": "Medio Electronics",
-  "version": "1.0.9",
+  "package": "bakini-noir-patisserie",
+  "name": "Bakini Noir Patisserie",
+  "version": "1.0.0",
   "storefront": true,
   "backoffice": false,
-  "description": "A big electronics retailer's site: a message strip, Shop All / Services / Deals menus and a big rounded search; a hero, round category tiles, promo tiles, brand and dark deal cards, rails from the shop's tags and pastel promise tiles; a category hub over the results; LIST rows with spec bullets and a price column (or a grid); a product page with a key-spec grid, a sticky buy card, add-ons, buy-together and accordions; a side-by-side compare page; a receipt-first basket."
+  "description": "A dark pastry theatre for a single bakery: a slim glass header, a cinematic hero with one pastry under a spotlight, the collections as a side-scrolling lineup of tall dark cards, a bento of the shop's real facts (counter hours, delivery windows, pickup, shipping, cash on delivery), selection rows, a compare strip, deals and the journal; real spec filters, a product page with a sticky buy column and Buy together, a bag drawer, glass checkout cards, a desk account, and an ivory light mode."
 }

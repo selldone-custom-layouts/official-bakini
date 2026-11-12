@@ -16,7 +16,7 @@
     <div class="k-kinds__menu">
       <p class="k-kinds__label">{{ t("orders.kinds.label", "Kind of order") }}</p>
       <router-link :class="{ '-on': current === 'PHYSICAL' }" :to="groceries">
-        <v-icon size="19">local_shipping</v-icon>{{ t("medio.k.orders.products", "Products") }}
+        <v-icon size="19">local_shipping</v-icon>{{ t("bakini.k.orders.products", "Products") }}
       </router-link>
       <router-link v-for="kind in kinds" :key="kind.key" :class="{ '-on': current === kind.key }" :to="kind.route">
         <v-icon size="19">{{ ICONS[kind.key] }}</v-icon>{{ kind.word }}<em v-if="countOf(kind.key)">{{ countOf(kind.key) }}</em>
@@ -48,7 +48,7 @@ export default {
       return { name: window.$storefront.routes.HISTORY_ORDERS_PHYSICAL };
     },
     currentWord() {
-      if (this.current === "PHYSICAL") return t("medio.k.orders.products", "Products");
+      if (this.current === "PHYSICAL") return t("bakini.k.orders.products", "Products");
       return this.kinds.find((kind) => kind.key === this.current)?.word || t("orders.kind.orders", "Orders");
     },
   },

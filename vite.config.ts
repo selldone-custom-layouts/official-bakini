@@ -100,27 +100,29 @@ export default ({mode}: any) => {
           : []),
     ],
     /* The theme switcher's build step: every fixed colour gets a dark value
-       under html.md-dark (components/theme-switcher/tools, PORTING.md). */
+       under html.bk-dark (components/theme-switcher/tools, PORTING.md).
+       Bakini Noir is dark first: html.bk-dark is on by default, so these
+       dark values are what a visitor sees unless they pick Light. The Noir
+       tokens (style/bakini-theme.scss) hold both modes themselves: their
+       html.bk-dark block is skipped by the step and outranks :root. The pastry
+       photos are transparent cut-outs, so their plates are tokens that turn
+       dark too (no light-tile exceptions beyond the build step's own). */
     css: {
       postcss: {
         plugins: [
           darkTokens({
-            darkSelector: "html.md-dark",
+            darkSelector: "html.bk-dark",
             include: [/\/style\//, /\/StorefrontApp\.vue/, /\/components\//, /\/pages\//, /\/layouts\//],
             exclude: [/\/node_modules\//, /\/modules\/pagebuilder\//, /\/theme-switcher\//],
-            lightVars: ["--k-well", "--k-tint", "--k-leaf", "--md-photo", "--md-yellow"],
-            /* White discs and panels that stay white in dark mode: the round
-               arrows, the hero's packshot stage and white button, the dark
-               deal cards' packshot wells, the switch's knob. */
-            keepLightExtra: /md-arrow|md-round(?![-\w])|md-hero|md-btn\.-white|md-dcard__img|md-switch/,
-            card: "#151c2b",
-            raise: "#1c2536",
-            variant: "#2b3549",
-            line: "#2b3549",
-            lineStrong: "#3d4961",
-            ink: "#e8ecf3",
-            ink2: "#d3d9e4",
-            muted: "#a6b0c2",
+            lightVars: [],
+            card: "#1c1419",
+            raise: "#261b22",
+            variant: "#30232b",
+            line: "#30232b",
+            lineStrong: "#4a3b43",
+            ink: "#f4ede6",
+            ink2: "#e2d7d0",
+            muted: "#b8a9af",
           }),
         ],
       },
@@ -176,7 +178,7 @@ export default ({mode}: any) => {
       assetsInlineLimit: (file: string, content: Buffer) => {
         const f = file.toLowerCase();
         if (f.endsWith(".svg")) return content.length <= 16384;
-        /* Medio: small PNG/JPG icons ride inline too (fewer files); photos never. */
+        /* Bakini: small PNG/JPG icons ride inline too (fewer files); photos never. */
         if (/\.(png|jpe?g|gif)$/.test(f)) return content.length <= 12288;
         return undefined;
       },

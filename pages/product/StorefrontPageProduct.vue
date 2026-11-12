@@ -14,64 +14,64 @@
 
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <!--
-    Medio — the product page (digini-design/medio-product.html), after a big
+    Bakini — the product page (digini-design/bakini-product.html), after a big
     electronics retailer's: the breadcrumb of the category; the overview
-    (MedioProductOverview: the name, the gallery and key specs on the left,
+    (BakiniProductOverview: the name, the gallery and key specs on the left,
     the sticky buy card on the right); "Buy together and save"; four
     accordions (Product information, Specifications, Reviews, Delivery &
     returns); then "We recommend" and "More like this" rails.
   -->
-  <div class="s--product k-product md-product">
+  <div class="s--product k-product bk-product">
     <div style="order: 0">
-      <div class="s--product-section-info md-wrap">
+      <div class="s--product-section-info bk-wrap">
         <slot name="header" :center="true"></slot>
-        <nav :aria-label="t('medio.crumbs', 'Breadcrumb')" class="md-crumbs">
-          <router-link :to="{ path: '/' }">{{ t("medio.home", "Home") }}</router-link>
+        <nav :aria-label="t('bakini.crumbs', 'Breadcrumb')" class="bk-crumbs">
+          <router-link :to="{ path: '/' }">{{ t("bakini.home", "Home") }}</router-link>
           <template v-if="product && product.category">
-            <span aria-hidden="true" class="ms md-chev">chevron_right</span>
+            <span aria-hidden="true" class="ms bk-chev">chevron_right</span>
             <router-link :to="{ name: window.$storefront.routes.SHOP_CATEGORY_PAGE, params: { category_name: product.category.name } }">{{
               product.category.title || product.category.name
             }}</router-link>
           </template>
           <template v-if="product">
-            <span aria-hidden="true" class="ms md-chev">chevron_right</span>
-            <span aria-current="page" class="md-crumbs__here">{{ product.title }}</span>
+            <span aria-hidden="true" class="ms bk-chev">chevron_right</span>
+            <span aria-current="page" class="bk-crumbs__here">{{ product.title }}</span>
           </template>
-          <span class="md-crumbs__tools">
+          <span class="bk-crumbs__tools">
             <s-product-admin-button v-if="$vuetify.display.mdAndUp"></s-product-admin-button>
           </span>
         </nav>
-        <medio-product-overview v-if="product" :related="related || []" can-buy show-cover @open="openPanel" />
+        <bakini-product-overview v-if="product" :related="related || []" can-buy show-cover @open="openPanel" />
         <s-product-overview-loading v-else />
         <u-loading-progress v-if="busy"></u-loading-progress>
       </div>
     </div>
 
     <template v-if="product">
-      <div class="md-wrap" style="order: 1">
-        <medio-together :product="product" />
+      <div class="bk-wrap" style="order: 1">
+        <bakini-together :product="product" />
 
         <!-- ▆▆▆▆ Accordions ▆▆▆▆ -->
-        <div class="md-acc">
-          <section v-for="sec in panels" :id="'md-' + sec.key" :key="sec.key" :class="{ '-open': open[sec.key] }" class="md-acc__sec">
-            <h2 class="md-acc__h">
-              <button :aria-controls="'md-acc-' + sec.key" :aria-expanded="open[sec.key] ? 'true' : 'false'" type="button" @click="toggle(sec.key)">
+        <div class="bk-acc">
+          <section v-for="sec in panels" :id="'bk-' + sec.key" :key="sec.key" :class="{ '-open': open[sec.key] }" class="bk-acc__sec">
+            <h2 class="bk-acc__h">
+              <button :aria-controls="'bk-acc-' + sec.key" :aria-expanded="open[sec.key] ? 'true' : 'false'" type="button" @click="toggle(sec.key)">
                 {{ sec.title }}<span aria-hidden="true" class="ms">{{ open[sec.key] ? "expand_less" : "expand_more" }}</span>
               </button>
             </h2>
-            <div v-show="open[sec.key]" :id="'md-acc-' + sec.key" class="md-acc__b">
+            <div v-show="open[sec.key]" :id="'bk-acc-' + sec.key" class="bk-acc__b">
               <!-- Product information -->
               <template v-if="sec.key === 'info'">
-                <p class="md-acc__code">{{ t("medio.pdp.code", "Product code {code}", { code: String(product.sku || product.id) }) }}</p>
-                <ul v-if="features.length" class="md-acc__bullets">
+                <p class="bk-acc__code">{{ t("bakini.pdp.code", "Product code {code}", { code: String(product.sku || product.id) }) }}</p>
+                <ul v-if="features.length" class="bk-acc__bullets">
                   <li v-for="f in features" :key="f.key"><b>{{ f.key }}:</b> {{ f.value }}</li>
                 </ul>
                 <s-product-article v-if="article" class="k-prose" hide-title></s-product-article>
-                <p v-else-if="aboutLine" class="md-acc__p">{{ aboutLine }}</p>
+                <p v-else-if="aboutLine" class="bk-acc__p">{{ aboutLine }}</p>
               </template>
               <!-- Specifications, in the shop's own groups -->
               <template v-else-if="sec.key === 'specs'">
-                <table v-for="g in spec_groups" :key="g.title" class="md-spec">
+                <table v-for="g in spec_groups" :key="g.title" class="bk-spec">
                   <caption v-if="spec_groups.length > 1 || g.title">{{ g.title }}</caption>
                   <tbody>
                     <tr v-for="r in g.rows" :key="r.key">
@@ -82,29 +82,29 @@
                 </table>
               </template>
               <!-- Reviews -->
-              <div v-else-if="sec.key === 'reviews'" class="k-reviews md-reviews">
+              <div v-else-if="sec.key === 'reviews'" class="k-reviews bk-reviews">
                 <kalio-reviews></kalio-reviews>
               </div>
               <!-- Delivery and returns -->
               <template v-else-if="sec.key === 'delivery'">
-                <ul v-if="ways.length" class="md-acc__ways">
+                <ul v-if="ways.length" class="bk-acc__ways">
                   <li v-for="w in ways" :key="w.key">
                     <span class="ms">{{ w.icon === "storefront" ? "storefront" : "local_shipping" }}</span>
                     <span>
                       <b>{{ wayWords(w).word }}</b> · {{ wayWords(w).line }}.
-                      <template v-if="w.free"> {{ t("medio.pdp.free", "Free") }}.</template>
+                      <template v-if="w.free"> {{ t("bakini.pdp.free", "Free") }}.</template>
                       <template v-else-if="w.freeOver">
-                        {{ t("medio.pdp.freeOverShort", "Free on orders over {amount}", { amount: moneyFrom(w.freeOver, w.currency, { short: "auto" }) }) }}.</template
+                        {{ t("bakini.pdp.freeOverShort", "Free on orders over {amount}", { amount: moneyFrom(w.freeOver, w.currency, { short: "auto" }) }) }}.</template
                       >
                     </span>
                   </li>
                 </ul>
-                <p v-else class="md-acc__p">{{ t("medio.pdp.deliveryAtCheckout", "Delivery options and prices are shown at checkout") }}</p>
-                <s-product-shipping class="md-block"></s-product-shipping>
-                <s-product-warranty class="md-block"></s-product-warranty>
-                <s-product-guide class="md-block"></s-product-guide>
-                <router-link :to="{ name: window.$storefront.routes.SHOP_PROFILE_PAGE_TERMS }" class="md-link"
-                  >{{ t("medio.pdp.returnsTerms", "Returns and terms") }}<span class="ms md-chev">chevron_right</span></router-link
+                <p v-else class="bk-acc__p">{{ t("bakini.pdp.deliveryAtCheckout", "Delivery options and prices are shown at checkout") }}</p>
+                <s-product-shipping class="bk-block"></s-product-shipping>
+                <s-product-warranty class="bk-block"></s-product-warranty>
+                <s-product-guide class="bk-block"></s-product-guide>
+                <router-link :to="{ name: window.$storefront.routes.SHOP_PROFILE_PAGE_TERMS }" class="bk-link"
+                  >{{ t("bakini.pdp.returnsTerms", "Returns and terms") }}<span class="ms bk-chev">chevron_right</span></router-link
                 >
               </template>
             </div>
@@ -113,33 +113,33 @@
       </div>
 
       <div :style="{ order: getOrder('offer') }">
-        <s-product-offers class="s--product-section md-wrap md-block"></s-product-offers>
+        <s-product-offers class="s--product-section bk-wrap bk-block"></s-product-offers>
       </div>
       <div :style="{ order: getOrder('includes') }">
-        <s-product-includes class="md-wrap md-block"></s-product-includes>
+        <s-product-includes class="bk-wrap bk-block"></s-product-includes>
       </div>
       <div :style="{ order: getOrder('files') }">
-        <s-product-files-list class="md-wrap md-block"></s-product-files-list>
+        <s-product-files-list class="bk-wrap bk-block"></s-product-files-list>
       </div>
       <div :style="{ order: getOrder('contents') }">
-        <s-product-subscription-membership class="md-wrap md-block"></s-product-subscription-membership>
+        <s-product-subscription-membership class="bk-wrap bk-block"></s-product-subscription-membership>
       </div>
       <div :style="{ order: getOrder('page') }">
         <s-product-landing></s-product-landing>
       </div>
       <!-- We recommend (related, from other departments) and More like this (same category) -->
       <div :style="{ order: getOrder('related-products') }">
-        <div id="md-related">
-          <medio-rail v-if="related === null || related.length" :products="related" :title="t('medio.pdp.recommend', 'We recommend')" class="md-wrap" @quick-buy="quickBuy" />
+        <div id="bk-related">
+          <bakini-rail v-if="related === null || related.length" :products="related" :title="t('bakini.pdp.recommend', 'We recommend')" class="bk-wrap" @quick-buy="quickBuy" />
         </div>
-        <medio-row
+        <bakini-row
           v-if="product.category"
           :key="'cat-' + product.category.id"
           :dir="product.category.name"
           :exclude="product.id"
           :more-to="{ name: window.$storefront.routes.SHOP_CATEGORY_PAGE, params: { category_name: product.category.name } }"
-          :title="t('medio.pdp.moreLike', 'More like this')"
-          class="md-wrap"
+          :title="t('bakini.pdp.moreLike', 'More like this')"
+          class="bk-wrap"
           lazy
           sort="bestselling"
         />
@@ -154,13 +154,13 @@
 import { money as moneyFrom } from "../../components/region-switcher/region";
 import NotificationService from "@selldone/components-vue/plugins/notification/NotificationService.ts";
 
-import MedioProductOverview from "../../components/medio/product/MedioProductOverview.vue";
-import MedioRail from "../../components/medio/MedioRail.vue";
+import BakiniProductOverview from "../../components/bakini/product/BakiniProductOverview.vue";
+import BakiniRail from "../../components/bakini/BakiniRail.vue";
 import KalioQuickBuy from "../../components/kalio/KalioQuickBuy.vue";
-import { specGroups, specRows } from "../../components/medio/product/medio-spec";
-import { catalogue, mixByCategory, rememberViewed, tagged, wayWords } from "../../components/medio/medio";
-import MedioRow from "../../components/medio/MedioRow.vue";
-import MedioTogether from "../../components/medio/product/MedioTogether.vue";
+import { specGroups, specRows } from "../../components/bakini/product/bakini-spec";
+import { catalogue, mixByCategory, rememberViewed, tagged, wayWords } from "../../components/bakini/bakini";
+import BakiniRow from "../../components/bakini/BakiniRow.vue";
+import BakiniTogether from "../../components/bakini/product/BakiniTogether.vue";
 import { t } from "../../components/kalio/i18n/kalio-i18n";
 import { waysOf } from "../../components/walio/walio-home";
 import { EventBus } from "@selldone/components-vue/utils/events/EventBus.ts";
@@ -212,10 +212,10 @@ export default {
     SProductIncludes,
 
     SProductOverviewLoading,
-    MedioProductOverview,
-    MedioRail,
-    MedioRow,
-    MedioTogether,
+    BakiniProductOverview,
+    BakiniRail,
+    BakiniRow,
+    BakiniTogether,
     KalioQuickBuy,
 
   },
@@ -290,10 +290,10 @@ export default {
       return waysOf(this.$shop);
     },
     panels() {
-      const out = [{ key: "info", title: t("medio.pdp.info", "Product information") }];
-      if (this.spec_groups.length) out.push({ key: "specs", title: t("medio.pdp.specs", "Specifications") });
-      out.push({ key: "reviews", title: t("medio.pdp.reviews", "Reviews") });
-      out.push({ key: "delivery", title: t("medio.pdp.deliveryReturns", "Delivery & returns") });
+      const out = [{ key: "info", title: t("bakini.pdp.info", "Product information") }];
+      if (this.spec_groups.length) out.push({ key: "specs", title: t("bakini.pdp.specs", "Specifications") });
+      out.push({ key: "reviews", title: t("bakini.pdp.reviews", "Reviews") });
+      out.push({ key: "delivery", title: t("bakini.pdp.deliveryReturns", "Delivery & returns") });
       return out;
     },
     tabs() {
@@ -375,7 +375,7 @@ export default {
     /* A row in the buy card opens its accordion and brings it into view. */
     openPanel(key) {
       this.open = { ...this.open, [key]: true };
-      this.$nextTick(() => document.getElementById("md-" + key)?.scrollIntoView({ behavior: "smooth", block: "start" }));
+      this.$nextTick(() => document.getElementById("bk-" + key)?.scrollIntoView({ behavior: "smooth", block: "start" }));
     },
     jump(id) {
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });

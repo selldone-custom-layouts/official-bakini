@@ -9,10 +9,10 @@
    Sans, white cards on light wells and a deep navy footer.
    Loaded last (storefront.scss), so it only overrides. */
 
-$walio-blue: var(--md-blue);
-$walio-blue-deep: var(--md-blue-d);
-$walio-navy: var(--md-navy);
-$walio-spark: #d8ccff; /* Medio: a soft lilac accent (was Walio's yellow) */
+$walio-blue: var(--bk-blue);
+$walio-blue-deep: var(--bk-blue-d);
+$walio-navy: var(--bk-navy);
+$walio-spark: #d8ccff; /* Bakini: a soft lilac accent (was Walio's yellow) */
 
 h1,
 h2,
@@ -32,7 +32,7 @@ h3 {
   &__brand {
     align-items: center !important;
     gap: 8px !important;
-    color: var(--md-on-brand) !important;
+    color: var(--bk-on-brand) !important;
     font-family: var(--k-display) !important;
     font-weight: 900 !important;
     letter-spacing: -0.03em !important;
@@ -50,14 +50,14 @@ h3 {
   }
 
   &__icon {
-    color: var(--md-on-brand) !important;
+    color: var(--bk-on-brand) !important;
 
     &:hover {
       background: rgba(255, 255, 255, 0.14) !important;
     }
 
     .v-icon {
-      color: var(--md-on-brand) !important;
+      color: var(--bk-on-brand) !important;
     }
   }
 
@@ -104,7 +104,7 @@ h3 {
   }
 
   &__lang {
-    color: var(--md-on-brand) !important;
+    color: var(--bk-on-brand) !important;
   }
 
   /* The basket: spark yellow with dark words. */
@@ -134,11 +134,11 @@ h3 {
 
     &:hover,
     &.-on {
-      color: var(--md-blue-t) !important;
+      color: var(--bk-blue-t) !important;
     }
 
     &.-deals {
-      color: var(--md-blue-t) !important;
+      color: var(--bk-blue-t) !important;
       font-weight: 800 !important;
 
       &::after {
@@ -224,7 +224,7 @@ h3 {
     height: 28px;
     border-radius: 50%;
     background: $walio-blue;
-    color: var(--md-on-brand);
+    color: var(--bk-on-brand);
     font-size: 14px;
     font-weight: 900;
     letter-spacing: 0;
@@ -241,11 +241,11 @@ h3 {
     font-size: 19px;
 
     > span {
-      /* Medio: the action colour's soft tint and its words, readable in both
+      /* Bakini: the action colour's soft tint and its words, readable in both
          modes and every palette (a fixed lilac turned dark under a fixed
          navy in dark mode). */
-      background: var(--md-buy-l);
-      color: var(--md-buy-t);
+      background: var(--bk-buy-l);
+      color: var(--bk-buy-t);
     }
   }
 }
@@ -291,5 +291,5 @@ h3 {
 /* What is still missing before paying reads as a caution, not a saving. */
 .k-cart__need,
 .k-cart__need .v-icon {
-  color: var(--md-warn-t, #b35900) !important;
+  color: var(--bk-warn-t, #b35900) !important;
 }

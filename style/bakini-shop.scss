@@ -1,0 +1,875 @@
+/* ▆▆▆▆▆▆▆▆▆▆▆▆▆▆ Bakini — results pages and the category hub ▆▆▆▆▆▆▆▆▆▆▆▆▆▆
+   StorefrontPageProducts.vue, BakiniHub.vue, BakiniFilterPanel.vue
+   (digini-design/bakini-category.html): the hub on top of a category; the
+   title, the promo banner, the Filters card on the left, the toolbar (sort,
+   page size, the count, List / Grid) and the results (LIST rows on a
+   computer, GRID cards on a phone) drawn by Selldone's listing with Bakini's
+   card inside. */
+
+$buy: var(--bk-buy);
+$buy-d: var(--bk-buy-d);
+$buy-l: var(--bk-buy-l);
+$brand-t: var(--bk-brand-t);
+$sale-t: var(--bk-sale-t);
+$page: var(--bk-page);
+$line: var(--bk-line);
+$line-2: var(--bk-line-2);
+$ink: var(--bk-ink);
+$ink-2: var(--bk-ink-2);
+$muted: var(--bk-muted);
+$surface: var(--bk-surface);
+$photo: var(--bk-photo);
+$font: "Manrope", "Noto Sans Arabic", "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+/* ━━━━━━━━━━━━━━━━━━━━━ The hub ━━━━━━━━━━━━━━━━━━━━━ */
+.bk-hubstrip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 48px;
+  margin-top: 4px;
+  padding: 8px 18px;
+  border-radius: var(--bk-r);
+  background: var(--bk-head);
+  color: var(--bk-on-head) !important;
+  font: 600 15.5px/1.3 $font;
+  text-align: center;
+  .ms {
+    font-size: 22px;
+  }
+  &:hover {
+    background: var(--bk-head-d);
+  }
+}
+.bk-hub__h {
+  margin: 22px 0 10px;
+  font: 600 32px/1.15 $font !important;
+  letter-spacing: -0.02em !important;
+  color: $ink;
+}
+.bk-rounds.-hub {
+  .bk-round-tile {
+    width: 118px;
+  }
+  .bk-round-tile__disc {
+    width: 118px;
+    height: 118px;
+  }
+  .bk-round-tile.-on {
+    .bk-round-tile__disc {
+      box-shadow: inset 0 0 0 3px $buy;
+    }
+    .bk-round-tile__t {
+      color: $brand-t;
+      font-weight: 600;
+    }
+  }
+}
+.bk-hub__cols {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 28px;
+  margin-top: 28px;
+  align-items: start;
+}
+.bk-hub.-foot .bk-hub__cols {
+  grid-template-columns: minmax(0, 1fr);
+  margin-top: 36px;
+}
+.bk-hub__side {
+  display: grid;
+  gap: 26px;
+}
+.bk-hub__block h2 {
+  margin: 0 0 10px;
+  font: 600 19px $font !important;
+  color: $ink;
+}
+.bk-chevlist {
+  display: grid;
+  gap: 8px;
+}
+.bk-chevrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 46px;
+  padding: 8px 12px 8px 16px;
+  border: 0;
+  border-radius: 12px;
+  background: $surface;
+  box-shadow: inset 0 0 0 1px $line;
+  color: $ink !important;
+  font: 500 14px/1.3 $font;
+  text-align: start;
+  cursor: pointer;
+  .ms {
+    flex: none;
+    font-size: 20px;
+    color: var(--bk-muted);
+  }
+  &:hover,
+  &.-on {
+    box-shadow: inset 0 0 0 1.5px $buy;
+    color: $brand-t !important;
+    .ms {
+      color: $brand-t;
+    }
+  }
+  &.-more {
+    color: $brand-t !important;
+    font-weight: 600;
+  }
+}
+.bk-hub__main {
+  display: grid;
+  gap: 28px;
+  min-width: 0;
+}
+.bk-hub__sec .bk-title {
+  margin-bottom: 14px;
+}
+.bk-hub__deals {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+/* Can't decide? */
+.bk-chooser {
+  padding: 24px 24px 26px;
+  border-radius: var(--bk-r);
+  background: $surface;
+  box-shadow: inset 0 0 0 1px $line;
+  text-align: center;
+  &__h {
+    margin: 0;
+    font: 600 21px/1.25 $font !important;
+    color: $ink;
+  }
+  &__p {
+    margin: 6px 0 0;
+    font: 400 14px $font;
+    color: $muted;
+  }
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+  }
+}
+.bk-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: $ink !important;
+  &__img {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    border-radius: 12px;
+    overflow: hidden;
+    &.-pack {
+      display: block;
+      background: $photo;
+      box-shadow: inset 0 0 0 1px $line;
+      img {
+        position: absolute;
+        inset: 8%;
+        width: 84%;
+        height: 84%;
+        object-fit: contain;
+      }
+    }
+  }
+  .bk-pill {
+    width: min(100%, 180px);
+  }
+  &:hover .bk-pill {
+    background: $buy-l;
+  }
+}
+
+/* Pastel guide cards */
+.bk-gcards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.bk-gcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0 20px 20px;
+  border-radius: var(--bk-r);
+  color: $ink !important;
+  text-align: center;
+  overflow: hidden;
+  &.-lilac { background: var(--bk-p-lilac); }
+  &.-mint { background: var(--bk-p-mint); }
+  &.-lemon { background: var(--bk-p-lemon); }
+  &__cap {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 120px;
+    height: 70px;
+    margin-bottom: 6px;
+    padding-bottom: 12px;
+    border-radius: 0 0 60px 60px;
+    background: rgba(255, 255, 255, 0.6);
+    .ms {
+      font-size: 32px;
+      color: $ink;
+    }
+  }
+  b {
+    font: 600 16px/1.3 $font;
+  }
+  small {
+    font: 400 13.5px/1.5 $font;
+    color: $ink-2;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  em {
+    display: inline-flex;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 4px;
+    font: 600 14px $font;
+    font-style: normal;
+    color: $sale-t;
+    .ms {
+      font-size: 18px;
+    }
+  }
+  &:hover {
+    box-shadow: inset 0 0 0 2px $buy;
+  }
+}
+html.bk-dark .bk-gcard__cap {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Brand wordmarks */
+.bk-wordmarks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+.bk-wordmark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: $surface;
+  box-shadow: inset 0 0 0 1px $line;
+  color: $ink !important;
+  font: 800 17px/1.1 $font;
+  letter-spacing: -0.02em;
+  text-align: center;
+  overflow-wrap: anywhere;
+  &:hover {
+    box-shadow: inset 0 0 0 1.5px $buy;
+    color: $brand-t !important;
+  }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━ The results ━━━━━━━━━━━━━━━━━━━━━ */
+.bk-list {
+  padding-bottom: 20px;
+  &__top {
+    margin-top: 10px;
+  }
+  &__h {
+    margin: 10px 0 0;
+    font: 600 30px/1.2 $font !important;
+    letter-spacing: -0.02em !important;
+    color: $ink;
+  }
+  &__sub {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 6px 0 0;
+    font: 500 14px $font;
+    color: $ink-2;
+    .ms {
+      font-size: 19px;
+      color: $sale-t;
+    }
+  }
+  &__grid {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+    margin-top: 18px;
+  }
+  &__side {
+    position: sticky;
+    top: 16px;
+    max-height: calc(100vh - 32px);
+    overflow: auto;
+    scrollbar-width: thin;
+  }
+  &__main {
+    min-width: 0;
+  }
+  &__on {
+    margin-top: 12px;
+  }
+}
+.bk-hub + .bk-list__top,
+.bk-hub ~ #bk-results {
+  margin-top: 40px;
+  padding-top: 26px;
+  box-shadow: inset 0 1px 0 $line;
+}
+/* The sticky filter column needs the app's wrappers to clip, not hide. */
+.v-application:has(.bk-list__side),
+.s--shop:has(.bk-list__side),
+.v-main:has(.bk-list__side) {
+  overflow: clip !important;
+}
+
+/* The promo banner */
+.bk-lbanner {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  margin-top: 16px;
+  padding: 8px 18px;
+  border-radius: var(--bk-r);
+  background-color: #3a1aa0;
+  background-image: linear-gradient(110deg, var(--bk-act-deep) 0%, var(--bk-head) 75%);
+  color: #fff !important;
+  font: 600 15px/1.3 $font;
+  .ms {
+    font-size: 22px;
+    color: #fff;
+  }
+  &:hover {
+    background-image: linear-gradient(110deg, var(--bk-act-deep) 0%, var(--bk-head-d) 75%);
+  }
+}
+
+/* The Filters card */
+.bk-fpanel {
+  padding: 18px 18px 8px;
+  border-radius: var(--bk-r);
+  background: $surface;
+  box-shadow: inset 0 0 0 1px $line;
+  color: $ink;
+  font-family: $font;
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    h2 {
+      margin: 0;
+      font: 600 19px $font !important;
+    }
+  }
+}
+.bk-switch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  font: 500 14px $font;
+  cursor: pointer;
+  input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+  i {
+    position: relative;
+    flex: none;
+    width: 42px;
+    height: 24px;
+    border-radius: 999px;
+    background: var(--bk-line-2);
+    transition: background-color 0.15s;
+    &::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      inset-inline-start: 3px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.15s;
+    }
+  }
+  input:checked + i {
+    background: $buy;
+    &::after {
+      transform: translateX(18px);
+    }
+  }
+  input:focus-visible + i {
+    box-shadow: inset 0 0 0 2px $ink;
+  }
+}
+[dir="rtl"] .bk-switch input:checked + i::after,
+.v-locale--is-rtl .bk-switch input:checked + i::after {
+  transform: translateX(-18px);
+}
+.bk-fgroup {
+  padding: 4px 0 10px;
+  box-shadow: inset 0 1px 0 $line;
+  &__h {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: $ink !important;
+    font: 600 15px $font;
+    text-align: start;
+    cursor: pointer;
+    .ms {
+      font-size: 22px;
+      color: $muted;
+    }
+  }
+  &__b {
+    display: grid;
+    gap: 2px;
+    &.-sw {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding-bottom: 4px;
+    }
+  }
+  &__more {
+    justify-self: start;
+    margin: 4px 0 2px;
+    font-size: 13.5px;
+  }
+}
+.bk-check {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  font: 400 14px/1.3 $font;
+  color: $ink-2;
+  cursor: pointer;
+  input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+  i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    box-shadow: inset 0 0 0 1.5px var(--bk-deco);
+    .ms {
+      font-size: 16px;
+      visibility: hidden;
+      color: var(--bk-on-brand);
+    }
+  }
+  input:checked + i {
+    background: $buy;
+    box-shadow: none;
+    .ms {
+      visibility: visible;
+    }
+  }
+  input:focus-visible + i {
+    box-shadow: inset 0 0 0 2px $ink;
+  }
+  &:hover {
+    color: $ink;
+  }
+}
+.bk-pricebox {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  label {
+    display: flex;
+    align-items: center;
+    height: 38px;
+    padding: 0 8px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1px $line-2;
+    span {
+      color: $muted;
+      font: 500 13px $font;
+      margin-inline-end: 4px;
+    }
+    input {
+      min-width: 0;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: $ink;
+      font: 500 14px $font;
+      outline: none;
+    }
+    &:focus-within {
+      box-shadow: inset 0 0 0 2px $buy;
+    }
+  }
+  em {
+    font: 400 13px $font;
+    font-style: normal;
+    color: $muted;
+  }
+  .bk-btn {
+    grid-column: 1 / -1;
+  }
+}
+
+/* The toolbar */
+.bk-tbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  padding: 10px 12px;
+  border-radius: var(--bk-r);
+  background: $surface;
+  box-shadow: inset 0 0 0 1px $line;
+  &__count {
+    font: 500 13.5px $font;
+    color: $muted;
+    white-space: nowrap;
+  }
+  &__filters {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 40px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 999px;
+    background: $buy;
+    color: var(--bk-on-brand) !important;
+    font: 600 14px $font;
+    cursor: pointer;
+    .ms {
+      font-size: 20px;
+    }
+    i {
+      min-width: 20px;
+      height: 20px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--bk-act-deep);
+      font: 700 12px/20px $font;
+      font-style: normal;
+      text-align: center;
+    }
+  }
+}
+.bk-select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding-inline: 14px 10px;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px $line-2;
+  background: $surface;
+  &__k {
+    font: 500 13.5px $font;
+    color: $muted;
+    white-space: nowrap;
+  }
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    background: transparent;
+    color: $ink;
+    font: 600 14px $font;
+    padding-inline-end: 22px;
+    cursor: pointer;
+    outline: none;
+    option {
+      color: #1c1b22;
+      background: #fff;
+    }
+  }
+  .ms {
+    position: absolute;
+    inset-inline-end: 8px;
+    pointer-events: none;
+    font-size: 20px;
+    color: $muted;
+  }
+  &:focus-within {
+    box-shadow: inset 0 0 0 2px $buy;
+  }
+}
+.bk-seg {
+  display: inline-flex;
+  margin-inline-start: auto;
+  padding: 3px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px $line-2;
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: $ink-2 !important;
+    font: 500 13.5px $font;
+    cursor: pointer;
+    .ms {
+      font-size: 19px;
+    }
+    &:hover {
+      color: $brand-t !important;
+    }
+    &.-on {
+      background: $buy-l;
+      color: $brand-t !important;
+      box-shadow: inset 0 0 0 1.5px $buy;
+      font-weight: 600;
+    }
+  }
+}
+
+/* Chips of what is on */
+.bk-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.bk-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  padding: 0 8px 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: $buy-l;
+  color: $brand-t !important;
+  font: 500 13px $font;
+  cursor: pointer;
+  .ms {
+    font-size: 17px;
+  }
+  &:hover {
+    box-shadow: inset 0 0 0 1.5px $buy;
+  }
+}
+
+/* Selldone's listing around Bakini's cards: its own bars hidden; rows of
+   cards (grid) or one row per product (list). */
+.bk-grid {
+  margin-top: 14px;
+  background: transparent !important;
+}
+.bk-grid.-list .s--products-listing-row > .s--product-card {
+  flex: 0 0 100% !important;
+  max-width: 100% !important;
+  padding: 0 0 14px !important;
+}
+.bk-grid.-grid .s--products-listing-row > .s--product-card {
+  flex: 0 0 50% !important;
+  max-width: 50% !important;
+}
+@media (min-width: 700px) {
+  .bk-grid.-grid .s--products-listing-row > .s--product-card {
+    flex: 0 0 33.333% !important;
+    max-width: 33.333% !important;
+  }
+}
+@media (min-width: 1240px) {
+  .bk-grid.-grid .s--products-listing-row > .s--product-card {
+    flex: 0 0 25% !important;
+    max-width: 25% !important;
+  }
+}
+.bk-grid .s--products-listing-row {
+  margin-inline: -7px !important;
+  > .s--product-card {
+    padding: 7px !important;
+  }
+}
+.bk-grid.-list .s--products-listing-row {
+  margin-inline: 0 !important;
+}
+/* The card's own padding is never zeroed by the listing's column classes
+   (the owner's card-edge rule: content never touches a framed card's edge). */
+.v-application .bk-grid .bk-card,
+.v-application .bk-grid .bk-card.pa-0 {
+  padding: 14px !important;
+}
+.v-application .bk-grid .bk-lrow,
+.v-application .bk-grid .bk-lrow.pa-0 {
+  padding: 20px 22px 14px !important;
+}
+
+/* Skeletons in the list's shape */
+.lm-skels.-list {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 14px;
+  .lm-skel {
+    height: 240px;
+  }
+}
+
+/* The phone's Filters sheet */
+.bk-fsheet {
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px 12px 18px;
+    box-shadow: inset 0 -1px 0 $line;
+    b {
+      font: 600 18px $font;
+    }
+  }
+  &__body {
+    flex: 1;
+    overflow: auto;
+    padding: 12px;
+    .bk-fpanel {
+      box-shadow: none;
+      padding: 6px 6px 0;
+    }
+  }
+  &__foot {
+    padding: 12px 14px 16px;
+    box-shadow: inset 0 1px 0 $line;
+  }
+}
+
+/* ━━━ Tablet and phone ━━━ */
+@media (max-width: 1100px) {
+  .bk-hub__deals {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .bk-gcards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 899px) {
+  .bk-hub__cols {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 20px;
+  }
+  .bk-list__grid {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 14px;
+  }
+  .bk-list__side {
+    display: none;
+  }
+  .bk-hub__h {
+    font-size: 26px !important;
+    margin-top: 16px;
+  }
+  .bk-list__h {
+    font-size: 24px !important;
+  }
+  .bk-tbar {
+    padding: 8px;
+    gap: 8px;
+    .bk-select {
+      flex: 1;
+      min-width: 0;
+      select {
+        min-width: 0;
+        width: 100%;
+      }
+    }
+  }
+  .bk-tbar__count {
+    width: 100%;
+    order: 9;
+    padding-inline-start: 4px;
+  }
+  .bk-lbanner {
+    font-size: 13.5px;
+    min-height: 46px;
+    padding: 8px 12px;
+  }
+  .bk-chooser {
+    padding: 18px 14px;
+    &__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    &__h {
+      font-size: 18px !important;
+    }
+  }
+  .bk-rounds.-hub {
+    .bk-round-tile {
+      width: 92px;
+    }
+    .bk-round-tile__disc {
+      width: 92px;
+      height: 92px;
+    }
+  }
+  .bk-hubstrip {
+    font-size: 14px;
+  }
+}
+@media (max-width: 420px) {
+  .bk-hub__deals {
+    gap: 10px;
+  }
+  .bk-dcard__t {
+    font-size: 13.5px;
+  }
+}
+
+/* In the phone's sheet the sheet's own head names it: the panel's title is
+   not repeated (its Clear all stays). */
+.bk-fsheet .bk-fpanel__head {
+  justify-content: flex-end;
+  margin-bottom: 4px;
+  h2 {
+    display: none;
+  }
+}

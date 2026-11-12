@@ -1,4 +1,4 @@
-/* The compare page's words and choices in Medio (9 November 2026).
+/* The compare page's words and choices in Bakini (9 November 2026).
    KalioCompare.vue is the same in every molino Layout; this file and
    style/kalio-compare.scss are what make it this Layout's own.
    The words are getters, so they follow the visitor's language. */
@@ -7,13 +7,13 @@ import { t } from "../i18n/kalio-i18n";
 export const SKIN = {
   /** The page's heading (and the tab's title). */
   get title(): string {
-    return t("medio.k.compare.title", "Compare products");
+    return t("bakini.k.compare.title", "Compare products");
   },
   /** A small line over the heading, or none. */
   eyebrow: null as string | null,
   /** Under "Your picks", beside the pinned cards. */
   get hint(): string {
-    return t("medio.k.compare.hint", "They stay here while you scroll. Remove one with ×.");
+    return t("bakini.k.compare.hint", "They stay here while you scroll. Remove one with ×.");
   },
   /** "switch": one Only differences switch; "segmented": Everything / Only differences. */
   toggle: "switch" as "switch" | "segmented",
@@ -21,7 +21,7 @@ export const SKIN = {
     return t("compare.empty.title", "Nothing to compare yet");
   },
   get browse(): string {
-    return t("medio.k.compare.browse", "Browse all products");
+    return t("bakini.k.compare.browse", "Browse all products");
   },
   get shareTitle(): string {
     return t("compare.shareTitle", "Share this comparison");

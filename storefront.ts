@@ -42,20 +42,22 @@ import { PageHyper } from "@selldone/page-builder/PageHyperService.ts";
 import {SetupPageBuilder} from "@selldone/page-builder/page-builder.ts";
 import {SetupService} from "@selldone/core-js/server";
 import {Shop} from "@selldone/core-js/models";
-import { bootThemeSwitcher } from "./components/theme-switcher/theme-switcher"; // the shared theme switcher (Medio 1.0.11)
-import { MEDIO_THEME } from "./components/medio/medio-theme";
-import { bootRegion } from "./components/region-switcher/region"; // language + currency (the owner's choice B)
-import { EN as MEDIO_EN, LOADERS as MEDIO_LANGUAGES } from "./components/kalio/i18n"; // the Kalio base + Medio's own words
-import { bootI18n, i18nGlobals } from "./components/kalio/i18n/kalio-i18n"; // the Layout's own words in the visitor's language (lazy per language)
+import { bootThemeSwitcher } from "./components/theme-switcher/theme-switcher"; // the shared theme switcher
+import { BAKINI_THEME } from "./components/bakini/bakini-theme";
+import { bootRegion, prepareLanguage } from "./components/region-switcher/region"; // language + currency (the owner's choice B)
+import { priceText } from "./components/kalio/i18n/price-text"; // money in sentences written as u-price writes it
+import { EN as BAKINI_EN, LOADERS as BAKINI_LANGUAGES } from "./components/kalio/i18n"; // the Kalio base + Bakini's own words
+import { bootI18n, i18nGlobals, loadLanguage } from "./components/kalio/i18n/kalio-i18n"; // the Layout's own words in the visitor's language (lazy per language)
 
 const vuetify = VuetifyInstance(i18n);
 // Vuetify's light error red reads 4.5:1 on white (its #ff5252 is 3.3:1); set
 // here, not in the switcher's config, so it stays when the switcher is hidden.
 try { vuetify.theme.themes.value.light.colors.error = "#c4122f"; } catch (e) {}
-// The shopper's palette and Light / Dark (the footer's Theme row), painted
-// before the first paint so the default never flashes; only on Medio's own
-// showcase shop unless medio-theme.settings.ts says otherwise.
-bootThemeSwitcher(MEDIO_THEME, vuetify);
+// Noir is dark first: the designed default (bakini-theme.settings.ts, mode
+// "dark") is painted before the first paint on every shop, Vuetify's dark
+// theme included. On Bakini's own showcase shop the footer's Theme row lets a
+// shopper pick a palette and Light / Dark, kept in the browser.
+bootThemeSwitcher(BAKINI_THEME, vuetify);
 
 //█████████████████████████████████████████████████████████████
 //―――――――――――――― Global Types ―――――――――――――――
@@ -95,8 +97,14 @@ Object.assign(app.config.globalProperties, i18nGlobals); // t(), formatNumber(),
 
 // ━━━ Storefront SDK (xapi) ━━━
 StorefrontSDK.Setup(); // Set up the Shop SDK.
-bootRegion(store); // the visitor's currency and language, mirrored for money() and t()
-bootI18n(MEDIO_EN, MEDIO_LANGUAGES); // <html lang/dir>, and a language's words fetched when it is picked
+// The visitor's currency and language, mirrored for money() and t(). Money is
+// written as Selldone's u-price writes it ("$26.42"), one way per page in every
+// language (price-text.ts, the SM-355 lesson).
+// showSingle: the pill shows even with one currency and one language (the B
+// mockup's "USD" pill; its panel says what the shop sells in).
+bootRegion(store, { showSingle: true, format: (amount, code, decimals) => priceText(amount, code, store.getters.getShop, { decimals }) });
+bootI18n(BAKINI_EN, BAKINI_LANGUAGES); // <html lang/dir>, and a language's words fetched when it is picked
+prepareLanguage((code) => loadLanguage(code)); // a picked language arrives with its words, never English first
 
 // ━━━ Community SDK (capi) ━━━
 CapiCommunity.Setup(); // Setup community.

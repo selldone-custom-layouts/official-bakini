@@ -5,67 +5,67 @@
   - Web: https://selldone.com
   -->
 <template>
-  <!-- Medio 404: a white card with a big violet "404", a search and quick
+  <!-- Bakini 404: a white card with a big violet "404", a search and quick
        ways out (the picture slot notfound.webp beside it); then every
        category as a round tile in two even rows (an "All products" tile
        evens them out) and today's deals. Inside the Layout, with the header. -->
-  <div class="md-404 md-wrap">
-    <section class="md-404__card">
-      <div class="md-404__txt">
-        <p aria-hidden="true" class="md-404__big">404</p>
-        <h1>{{ t("medio.nf.h", "We can’t find that page") }}</h1>
-        <p class="md-404__p">{{ t("medio.nf.p", "The link may be old, or the page has moved. Try a search, or start from a category.") }}</p>
-        <form class="md-search" role="search" @submit.prevent="go">
+  <div class="bk-404 bk-wrap">
+    <section class="bk-404__card">
+      <div class="bk-404__txt">
+        <p aria-hidden="true" class="bk-404__big">404</p>
+        <h1>{{ t("bakini.nf.h", "We can’t find that page") }}</h1>
+        <p class="bk-404__p">{{ t("bakini.nf.p", "The link may be old, or the page has moved. Try a search, or start from a category.") }}</p>
+        <form class="bk-search" role="search" @submit.prevent="go">
           <input
-            :aria-label="t('medio.header.searchLabel', 'Search products or brands')"
-            :placeholder="t('medio.nf.ph', 'What can we help you find?')"
+            :aria-label="t('bakini.header.searchLabel', 'Search products or brands')"
+            :placeholder="t('bakini.nf.ph', 'What can we help you find?')"
             :value="q"
             enterkeyhint="search"
             type="search"
             @input="q = $event.target.value"
           />
-          <button :aria-label="t('medio.header.search', 'Search')" class="md-search__go" type="submit"><span class="ms">search</span></button>
+          <button :aria-label="t('bakini.header.search', 'Search')" class="bk-search__go" type="submit"><span class="ms">search</span></button>
         </form>
-        <div class="md-404__links">
-          <span>{{ t("medio.nf.or", "Or go to") }}</span>
-          <router-link :to="deals" class="md-chip">{{ t("medio.header.allDeals", "All deals") }}</router-link>
-          <router-link :to="newest" class="md-chip">{{ t("medio.header.newIn", "New in") }}</router-link>
-          <router-link :to="{ name: r.HISTORY_ORDERS_PHYSICAL }" class="md-chip">{{ t("medio.header.track", "Track my order") }}</router-link>
-          <router-link :to="help" class="md-chip">{{ t("medio.header.helpSupport", "Help & Support") }}</router-link>
+        <div class="bk-404__links">
+          <span>{{ t("bakini.nf.or", "Or go to") }}</span>
+          <router-link :to="deals" class="bk-chip">{{ t("bakini.header.allDeals", "All deals") }}</router-link>
+          <router-link :to="newest" class="bk-chip">{{ t("bakini.header.newIn", "New in") }}</router-link>
+          <router-link :to="{ name: r.HISTORY_ORDERS_PHYSICAL }" class="bk-chip">{{ t("bakini.header.track", "Track my order") }}</router-link>
+          <router-link :to="help" class="bk-chip">{{ t("bakini.header.helpSupport", "Help & Support") }}</router-link>
         </div>
       </div>
-      <medio-slot class="md-404__img" place="notfound" />
+      <bakini-slot class="bk-404__img" place="notfound" />
     </section>
 
-    <section v-if="cats.length" class="md-sec">
-      <h2 class="md-title">{{ t("medio.nf.cats", "Shop by category") }}</h2>
-      <div :style="{ '--cols': tiles.cols }" class="md-404__cats">
-        <router-link v-for="c in tiles.cats" :key="c.id" :to="catTo(c)" class="md-round-tile">
-          <span class="md-round-tile__disc"><img v-if="c.icon" :src="icon(c)" alt="" loading="lazy" /><span v-else class="ms">category</span></span>
-          <span class="md-round-tile__t">{{ c.title || c.name }}</span>
+    <section v-if="cats.length" class="bk-sec">
+      <h2 class="bk-title">{{ t("bakini.nf.cats", "Shop by category") }}</h2>
+      <div :style="{ '--cols': tiles.cols }" class="bk-404__cats">
+        <router-link v-for="c in tiles.cats" :key="c.id" :to="catTo(c)" class="bk-round-tile">
+          <span class="bk-round-tile__disc"><img v-if="c.icon" :src="icon(c)" alt="" loading="lazy" /><span v-else class="ms">category</span></span>
+          <span class="bk-round-tile__t">{{ c.title || c.name }}</span>
         </router-link>
-        <router-link v-if="tiles.all" :to="catalogue" class="md-round-tile -all">
-          <span class="md-round-tile__disc"><span class="ms">grid_view</span></span>
-          <span class="md-round-tile__t">{{ t("medio.header.allProducts", "All products") }}</span>
+        <router-link v-if="tiles.all" :to="catalogue" class="bk-round-tile -all">
+          <span class="bk-round-tile__disc"><span class="ms">grid_view</span></span>
+          <span class="bk-round-tile__t">{{ t("bakini.header.allProducts", "All products") }}</span>
         </router-link>
       </div>
     </section>
 
-    <medio-row :filter="{ only_has_discount: true }" :limit="12" :more-label="t('medio.home.seeAllDeals', 'See all deals')" :more-to="deals" :title="t('medio.nf.deals', 'Today’s deals')" />
+    <bakini-row :filter="{ only_has_discount: true }" :limit="12" :more-label="t('bakini.home.seeAllDeals', 'See all deals')" :more-to="deals" :title="t('bakini.nf.deals', 'Today’s deals')" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import MedioRow from "../../../components/medio/MedioRow.vue";
-import MedioSlot from "../../../components/medio/MedioSlot.vue";
+import BakiniRow from "../../../components/bakini/BakiniRow.vue";
+import BakiniSlot from "../../../components/bakini/BakiniSlot.vue";
 import { aisleRoute, aisles, catalogueRoute, dealsRoute } from "../../../components/kalio/kalio-catalog";
-import { catTiles } from "../../../components/medio/medio";
+import { catTiles } from "../../../components/bakini/bakini";
 import { t } from "../../../components/kalio/i18n/kalio-i18n";
 
 export default defineComponent({
   name: "StorefrontPageError404",
-  components: { MedioRow, MedioSlot },
+  components: { BakiniRow, BakiniSlot },
   data: () => ({ q: "", cats: [] as any[] }),
   computed: {
     r(): any {

@@ -29,7 +29,7 @@
       </div>
     </template>
 
-    <template v-if="curs.length > 1">
+    <template v-if="curs.length > 1 || (single && curs.length === 1)">
       <p :id="ids.cur" class="rs-chips__t">{{ t("region.currency") }}</p>
       <div :aria-labelledby="ids.cur" class="rs-chips__row" role="radiogroup" @keydown="onArrows">
         <button
@@ -48,12 +48,13 @@
       </div>
     </template>
 
-    <p v-if="note" class="rs-chips__note">{{ t("region.note") }}</p>
+    <p v-if="single && curs.length === 1" class="rs-chips__note">{{ t("region.only", { currency: currencyName }) }}</p>
+    <p v-else-if="note" class="rs-chips__note">{{ t("region.note") }}</p>
   </div>
 </template>
 
 <script>
-import { currencies, currentCurrency, currentLanguage, languages, regionState, setCurrency, setLanguage, showLanguages, t } from "./region";
+import { currencies, currentCurrency, currentLanguage, languages, regionState, setCurrency, setLanguage, showLanguages, singleChoice, t } from "./region";
 
 let uid = 0;
 
@@ -86,6 +87,18 @@ export default {
     cur() {
       void this.state.currency;
       return currentCurrency();
+    },
+    /* Bakini: one currency and one language (showSingle): the one chip, pressed, and a line. */
+    single() {
+      void this.$shop;
+      return singleChoice();
+    },
+    currencyName() {
+      try {
+        return new Intl.DisplayNames([this.lang || "en"], { type: "currency" }).of(this.cur) || this.cur;
+      } catch {
+        return this.cur;
+      }
     },
     lang() {
       void this.state.language;

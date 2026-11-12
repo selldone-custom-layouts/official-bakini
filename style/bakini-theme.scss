@@ -1,0 +1,291 @@
+/* ▆▆▆▆▆▆▆▆▆▆▆▆▆▆ Bakini Noir — the theme tokens ▆▆▆▆▆▆▆▆▆▆▆▆▆▆
+
+   Every colour Bakini paints comes from these tokens. They are the mockup's
+   own (bakio-design/b/core.css, set B "Noir": a dark pastry theatre), with a
+   --bk- prefix:
+
+   - Dark is the designed default: the stage #120c10, surfaces #1c1419 /
+     #261b22, ivory words #f4ede6, gold #d4a373 for small type and hairlines
+     only, deep caramel #a0522d for every action (white words 5.62:1).
+   - Light is the refined ivory version: #f8f5f2 page, white cards, ink
+     #1d1418, a darker gold #8a5e2e for small type.
+
+   :root holds Light, html.bk-dark holds Dark. The shared theme switcher
+   (components/theme-switcher/, config components/bakini/bakini-theme.ts) puts
+   the class "bk-dark" on <html> before the app mounts (dark by default, on
+   every shop: bakini-theme.settings.ts says mode "dark"), and writes the
+   chosen palette's action colours (--bk-act*) inline on <html>.
+
+   This file holds both modes itself. The build step (postcss-dark-tokens,
+   vite.config.ts) skips rules under html.bk-dark, and the few :root values
+   it rewrites are all redefined under html.bk-dark, so the step changes
+   nothing here. Every other fixed colour in the Layout's and Selldone's
+   styles gets a dark value from that step under html.bk-dark.
+
+   The second block maps the names the inherited pieces read (--bk-buy,
+   --bk-surface, --bk-photo … from Medio, and through kalio-tokens.scss the
+   --k-* names of the shared Kalio pieces) onto the Noir tokens, so those
+   pieces follow until each page is ported to its B mockup. */
+
+:root {
+  /* ── Type ── */
+  --bk-fd: "Instrument Serif", "Iowan Old Style", "Times New Roman", serif; /* display */
+  --bk-ft: "Manrope", "Noto Sans Arabic", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; /* text and UI */
+
+  /* ── Ivory (Light) ── */
+  --bk-bg: #f8f5f2; /* the page */
+  --bk-bg-2: #f1ece7; /* a band a step down */
+  --bk-s1: #ffffff; /* cards */
+  --bk-s2: #f3eee9; /* raised parts, chips, quiet buttons */
+  --bk-s3: #e9e1da; /* hover of those */
+  --bk-ink: #1d1418;
+  --bk-ink-2: #3a2c33;
+  --bk-mut: #6b5c63; /* 5.80:1 on the page */
+  --bk-gold: #8a5e2e; /* small type and hairlines only: 5.20:1 on the page */
+  --bk-line: rgba(29, 20, 24, 0.11);
+  --bk-line-2: rgba(29, 20, 24, 0.22);
+  --bk-glass: rgba(248, 245, 242, 0.74); /* the header's glass */
+  --bk-plate: #efe8e2; /* the plate a cut-out pastry floats on */
+  --bk-plate-2: #e6ddd5;
+  --bk-floor: rgba(70, 40, 20, 0.22); /* the soft shadow under a pastry */
+  --bk-halo-a: 0.34; /* how much of the collection's hue the halo carries */
+  --bk-spot: rgba(255, 246, 232, 0.9); /* the hero's spotlight */
+  --bk-scrim: rgba(20, 12, 16, 0.42); /* under a sheet (never under a header menu) */
+  --bk-arrow-bg: #1d1418; /* the round row arrows: dark disc, white arrow */
+  --bk-arrow-fg: #ffffff;
+  --bk-foot-bg: #efe9e3;
+  --bk-ok: #2f7a4a;
+  --bk-warn: #9a3b1d;
+
+  /* ── The action colour (Caramel, the brand palette; the switcher rewrites these inline) ── */
+  --bk-act: #a0522d; /* every button, chosen states (white words 5.62:1) */
+  --bk-act-deep: #893e17; /* its hover */
+  --bk-act-soft: #ffece3; /* a tint of it */
+  --bk-act-on: #ffffff; /* words on it */
+  --bk-act-text: #a0522d; /* it as words and links */
+  --bk-act-rgb: 160, 82, 45;
+  --bk-act-on-rgb: 255, 255, 255;
+  --bk-focus: var(--bk-act-text);
+  --bk-sel: color-mix(in srgb, var(--bk-act-soft) 70%, var(--bk-s1)); /* a chosen row's tint */
+
+  /* ── Shape and rhythm ── */
+  --bk-r-xl: 28px;
+  --bk-r-lg: 22px;
+  --bk-r-md: 16px;
+  --bk-r-sm: 12px;
+  --bk-wrap: 1320px;
+  --bk-gut: max(clamp(16px, 4vw, 44px), env(safe-area-inset-left));
+  --bk-gut-r: max(clamp(16px, 4vw, 44px), env(safe-area-inset-right));
+  --bk-hdr: 60px;
+
+  color-scheme: light;
+}
+
+html.bk-dark {
+  --bk-bg: #120c10;
+  --bk-bg-2: #0d080b;
+  --bk-s1: #1c1419;
+  --bk-s2: #261b22;
+  --bk-s3: #30232b;
+  --bk-ink: #f4ede6;
+  --bk-ink-2: #e2d7d0;
+  --bk-mut: #b8a9af; /* 8.02:1 on a card */
+  --bk-gold: #d4a373; /* 7.98:1 on a card */
+  --bk-line: rgba(244, 237, 230, 0.1);
+  --bk-line-2: rgba(244, 237, 230, 0.2);
+  --bk-glass: rgba(18, 12, 16, 0.68);
+  --bk-plate: #211820;
+  --bk-plate-2: #171015;
+  --bk-floor: rgba(0, 0, 0, 0.62);
+  --bk-halo-a: 0.3;
+  --bk-spot: rgba(255, 233, 206, 0.16);
+  --bk-scrim: rgba(5, 2, 4, 0.62);
+  --bk-arrow-bg: #f4ede6; /* ivory disc, dark arrow */
+  --bk-arrow-fg: #120c10;
+  --bk-foot-bg: #0d080b;
+  --bk-ok: #8fd19e;
+  --bk-warn: #f2a07f;
+
+  /* Caramel in dark: the same fill (3.21:1 against the card), lighter as words. */
+  --bk-act: #a0522d;
+  --bk-act-deep: #90431d;
+  --bk-act-soft: #4a200c;
+  --bk-act-on: #ffffff;
+  --bk-act-text: #ea9570; /* 7.76:1 on a card */
+  --bk-sel: color-mix(in srgb, var(--bk-act-soft) 45%, var(--bk-s2));
+
+  color-scheme: dark;
+}
+
+/* ▆▆▆▆ The inherited names, onto Noir (until each page is ported) ▆▆▆▆ */
+:root {
+  --bk-max: calc(var(--bk-wrap) + 88px);
+  --bk-pad: 44px;
+  --bk-r: var(--bk-r-lg);
+  --bk-r-s: var(--bk-r-sm);
+  --bk-font: var(--bk-ft);
+
+  /* The action colour, by every name it had. */
+  --bk-buy: var(--bk-act);
+  --bk-buy-d: var(--bk-act-deep);
+  --bk-buy-l: var(--bk-act-soft);
+  --bk-buy-t: var(--bk-act-text);
+  --bk-buy-rgb: var(--bk-act-rgb);
+  --bk-brand: var(--bk-act);
+  --bk-brand-d: var(--bk-act-deep);
+  --bk-brand-l: var(--bk-act-soft);
+  --bk-brand-t: var(--bk-act-text);
+  --bk-brand-rgb: var(--bk-act-rgb);
+  --bk-head: var(--bk-act);
+  --bk-head-d: var(--bk-act-deep);
+  --bk-on-head: var(--bk-act-on);
+  --bk-on-head-rgb: var(--bk-act-on-rgb);
+  --bk-on-brand: var(--bk-act-on);
+  --bk-on-brand-rgb: var(--bk-act-on-rgb);
+  --bk-blue: var(--bk-act);
+  --bk-blue-d: var(--bk-act-deep);
+  --bk-blue-l: var(--bk-act-soft);
+  --bk-blue-t: var(--bk-act-text);
+  --bk-blue-rgb: var(--bk-act-rgb);
+  --bk-new: var(--bk-act);
+  --bk-brand-ink: var(--bk-ink);
+
+  /* Grounds, lines and words. */
+  --bk-surface: var(--bk-s1);
+  --bk-page: var(--bk-s2);
+  --bk-tile: var(--bk-s2);
+  --bk-hover-line: var(--bk-line-2);
+  --bk-deco: #8d7c84; /* separators and empty stars: 3:1 on the page in both modes */
+  --bk-muted: var(--bk-mut);
+  --bk-soft: var(--bk-mut);
+  --bk-off-bg: var(--bk-s3);
+  --bk-off-ink: var(--bk-mut);
+  --bk-photo: var(--bk-plate); /* a cut-out pastry's plate (dark in dark mode: the photos are transparent) */
+  --bk-ph-c0: var(--bk-plate);
+  --bk-ph-c1: var(--bk-plate-2);
+  --bk-ph-c2: var(--bk-mut);
+  --bk-sw-edge: rgba(15, 23, 41, 0.34); /* a swatch disc's edge */
+  --bk-shine: rgba(255, 255, 255, 0.7); /* a skeleton's shimmer */
+  --bk-pop: #ffffff;
+  --bk-pop-shadow: rgba(0, 0, 0, 0.18);
+  --bk-chevron: var(--bk-arrow-fg);
+  --bk-note: var(--bk-s2);
+
+  /* A saving is gold as words; a fill under white words is the action colour. */
+  --bk-sale: var(--bk-act);
+  --bk-sale-solid: var(--bk-act);
+  --bk-sale-fixed: var(--bk-act);
+  --bk-sale-t: var(--bk-gold);
+  --bk-sale-l: var(--bk-act-soft);
+  --bk-red: var(--bk-act);
+  --bk-red-solid: var(--bk-act);
+  --bk-red-t: var(--bk-gold);
+  --bk-green: var(--bk-ok);
+  --bk-green-t: var(--bk-ok);
+  --bk-warn-t: var(--bk-warn);
+  --bk-yellow: var(--bk-s3); /* the inherited accent fill (dark words on it) */
+  --bk-on-yellow: var(--bk-ink);
+  --bk-yellow-l: var(--bk-s2);
+
+  /* The inherited dark bands keep white words in both modes: the stage. */
+  --bk-navy: #1c1419;
+  --bk-navy-2: #261b22;
+  --bk-dark-card: #1c1419;
+  --bk-promo: #261b22;
+  --bk-strip: #0d080b;
+  --bk-slate: #120c10;
+  --bk-pill: var(--bk-ink);
+  --bk-on-pill: var(--bk-bg);
+  --bk-pill-hover: var(--bk-ink-2);
+
+  /* The inherited pastel tiles become quiet surfaces. */
+  --bk-p-lemon: var(--bk-s2);
+  --bk-p-pink: var(--bk-s2);
+  --bk-p-mint: var(--bk-s2);
+  --bk-p-lilac: var(--bk-s2);
+  --bk-p-peach: var(--bk-s2);
+  --bk-p-sky: var(--bk-s2);
+}
+
+html.bk-dark {
+  --bk-sw-edge: rgba(244, 237, 230, 0.5);
+  --bk-shine: rgba(255, 255, 255, 0.07);
+  --bk-pop-shadow: rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 899px) {
+  :root {
+    --bk-pad: 16px;
+  }
+}
+
+/* Vuetify's own dark surfaces on Noir's stage (Selldone's fields, menus,
+   dialogs and sheets are dark too, not white islands on a black page). */
+html.bk-dark,
+html.bk-dark .v-theme--dark {
+  --v-theme-background: 18, 12, 16 !important;
+  --v-theme-on-background: 244, 237, 230 !important;
+  --v-theme-surface: 28, 20, 25 !important;
+  --v-theme-on-surface: 244, 237, 230 !important;
+  --v-theme-surface-variant: 48, 35, 43 !important;
+  --v-theme-on-surface-variant: 244, 237, 230 !important;
+}
+
+/* The page's own ground under the app (overscroll, the moment before the app
+   draws) follows the mode; Selldone's grey body rule loads later. */
+html body,
+html {
+  background: var(--bk-bg) !important;
+}
+
+/* Dark: brand marks drawn in black (Apple's sign-in mark) turn white. */
+html.bk-dark img[src*="apple-b"] {
+  filter: invert(1);
+}
+
+/* Dark: Selldone's own white rows (Vuetify's .bg-white, e.g. the billing
+   Business / Personal choice) take the card's ground. */
+html.bk-dark .bg-white:not(:has(> img, > .v-img)) {
+  background-color: var(--bk-s1) !important;
+  color: var(--bk-ink) !important;
+}
+
+/* A picture's caption in a product's or article's text: Selldone's #ccc on
+   white read 1.6:1; the muted ink reads in both modes. */
+.v-application figure figcaption {
+  color: var(--bk-mut) !important;
+}
+
+/* ▆▆▆▆ The wordmark (BakiniLogo.vue; b/core.css .wm) ▆▆▆▆ */
+.bk-wm {
+  display: inline-flex;
+  align-items: baseline;
+  flex: none;
+  padding: 4px 6px;
+  border-radius: 10px;
+  color: var(--bk-ink) !important;
+  font: 400 31px/1 var(--bk-fd);
+  letter-spacing: -0.01em;
+  text-decoration: none !important;
+  white-space: nowrap;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--bk-focus);
+  }
+
+  b {
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  i {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-inline-start: 2px;
+    border-radius: 50%;
+    background: var(--bk-gold);
+    transform: translateY(-1px);
+  }
+}

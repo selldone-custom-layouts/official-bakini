@@ -37,9 +37,9 @@
       </nav>
 
       <div class="k-cart__head">
-        <h1 class="k-cart__title">{{ t("medio.k.basket.checkout", "Checkout") }}</h1>
+        <h1 class="k-cart__title">{{ t("bakini.k.basket.checkout", "Checkout") }}</h1>
         <span v-if="seller_count > 1" class="k-cart__one">
-          <v-icon size="18">storefront</v-icon>{{ t("basket.sellers", { one: "{n} seller, one basket and one checkout.", other: "{n} sellers, one basket and one checkout." }, { n: seller_count }) }}
+          <v-icon size="18">storefront</v-icon>{{ t("basket.sellers", { one: "{n} seller, one bag and one checkout.", other: "{n} sellers, one bag and one checkout." }, { n: seller_count }) }}
         </span>
         <s-shop-share-order-button v-if="basket?.items?.length" :basket="basket" class="k-cart__share" />
       </div>
@@ -47,7 +47,7 @@
       <!-- Walio 1.1.0 (checkout design B): where the shopper is, as steps.
            Each step is done when Selldone has what it needs: the items, an
            address (or nothing to deliver), a way to send the receipt. -->
-      <ol v-if="basket?.items?.length" :aria-label="t('medio.k.basket.steps', 'Checkout steps')" class="w-stepper">
+      <ol v-if="basket?.items?.length" :aria-label="t('bakini.k.basket.steps', 'Checkout steps')" class="w-stepper">
         <li v-for="(st, i) in steps" :key="st.key" :class="st.state" class="w-stepper__s">
           <span v-if="i" aria-hidden="true" class="w-stepper__ln"></span>
           <i aria-hidden="true"><v-icon v-if="st.state === '-done'" size="16">check</v-icon><template v-else>{{ i + 1 }}</template></i>
@@ -55,7 +55,7 @@
         </li>
       </ol>
 
-      <nav v-if="filtered_types.length > 1" :aria-label="t('basket.types', 'Baskets')" class="k-cart__types">
+      <nav v-if="filtered_types.length > 1" :aria-label="t('basket.types', 'Bags')" class="k-cart__types">
         <button
           v-for="item in filtered_types"
           :key="item.code"
@@ -72,7 +72,7 @@
         <!-- ▆▆▆▆▆▆▆▆ Left: lines, details, often added ▆▆▆▆▆▆▆▆ -->
         <div class="k-cart__main">
           <!-- Tario: the checkout reads as numbered steps. -->
-          <h2 class="t-step"><span>1</span>{{ t("medio.basket.review", "Review your items") }}</h2>
+          <h2 class="t-step"><span>1</span>{{ t("bakini.basket.review", "Review your items") }}</h2>
           <kalio-cart-lines :basket="basket" />
 
           <s-storefront-coupons-list
@@ -97,7 +97,7 @@
             @update:model-value="selectLottery"
           ></s-storefront-lottery-prizes-list>
 
-          <h2 class="t-step"><span>2</span>{{ t("medio.k.basket.deliveryContact", "Delivery & contact") }}</h2>
+          <h2 class="t-step"><span>2</span>{{ t("bakini.k.basket.deliveryContact", "Delivery & contact") }}</h2>
           <div :class="`-n${detail_cards}`" class="k-cart__details">
             <!-- Delivery method (and when): "When · Truck" read as nonsense
                  to the owner (6 November 2026); the method is the heading's
@@ -136,7 +136,7 @@
                       ? t("basket.where.service", "Where the service takes place.")
                       : all_is_pickup
                         ? t("basket.where.billing", "Your billing address.")
-                        : t("medio.k.address.lede", "Your address, for the receipt and the delivery.")
+                        : t("bakini.k.address.lede", "Your address, for the receipt and the delivery.")
                   }}
                 </p>
                 <button class="k-cart__map" type="button" @click="openAddress()">
@@ -211,7 +211,7 @@
         <aside class="k-cart__side">
           <div :class="{ '-busy': busy_bill || refreshing_price }" class="k-cart__receipt">
             <u-loading-progress v-if="busy_save"></u-loading-progress>
-            <h2 class="t-step -summary"><span>3</span>{{ t("medio.k.basket.summary", "Order summary") }} <small>· {{ t("medio.basket.count", { one: "{n} item", other: "{n} items" }, { n: units }) }}</small></h2>
+            <h2 class="t-step -summary"><span>3</span>{{ t("bakini.k.basket.summary", "Order summary") }} <small>· {{ t("bakini.basket.count", { one: "{n} item", other: "{n} items" }, { n: units }) }}</small></h2>
             <div class="k-cart__top">
               <p class="k-cart__total">
                 <u-loading-ellipsis v-if="busy_bill" css-mode light></u-loading-ellipsis>
@@ -356,12 +356,12 @@
       <!-- Kalio: an empty basket is a starting point, so it offers the way back
            to the aisles instead of only announcing itself. The heading keeps
            the translated platform string. -->
-      <div v-else class="k-basket-empty md-empty -page">
-        <span aria-hidden="true" class="md-empty__ic"><span class="ms">shopping_basket</span></span>
-        <h1 class="md-empty__t">{{ t("medio.basket.emptyT", "Your basket is empty") }}</h1>
-        <p class="md-empty__p">{{ t("medio.basket.emptyP", "Find something you love and it will wait for you here.") }}</p>
-        <router-link :to="{ name: window.$storefront.routes.SHOP_PAGE, query: { sort: 'newest' } }" class="md-btn">{{ t("medio.basket.continue", "Continue shopping") }}</router-link>
-        <router-link :to="{ name: window.$storefront.routes.SHOP_PAGE, query: { filter: JSON.stringify({ only_has_discount: true }) } }" class="md-btn -line">{{ t("medio.basket.shopDeals", "Shop today’s deals") }}</router-link>
+      <div v-else class="k-basket-empty bk-empty -page">
+        <span aria-hidden="true" class="bk-empty__ic"><span class="ms">shopping_bag</span></span>
+        <h1 class="bk-empty__t">{{ t("bakini.basket.emptyT", "Your bag is empty") }}</h1>
+        <p class="bk-empty__p">{{ t("bakini.basket.emptyP", "Find something you love and it will wait for you here.") }}</p>
+        <router-link :to="{ name: window.$storefront.routes.SHOP_PAGE, query: { sort: 'newest' } }" class="bk-btn">{{ t("bakini.basket.continue", "Continue shopping") }}</router-link>
+        <router-link :to="{ name: window.$storefront.routes.SHOP_PAGE, query: { filter: JSON.stringify({ only_has_discount: true }) } }" class="bk-btn -line">{{ t("bakini.basket.shopDeals", "Shop today’s deals") }}</router-link>
       </div>
 
       <div v-if="busy_shop" class="busy-overlay">
@@ -449,7 +449,7 @@
       :center="center"
       :countries="$shop.countries?.length ? $shop.countries : null"
       :heading="isService ? t('address.title.service', 'Where should we come?') : all_is_pickup ? t('address.title.billing', 'Your billing address') : t('address.title.go', 'Where should it go?')"
-      :lede="isService ? t('address.lede.service', 'The address for the service.') : t('medio.k.address.lede', 'Your address, for the receipt and the delivery.')"
+      :lede="isService ? t('address.lede.service', 'The address for the service.') : t('bakini.k.address.lede', 'Your address, for the receipt and the delivery.')"
       :no-map="no_map"
       :receiver-info="receiver_info"
       @save="onClickSetLocation"
@@ -1055,7 +1055,7 @@ export default {
       if (this.error_message_payment) return this.error_message_payment;
       if (this.enter_guest_email_error) return t("basket.pay.needEmail", "Add your email to pay.");
       if (!this.guest_email_ok) return t("basket.pay.checkEmail", "Check your email address.");
-      if (this.bill && !this.can_pay) return t("basket.pay.cannotPay", "This basket cannot be paid yet.");
+      if (this.bill && !this.can_pay) return t("basket.pay.cannotPay", "This bag cannot be paid yet.");
       if (
         this.payment_ways &&
         !this.payment_ways.length &&
@@ -1130,7 +1130,7 @@ export default {
 
     this.type = this.$route.params.type;
 
-    this.setPageTitle(t("basket.pageTitle", "Open cart")); // Set Page Title!
+    this.setPageTitle(t("basket.pageTitle", "Open bag")); // Set Page Title!
 
     GtagEcommerce.MeasuringCheckoutSteps(this.basket, 0, "");
 

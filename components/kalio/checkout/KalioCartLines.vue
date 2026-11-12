@@ -51,7 +51,7 @@
           class="k-lines__qty"
           role="group"
         >
-          <button :aria-label="shown(item) > 1 ? t('checkout.lines.oneFewer', 'One fewer') : t('checkout.lines.removeFromBasket', 'Remove from basket')" type="button" @click="step(item, -1)">
+          <button :aria-label="shown(item) > 1 ? t('checkout.lines.oneFewer', 'One fewer') : t('checkout.lines.removeFromBasket', 'Remove from bag')" type="button" @click="step(item, -1)">
             <v-icon size="18">{{ shown(item) > 1 ? "remove" : "delete_outline" }}</v-icon>
           </button>
           <output aria-live="polite">{{ shown(item) }}</output>
@@ -71,7 +71,7 @@
 <script>
 import { settling, shownCount, stepTo } from "../kalio-basket";
 import { productImage, sellerRoute, vendorImage, vendors } from "../kalio-catalog";
-import { colourName } from "../../medio/medio";
+import { colourName } from "../../bakini/bakini";
 
 /* The size of a variant in words: its volume, weight, pack, colour or style. */
 function sizeOf(variant) {
@@ -156,7 +156,7 @@ export default {
     },
 
     size(item) {
-      /* Medio: a colour line says its colour too. */
+      /* Bakini: a colour line says its colour too. */
       return sizeOf(item.variant) || (item.variant?.color ? colourName(item.variant.color) : null);
     },
 

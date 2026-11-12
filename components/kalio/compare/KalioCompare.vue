@@ -374,7 +374,7 @@ export default {
           ? this.aisleTitle
             ? t("compare.summary.fromAisle", { one: "{n} product from {aisle}", other: "{n} products from {aisle}" }, { n, aisle: this.aisleTitle })
             : t("compare.summary.products", { one: "{n} product", other: "{n} products" }, { n })
-          : t("medio.k.compare.fromDepts", { one: "{n} product from {aisles} departments", other: "{n} products from {aisles} departments" }, { n, aisles: cats.size });
+          : t("bakini.k.compare.fromDepts", { one: "{n} product from {aisles} departments", other: "{n} products from {aisles} departments" }, { n, aisles: cats.size });
       if (!this.rowCount) return head;
       const tail = t("compare.summary.differ", { one: "{n} of {rows} details differs", other: "{n} of {rows} details differ" }, { n: this.diffCount, rows: this.rowCount });
       return `${head} · ${tail}`;

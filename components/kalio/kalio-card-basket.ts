@@ -1,12 +1,12 @@
 /*
- * Medio — the catalogue's cards are Medio's own.
+ * Bakini — the catalogue's cards are Bakini's own.
  *
  * SProductsListing (a category, the catalogue, a search, the deals) draws
  * Selldone's SShopProductCard, which has no slot for any of this. A small
- * mixin is added to it here: once the card is mounted, a MedioCard (in its
+ * mixin is added to it here: once the card is mounted, a BakiniCard (in its
  * `inside` mode, without links of its own, since Selldone's card is the link
  * to the product) is rendered into the card and Selldone's own markup is
- * hidden (medio-pages.scss). So every grid shows the same card as the home:
+ * hidden (bakini-pages.scss). So every grid shows the same card as the home:
  * colour swatches that pick a colour, the price with "Save $X", "Add to
  * cart" that becomes "− n +", "Choose capacity" for the sheet, Compare and
  * Save. The card's "Choose …" is the card's own "quick-buy" event, so the
@@ -18,42 +18,42 @@
 
 import { h, render } from "vue";
 import SShopProductCard from "@selldone/components-vue/storefront/product/card/SShopProductCard.vue";
-import MedioCard from "../medio/MedioCard.vue";
+import BakiniCard from "../bakini/BakiniCard.vue";
 
 const card: any = SShopProductCard;
 
-if (!card.__medioCard) {
-  card.__medioCard = true;
+if (!card.__bakiniCard) {
+  card.__bakiniCard = true;
   card.mixins = [
     ...(card.mixins || []),
     {
       mounted(this: any) {
-        this.medioRender();
+        this.bakiniRender();
       },
       watch: {
         product(this: any) {
-          this.medioRender();
+          this.bakiniRender();
         },
       },
       beforeUnmount(this: any) {
-        if (this._medioHost) render(null, this._medioHost);
+        if (this._bakiniHost) render(null, this._bakiniHost);
       },
       methods: {
-        medioRender(this: any) {
+        bakiniRender(this: any) {
           const root = this.$el;
           if (!root || !this.product || root.nodeType !== 1) return;
-          if (!this._medioHost || !this._medioHost.isConnected) {
-            this._medioHost = document.createElement("div");
-            this._medioHost.className = "md-card-host";
-            root.appendChild(this._medioHost);
+          if (!this._bakiniHost || !this._bakiniHost.isConnected) {
+            this._bakiniHost = document.createElement("div");
+            this._bakiniHost.className = "bk-card-host";
+            root.appendChild(this._bakiniHost);
           }
-          const vnode = h(MedioCard, {
+          const vnode = h(BakiniCard, {
             product: this.product,
             inside: true,
             onQuickBuy: () => this.$emit("quick-buy"),
           });
           vnode.appContext = this.$.appContext;
-          render(vnode, this._medioHost);
+          render(vnode, this._bakiniHost);
         },
       },
     },
