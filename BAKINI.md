@@ -23,25 +23,54 @@ It started from Medio 1.0.9 (`medio-layout`, `git clone`, history kept; `md-` �
 | Languages | English, plus Arabic kept for right-to-left (`lang-ar.ts`); Hindi and Danish removed (Digini's). `bakini.ar.ts` is stale (Medio's words; i18n-lint: 136 problems) and is rewritten in Phase 2 |
 | Taken out | the photo hero slider, promo photo tiles, "The latest from <brand>", brand deals, "Discover offers", "Why shop with", the category hub (Can't decide?, buying guides, brands), the add-ons ("What you'll need"), "Ways to pay", Services menus, the message and promise strips, the electronics photos, Medio's screenshots and wiki, Medio's mark; sample About/Terms copy now speaks of a pastry shop (no invented history) |
 
-## Phase 2 — porting map (every page to its B mockup)
+## Phase 2 — the port (12–13 November 2026)
 
-The mockup hard-codes Bakio's ids and copy; the Layout must take each from live data:
+**How the mockup became the Layout.** The B mockup's five stylesheets are carried over unchanged:
+`scripts/noir-css.cjs` turns `bakio-design/b/{core,pages,product,buy,read}.css` into `style/noir/*.css`
+(generated, never edited). Each rule is scoped to Bakini's own markup: its first compound gets
+`:is(.nx, .nx *)` (a bare element rule gets `:where()`), so the mockup's cascade holds, Selldone's
+and Vuetify's parts outside a `.nx` wrapper are never touched, and a later-loaded reset of the same
+weight (Vuetify's `[type=button]`, Selldone's draggable `.ghost`) cannot win. Custom properties take
+the `--bk-` prefix (the tokens are `style/bakini-theme.scss`), `html[data-mode=dark]` becomes
+`html.bk-dark`, the cut-out `img[src^=img/…]` rule becomes `img.cut`, the footer theme band's `.ts-*`
+becomes `.nts-*` (the kit's row owns `.ts-*`), keyframes become `nx-*`. The Vue components write the
+mockup's markup with live data; `style/bakini-noir*.scss` hold the Layout's own touches. The dark
+build step leaves these files alone (they hold both modes). Re-run the script after a mockup change.
 
-| Mockup | Live source in the Layout |
+| Page | Where |
 | --- | --- |
-| `HUES[slug]` per collection | a warm hue list cycled by the category's order (or read from its image), never by slug |
-| Hero: three named products | the best seller of the three best-selling collections (`sells`), with the gallery photo when there is one; tabs, no autoplay |
-| "Which croissant is yours?" (4 ids, two spec keys) | the best-selling collection's top four, the first two rows of its first spec group, stock |
-| Morning trio (croissant, Danish, tart) | three collections, each starting on its best seller; "Add all three" |
-| Bento facts (hours, windows, shipping, COD, pickup) | `/info`: `transportations` (types, windows, fees, free-over), `gateways` (COD description), the pickup point and the shop's `info` (address, hours) |
-| Story and visit copy | sentences built from the shop's address, collection names and delivery ways; the visit map is the mockup's Embarcadero SVG only as an illustration style, drawn generically (no street names) |
-| Category filters | the category's own spec values (flat spec), price range, On offer; grid only (Medio's List view goes) |
-| Product page | gallery (one row of thumbnails), sticky buy column, Selldone variants as option tiles when a product has them (none on Bakio: the labelled preview from the mockup), pros, spec groups, reviews empty state with the rating criteria, "More <collection>", Buy together (this + two from other collections) |
-| Checkout | the Kalio basket page's template rebuilt as the B numbered glass cards (Contact, Delivery method + windows, Address, Billing halves, Note) and the floating receipt ("Place order · pay $X on delivery"), keeping Selldone's script (bill, shipping options, address sheet with map on and off, payment window) |
+| Shared: data, layers, icons, card, quantity box, rows, bag drawer, quick look, map, journal card | `components/bakini/noir/` (`noir.ts`, `nx-icons.ts` generated from `b/core.js`, `Nx*.vue`) |
+| Header (glass bar, Shop panel, search with live suggestions, region pill and panel, account panel, phone menu, language sheet) and footer (Theme band with the kit's row) | `components/bakini/shell/` |
+| Home (stage, collections, selection, facts bento, most loved, "Which <unit> is yours?", deals band with the Save roundel, trio, story, visit with the real map, journal) | `components/bakini/noir/NxHome.vue` |
+| Category, search, deals, every pastry | `components/bakini/noir/shop/NxListing.vue` (in `pages/products/StorefrontPageProducts.vue`) |
+| Product, compare | `components/bakini/noir/product/`, `components/bakini/noir/compare/`, `pages/product/`, `pages/comparison/` |
+| Bag page, checkout, address and delivery sheets, payment, order, account, addresses | `components/bakini/noir/buy/`, `components/bakini/noir/account/`, `pages/basket/`, `pages/user/`, `components/kalio/{checkout,order,account}/` |
+| Journal, article, about, terms, privacy, contact, FAQ, 404, sign-in | `components/bakini/noir/read/`, `pages/blog/`, `pages/official/`, `pages/faq/`, `pages/errors/`, `components/kalio/shell/KalioSignIn.vue` |
 
-What needs the most rework from the Medio base: the header (Medio's big-retailer header → the slim glass header), the home (a rewrite), the product page (Medio's key-spec grid and buy card → the B gallery and sticky buy column), the checkout and basket page (Kalio's card layout → B's numbered glass cards), the card (white rounded retail card → floating pastry on a dark plate with the + in the free corner), the category page (List/Grid toggle and hub → short head, filter sheet, grid), the footer (dense dark footer with the visit lines), and every icon (Material Symbols → inline line SVG).
+**What the mockup hard-codes and the Layout reads live.** The collections' hues: the mockup's six
+warm hues given in the shop's order (Bakio gets exactly the mockup's), cycled for more. The stage:
+the best seller of each of the three best-selling collections. "Which croissant": the best-selling
+collection's top four, its unit word ("cookie"), the first spec rows that are short and differ.
+Trio: three collections by sales. Bento, story, visit, footer: the shop's `info` (address, days),
+its pickup point's note (the counter hours are read from it, "8:00-18:00"), its delivery ways
+(`transportations`: titles or words from their kind, windows, fees, free threshold, distance), its
+gateway (name and description). The map: the mockup draws the Embarcadero's streets; the Layout shows
+a static map of the shop's real location (Selldone's map service and token, dark style in dark
+mode, attribution kept) with the mockup's pin and label card, so any bakery gets its own street.
+"Popular" search words: the words most product titles share. Deals headline: "{off}% off. Every
+piece." only when every product has the same saving, else "Up to {off}% off."
 
-Also from the kits for a new Layout (SYNC-ALL-LAYOUTS §SM-355), still to take in Phase 2: `StorefrontSeo.firstTitle`, `addressLine`/`streetOf` in the address sheet, the order page's tab title, the basket's delivery line written like the order page's.
+**Filters (the coordinator's rule, 12 November 2026).** A spec key is a filter only when the
+collection has two or more distinct short values for it (28 characters at most; a sentence such as
+"Visual Finish" or an allergen note never is), plus Price (two-thumb range with short boxes) and On
+offer. No filter is invented: Bakio's collections each get Flavor Theme (cookies: Style and
+Chocolate Format) + Price + On offer, fewer than five because the shop's other spec keys have one
+value or long sentences. The listing works on the live catalogue (one read of `products/list`, up to
+250 products); search matches title, collection and spec.
+
+**Card photo (the coordinator's correction).** The cut-out fills about 80–85% of the plate's width
+(`.pc-ph` inset 4px 6px 24px, the zoom 1.3), with the quick-look eye in the empty top corner and the
++ in the free lower corner.
 
 ## Releases
 
