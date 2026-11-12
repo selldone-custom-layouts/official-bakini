@@ -34,7 +34,7 @@
       </div>
 
       <!-- ▆▆▆▆▆▆▆▆ Shop page: the home ▆▆▆▆▆▆▆▆ -->
-      <bakini-home v-if="show_home" />
+      <nx-home v-if="show_home" />
 
       <!-- ▆▆▆▆▆▆▆▆ Category, search, Deals, All products ▆▆▆▆▆▆▆▆ -->
       <div v-if="!show_home" :class="['bk-wrap', 'bk-list', '-' + view]">
@@ -185,7 +185,7 @@
 <script lang="ts">
 import SProductsListing from "@selldone/components-vue/storefront/products/listing/SProductsListing.vue";
 import TemplateMixin from "@selldone/components-vue/mixin/template/TemplateMixin.ts";
-import BakiniHome from "../../components/bakini/BakiniHome.vue";
+import NxHome from "../../components/bakini/noir/NxHome.vue";
 import BakiniFilterPanel from "../../components/bakini/shop/BakiniFilterPanel.vue";
 import BakiniRow from "../../components/bakini/BakiniRow.vue";
 import { SORTS, countOn, fromRoute } from "../../components/walio/shop/walio-filters";
@@ -205,7 +205,7 @@ export default {
   name: "StorefrontPageProducts",
   components: {
     SProductsListing,
-    BakiniHome,
+    NxHome,
     BakiniFilterPanel,
     BakiniRow,
     KalioQuickBuy,

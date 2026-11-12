@@ -9,7 +9,7 @@
   for several words, the last word ("maison" + "noir").
 -->
 <template>
-  <component :is="to ? 'router-link' : 'span'" :aria-label="label" :to="to" class="bk-wm">
+  <component :is="to ? 'router-link' : 'span'" :aria-label="label" :to="to" class="wm bk-wm">
     <span aria-hidden="true" class="bk-wm__w">{{ parts[0] }}<b v-if="parts[1]">{{ parts[1] }}</b><i></i></span>
   </component>
 </template>

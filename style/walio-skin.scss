@@ -14,9 +14,9 @@ $walio-blue-deep: var(--bk-blue-d);
 $walio-navy: var(--bk-navy);
 $walio-spark: #d8ccff; /* Bakini: a soft lilac accent (was Walio's yellow) */
 
-h1,
-h2,
-h3 {
+h1:not(.nx *),
+h2:not(.nx *),
+h3:not(.nx *) {
   letter-spacing: -0.01em;
 }
 
@@ -281,8 +281,8 @@ h3 {
 }
 
 /* Headings in the superstore's heavy weight. */
-.v-application h1,
-.v-application h2,
+.v-application h1:not(.nx *),
+.v-application h2:not(.nx *),
 .k-pdp__title,
 .k-cart__title {
   font-weight: 800 !important;

@@ -1,0 +1,222 @@
+/* ▆▆▆▆▆▆▆▆▆▆▆▆▆▆ Bakini Noir — the Layout's own touches on the mockup ▆▆▆▆▆▆▆▆▆▆▆▆▆▆
+
+   style/noir/*.css are the B mockup's stylesheets, generated unchanged
+   (scripts/noir-css.cjs) and scoped to Bakini's markup (.nx). What the
+   storefront needs on top of them lives here: the sticky glass bar inside
+   Vuetify's app, the card photo's size (the coordinator's correction of
+   12 November 2026), the region-switcher kit's chips and the theme-switcher
+   kit's row in the mockup's dress, and Selldone's own parts that sit inside
+   a Noir page. Not rewritten by the dark build step (vite.config.ts). */
+
+/* ── The page ── */
+/* Vuetify's app clips with overflow: hidden, which stops anything sticking
+   (the header, the buy column, the compare heads); clip does the same
+   without making a scroll box. */
+.v-application,
+.v-application .v-application__wrap,
+.s--shop {
+  overflow: clip !important;
+}
+.v-application,
+.s--shop {
+  background: var(--bk-bg) !important;
+  color: var(--bk-ink);
+  font-family: var(--bk-ft);
+}
+/* The Noir wrappers take the page's type, not a ground of their own (the
+   mockup's body rule lands on .nx). */
+.nx {
+  background: transparent;
+}
+
+/* ── The glass bar ── */
+.nx.nx-hdrwrap {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 50;
+  overflow: visible;
+}
+.nx-hdrwrap .hdr {
+  position: relative;
+  top: 0;
+}
+.nx-hdrwrap .skip {
+  position: absolute;
+}
+.nx-layers {
+  position: relative;
+  z-index: 60;
+}
+.nx .hdr .wm {
+  color: var(--bk-ink) !important;
+}
+.nx .pm-list .pm-more {
+  color: var(--bk-act-text);
+}
+.nx .pm-list .pm-more .ic {
+  color: var(--bk-act-text);
+}
+
+/* ── The product card: the cut-out fills about 80–85% of the plate's width
+   (the coordinator, 12 November 2026: it sat too small), still contained in
+   its fixed box; the + stays in the free lower corner. ── */
+.nx .pc-ph {
+  inset: 4px 6px 24px;
+}
+.nx .pc-ph img.cut {
+  transform: scale(1.3);
+}
+.nx .pc.has-look .pc-ph {
+  inset: 4px 40px 24px;
+}
+
+/* ── The region-switcher kit's chips in the mockup's panel and sheet ── */
+.nx .pop .rs-chips,
+.nx .bsheet .rs-chips {
+  --rs-ink: var(--bk-ink);
+  --rs-muted: var(--bk-mut);
+  --rs-line: var(--bk-line-2);
+  --rs-surface: var(--bk-s1);
+  --rs-accent: var(--bk-act-text);
+  --rs-accent-soft: var(--bk-sel);
+  --rs-on-accent: var(--bk-act-on);
+  --rs-font: var(--bk-ft);
+}
+.nx .rs-chips__t {
+  font: 700 11.5px/1.3 var(--bk-ft);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bk-gold);
+}
+.nx .rs-chip {
+  min-height: 48px;
+  padding: 0 16px;
+  border-radius: 14px;
+  background: var(--bk-s2);
+  color: var(--bk-ink);
+  font: 700 14px/1 var(--bk-ft);
+}
+.nx .rs-chip.-on {
+  background: var(--bk-sel);
+  box-shadow: inset 0 0 0 2px var(--bk-act-text);
+}
+.nx .rs-chips__note {
+  color: var(--bk-mut);
+  font-size: 12.5px;
+}
+.nx .pop .rs-chips__t:first-child {
+  display: none; /* the panel's own heading says it */
+}
+
+/* ── The theme-switcher kit's row in the mockup's band ── */
+.nx .nts-in .ts-row {
+  --ts-ink: var(--bk-ink);
+  --ts-muted: var(--bk-mut);
+  --ts-line: var(--bk-line-2);
+  --ts-ring: var(--bk-ink);
+  --ts-font: var(--bk-ft);
+  width: 100%;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+}
+.nx .nts-in .ts-row__label {
+  font: 700 11.5px/1.3 var(--bk-ft);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bk-gold);
+}
+
+/* ── The legal row's Selldone parts ── */
+.nx .ftr-bot .nx-gdpr,
+.nx .ftr-bot .nx-gdpr .v-btn,
+.nx .ftr-bot .nx-made,
+.nx .ftr-bot .nx-made a,
+.nx .ftr-bot .nx-made .v-btn {
+  color: var(--bk-mut) !important;
+  opacity: 1 !important;
+  font: 500 12.5px var(--bk-ft) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  background: transparent !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+}
+.nx .ftr-bot .nx-social:empty {
+  display: none;
+}
+
+/* Selldone's drag-and-drop ".ghost" (half opacity, a blue ground) must not
+   reach the mockup's ghost buttons. */
+.nx .ghost {
+  opacity: 1;
+}
+
+/* ── The counter on a map (NxMap.vue): the shop's real place, the mockup's
+   pin and label card ── */
+.nx .nx-map {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: radial-gradient(60% 60% at 50% 50%, color-mix(in srgb, var(--bk-act) 16%, transparent), transparent 70%), var(--bk-plate);
+}
+.nx .nx-map__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+html:not(.bk-dark) .nx .nx-map__img {
+  filter: saturate(0.55) sepia(0.12);
+}
+.nx .nx-map__pin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 60px;
+  height: 64px;
+  overflow: visible;
+  transform: translate(-50%, -87%);
+}
+.nx .nx-map__pin .mpin-halo {
+  fill: color-mix(in srgb, var(--bk-act) 28%, transparent);
+}
+.nx .nx-map__pin .mpin-body {
+  fill: var(--bk-act);
+}
+.nx .nx-map__pin .mpin-b {
+  font: italic 400 20px var(--bk-fd);
+  fill: var(--bk-act-on);
+  text-anchor: middle;
+}
+.nx .nx-map__card {
+  position: absolute;
+  right: calc(50% + 34px);
+  top: calc(50% - 92px);
+  display: grid;
+  gap: 2px;
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: var(--bk-s1);
+  box-shadow: inset 0 0 0 1px var(--bk-line-2);
+  max-width: 60%;
+}
+.nx .nx-map__card b {
+  font: 400 21px/1.1 var(--bk-fd);
+  color: var(--bk-ink);
+}
+.nx .nx-map__card small {
+  font: 600 11.5px/1.3 var(--bk-ft);
+  color: var(--bk-mut);
+}
+@media (max-width: 760px) {
+  .nx .nx-map__card {
+    display: none;
+  }
+  .nx .nx-map__pin {
+    transform: translate(-50%, -87%) scale(1.3);
+  }
+}

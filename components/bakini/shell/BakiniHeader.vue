@@ -1,343 +1,396 @@
 <!--
-  Bakini Noir — the header. PHASE 1 BASE: the inherited header with the
-  electronics-only parts taken out (message strip, utility row, Services,
-  promise strip); the language & currency pill sits with the actions. Phase 2
-  replaces it with the B mockup's slim glass header (bakio-design/b/core.js
-  header(): wordmark left; "Shop ⌄" mega panel, the collections and Deals in
-  the middle; search, the region pill, account and the bag on the right).
+  Bakini Noir — the header (b/core.js header(), megaHTML(), searchHTML(),
+  regionHTML(), acctHTML(), pmenuHTML()): a slim glass bar that sticks to
+  the top: the wordmark (the shop's live title) on the left; "Shop ⌄" (the
+  collections panel), the collections themselves (from 1240px) and Deals in
+  the middle; search, the language & currency pill, the account and the bag
+  with its count on the right.
 
-  Every panel opens and closes on a click (and Esc, a click elsewhere, a page
-  change), with no scrim. Phone: Menu opens a drawer: Deals, the first 6
-  collections (8 or fewer: all), the bakery's own pages and the language &
-  currency row. No bottom tab bar. The bag opens the bag drawer. A shop with
-  custom header code keeps Selldone's header (StorefrontLayout).
+  Every panel opens on a click and closes on a second click, Esc, a click
+  outside or a page change, with no scrim (noir.ts layers). The panels are
+  teleported to <body> (the glass bar's backdrop-filter would trap fixed
+  panels inside it). Phone (≤760px): the menu button, the wordmark (never
+  lost), search and the bag; the menu is a full panel under the bar with the
+  collections (the first 6, "Show N more" past 8), Deals, the bakery's pages,
+  the account and the "Language & currency" row, which opens a bottom sheet.
+  No bottom tab bar. A shop with custom header code keeps Selldone's header
+  (StorefrontLayout).
 -->
 <template>
-  <header v-if="!$store.getters.getIsNative" class="bk-header">
-    <!-- ▆▆▆▆ The main row ▆▆▆▆ -->
-    <div ref="main" class="bk-wrap bk-header__main">
-      <bakini-logo class="bk-header__logo" />
-
-      <nav :aria-label="t('bakini.header.shop', 'Shop')" class="bk-nav">
-        <button :aria-expanded="dd === 'mega' ? 'true' : 'false'" class="bk-nav__b" data-dd="mega" type="button" @click="toggle('mega')">
-          {{ t("bakini.header.shopAll", "Shop") }}<span :class="{ '-up': dd === 'mega' }" class="ms">expand_more</span>
+  <div v-if="!$store.getters.getIsNative" class="nx nx-hdrwrap">
+    <a class="skip" href="#main" @click.prevent="skip">{{ t("bakini.n.hdr.skip", "Skip to content") }}</a>
+    <header id="hdr" class="hdr">
+      <div class="hdr-in">
+        <button
+          :aria-expanded="is('pmenu') ? 'true' : 'false'"
+          :aria-label="is('pmenu') ? t('bakini.n.hdr.closeMenu', 'Close menu') : t('bakini.n.hdr.menu', 'Menu')"
+          aria-controls="pmenu"
+          class="iconbtn menu-btn"
+          type="button"
+          @click="toggle('pmenu', $event)"
+        >
+          <nx-icon :name="is('pmenu') ? 'close' : 'menu'" />
         </button>
-        <button :aria-expanded="dd === 'deals' ? 'true' : 'false'" class="bk-nav__b -pill" data-dd="deals" type="button" @click="toggle('deals')">
-          {{ t("bakini.header.deals", "Deals") }}<span :class="{ '-up': dd === 'deals' }" class="ms">expand_more</span>
-        </button>
-      </nav>
-
-      <form v-if="showSearch" class="bk-search" role="search" @submit.prevent="submit()">
-        <input
-          ref="q"
-          :aria-label="t('bakini.header.searchLabel', 'Search products or brands')"
-          :placeholder="t('bakini.header.searchPh', 'Tell us what you’re looking for…')"
-          :value="q"
-          aria-autocomplete="list"
-          autocomplete="off"
-          enterkeyhint="search"
-          type="search"
-          @blur="blurSoon"
-          @focus="open_suggest = true"
-          @input="onType($event.target.value)"
-          @keydown.down.prevent="move(1)"
-          @keydown.up.prevent="move(-1)"
-          @keydown.esc="open_suggest = false"
-        />
-        <button :aria-label="t('bakini.header.search', 'Search')" class="bk-search__go" type="submit"><span aria-hidden="true" class="ms">search</span></button>
-
-        <div v-if="open_suggest && (hits.length || catHits.length)" class="bk-suggest" role="listbox">
-          <router-link
-            v-for="c in catHits"
-            :key="'c' + c.id"
-            :to="catTo(c)"
-            class="bk-suggest__cat"
-            role="option"
-            @click="open_suggest = false"
-            @mousedown.prevent
+        <bakini-logo />
+        <nav :aria-label="t('bakini.n.hdr.collections', 'Collections')" class="hdr-nav">
+          <button :aria-expanded="is('mega') ? 'true' : 'false'" aria-controls="mega" type="button" @click="toggle('mega', $event)">
+            {{ t("bakini.n.hdr.shop", "Shop") }}<nx-icon name="down" />
+          </button>
+          <span class="hdr-cats">
+            <router-link v-for="c in cats" :key="c.id" :aria-current="c.name === currentCat ? 'page' : undefined" :to="catTo(c)"><bdi>{{ catTitle(c) }}</bdi></router-link>
+          </span>
+          <router-link :aria-current="onDeals ? 'page' : undefined" :to="dealsTo" class="deal">{{ t("bakini.n.hdr.deals", "Deals") }}</router-link>
+        </nav>
+        <div class="hdr-tools">
+          <button :aria-expanded="is('srch') ? 'true' : 'false'" :aria-label="t('bakini.n.hdr.search', 'Search')" aria-controls="srch" class="iconbtn" type="button" @click="toggle('srch', $event)">
+            <nx-icon name="search" />
+          </button>
+          <button
+            v-if="regionOn"
+            :key="regionKey"
+            :aria-expanded="is('region') ? 'true' : 'false'"
+            :aria-label="t('bakini.n.hdr.regionAria', 'Language and currency: {value}', { value: regionLabel })"
+            aria-controls="region"
+            class="pill-region"
+            type="button"
+            @click="toggle('region', $event)"
           >
-            <span class="ms">category</span>{{ c.title || c.name }}<small>{{ t("bakini.header.category", "Category") }}</small>
-          </router-link>
-          <router-link
-            v-for="(p, i) in hits"
-            :key="p.id"
-            :class="{ '-on': i === cursor }"
-            :to="productTo(p)"
-            class="bk-suggest__p"
-            role="option"
-            @click="open_suggest = false"
-            @mousedown.prevent
+            <nx-icon name="globe" />{{ regionLabel }}
+          </button>
+          <button :aria-expanded="is('acct') ? 'true' : 'false'" :aria-label="t('bakini.n.hdr.account', 'Account')" aria-controls="acct" class="iconbtn acct-btn" type="button" @click="toggle('acct', $event)">
+            <nx-icon name="user" />
+          </button>
+          <button
+            :aria-label="t('bakini.n.hdr.bagAria', { one: 'Bag, {n} piece', other: 'Bag, {n} pieces' }, { n: units })"
+            aria-controls="drawer"
+            class="iconbtn bag-btn"
+            type="button"
+            @click="toggle('drawer', $event)"
           >
-            <span class="bk-suggest__img"><img :src="thumb(p)" alt="" /></span>
-            <span class="bk-suggest__t">{{ p.title }}</span>
-            <u-price :amount="price(p).now" :currency="currency" />
-          </router-link>
-          <button class="bk-suggest__all" type="button" @click="submit()" @mousedown.prevent>
-            {{ t("bakini.header.seeAllFor", "See all results for “{q}”", { q }) }}<span class="ms bk-chev">arrow_forward</span>
+            <nx-icon name="bag" /><span :data-n="units" class="count">{{ units > 99 ? "99+" : units }}</span>
           </button>
         </div>
-      </form>
-      <span v-else class="bk-header__sp"></span>
-
-      <nav :aria-label="t('bakini.header.yourAccount', 'Your account')" class="bk-acts">
-        <!-- Language and currency (the owner's choice B; showSingle: the one
-             currency shows too, with what the shop sells in). -->
-        <region-switcher-button :key="regionKey" button-class="bk-acts__region" />
-        <router-link v-if="user" :to="accountTo" class="bk-act -me">
-          <span class="ms">person</span><span class="bk-act__t">{{ firstName }}</span>
-        </router-link>
-        <button v-else-if="!busyUser" class="bk-act -me" type="button" @click="signIn">
-          <span class="ms">person</span><span class="bk-act__t">{{ t("bakini.header.account", "Account") }}</span>
-        </button>
-        <span v-else class="bk-act -me -wait"><span class="ms">person</span><span class="bk-act__t">{{ t("bakini.header.account", "Account") }}</span></span>
-
-        <component
-          :is="user ? 'router-link' : 'button'"
-          :to="user ? savedTo : undefined"
-          :type="user ? undefined : 'button'"
-          class="bk-act -saved"
-          @click="!user && signIn()"
-        >
-          <span class="ms">favorite</span><span class="bk-act__t">{{ t("bakini.header.saved", "Saved") }}</span>
-        </component>
-
-        <button
-          :aria-label="t('bakini.header.basketAria', { one: 'Bag, {n} item', other: 'Bag, {n} items' }, { n: units })"
-          class="bk-act -basket"
-          type="button"
-          @click="cart = true"
-        >
-          <span class="ms">shopping_bag</span><i v-if="units" class="bk-act__n">{{ units > 99 ? "99+" : units }}</i>
-          <span class="bk-act__t">{{ basketTotal || t("bakini.header.basket", "Bag") }}</span>
-        </button>
-        <button :aria-expanded="menu ? 'true' : 'false'" :aria-label="t('bakini.header.menu', 'Menu')" class="bk-act -menu" type="button" @click="menu = true">
-          <span class="ms">menu</span><span class="bk-act__t">{{ t("bakini.header.menu", "Menu") }}</span>
-        </button>
-      </nav>
-
-      <!-- Shop All: every category on the left; the chosen one's top deals on
-           the right. Opened and closed by "Shop All" only (and Esc, a click
-           elsewhere, or a page change). No scrim. -->
-      <div v-if="dd === 'mega'" ref="dd" class="bk-dd -mega" @keydown.esc="dd = null">
-        <div class="bk-mega__list" role="list">
-          <router-link
-            v-for="c in cats"
-            :key="c.id"
-            :class="{ '-on': megaCat && megaCat.id === c.id }"
-            :to="catTo(c)"
-            class="bk-mega__cat"
-            role="listitem"
-            @focus="mega_at = c.id"
-            @mouseenter="mega_at = c.id"
-          >
-            <span class="bk-mega__ic"><img v-if="c.icon" :src="catIcon(c)" alt="" /></span>
-            <span class="bk-mega__name">{{ c.title || c.name }}</span>
-            <span aria-hidden="true" class="ms bk-chev">chevron_right</span>
-          </router-link>
-        </div>
-        <div v-if="megaCat" class="bk-mega__side">
-          <div class="bk-mega__head">
-            <h3>{{ megaCat.title || megaCat.name }}</h3>
-            <router-link :to="catTo(megaCat)" class="bk-more">{{ t("bakini.header.shopAllIn", "Shop all {name}", { name: iso(megaCat.title || megaCat.name) }) }}<span class="ms bk-chev">chevron_right</span></router-link>
-          </div>
-          <p v-if="megaLine" class="bk-mega__line">{{ megaLine }}</p>
-          <div class="bk-mega__picks">
-            <router-link v-for="p in megaPicks" :key="p.id" :to="productTo(p)" class="bk-mini">
-              <span class="bk-mini__img"><img :src="thumb(p, 256)" alt="" loading="lazy" /></span>
-              <span class="bk-mini__t">{{ p.title }}</span>
-              <span class="bk-mini__p">
-                <u-price :amount="price(p).now" :currency="currency" />
-                <small v-if="price(p).save > 0" class="bk-save">{{ t("bakini.card.save", "Save {amount}", { amount: whole(price(p).save) }) }}</small>
-              </span>
-            </router-link>
-          </div>
-          <div class="bk-mega__links">
-            <router-link :to="dealsTo"><span class="ms">sell</span>{{ t("bakini.header.allDeals", "All deals") }}</router-link>
-            <router-link :to="newTo"><span class="ms">new_releases</span>{{ t("bakini.header.newIn", "New in") }}</router-link>
-            <router-link :to="allTo"><span class="ms">grid_view</span>{{ t("bakini.header.allProducts", "All products") }}</router-link>
-          </div>
-        </div>
       </div>
+    </header>
 
-      <!-- Deals: every deal, then each category with deals and its best saving. -->
-      <div v-if="dd === 'deals'" ref="dd" class="bk-dd -deals" @keydown.esc="dd = null">
-        <router-link :to="dealsTo" class="bk-dealrow -all">
-          <span class="bk-svc__ic -sale"><span class="ms">sell</span></span>
-          <span class="bk-svc__w"><b>{{ t("bakini.header.allDeals", "All deals") }}</b><small v-if="dealsUntil">{{ t("bakini.header.dealsEnd", "Deals end {date}", { date: dealsUntil }) }}</small></span>
-        </router-link>
-        <router-link v-for="c in dealCats" :key="c.cat.id" :to="dealsIn(c.cat)" class="bk-dealrow">
-          <span class="bk-mega__ic"><img v-if="c.cat.icon" :src="catIcon(c.cat)" alt="" /></span>
-          <span class="bk-svc__w"><b>{{ c.cat.title || c.cat.name }}</b><small class="bk-sale-t">{{ t("bakini.header.upTo", "Up to {amount} off", { amount: whole(c.save) }) }}</small></span>
-        </router-link>
-      </div>
-    </div>
-
-    <!-- ▆▆▆▆ The phone menu: a right drawer (a plain teleported panel) ▆▆▆▆ -->
     <teleport to="body">
-      <transition name="bk-fade">
-        <div v-if="menu" aria-hidden="true" class="bk-menu-scrim" @click="menu = false"></div>
-      </transition>
-      <transition name="bk-slide">
-        <div v-if="menu" :aria-label="t('bakini.header.menu', 'Menu')" :dir="rtl ? 'rtl' : 'ltr'" aria-modal="true" class="bk-menu" role="dialog" @keydown.esc="menu = false">
-          <div class="bk-menu__head">
-            <bakini-logo />
-            <button ref="menuClose" :aria-label="t('bakini.menu.close', 'Close menu')" class="bk-x" type="button" @click="menu = false"><span class="ms">close</span></button>
+      <div :dir="rtl ? 'rtl' : 'ltr'" class="nx nx-layers">
+        <!-- Shop: every collection with its photo and line; the side links. -->
+        <div id="mega" :aria-label="t('bakini.n.hdr.shopCollections', 'Shop the collections')" :class="['drop', { open: is('mega') }]" role="region">
+          <div class="drop-in">
+            <div class="mega">
+              <div class="mega-cats">
+                <router-link v-for="c in cats" :key="c.id" :style="{ '--bk-hue': hueOf(c.id) }" :to="catTo(c)" class="mega-cat">
+                  <div class="ph"><img v-if="catImg(c)" :src="catImg(c)" alt="" class="cut" loading="lazy" /></div>
+                  <div><b><bdi>{{ catTitle(c) }}</bdi></b><span v-if="c.description"><bdi>{{ c.description }}</bdi></span></div>
+                </router-link>
+              </div>
+              <div class="mega-side">
+                <router-link :to="dealsTo"><nx-icon name="tag" /><span><b>{{ t("bakini.n.hdr.deals", "Deals") }}</b><small>{{ dealsLine }}</small></span></router-link>
+                <router-link :to="lovedTo"><nx-icon name="heart" /><span><b>{{ t("bakini.n.hdr.loved", "Most loved") }}</b><small>{{ t("bakini.n.hdr.lovedL", "Ranked by what sells") }}</small></span></router-link>
+                <router-link :to="compareTo"><nx-icon name="compare" /><span><b>{{ t("bakini.n.hdr.compare", "Compare") }}</b><small>{{ t("bakini.n.hdr.compareL", "Side by side, row by row") }}</small></span></router-link>
+                <router-link :to="blogTo"><nx-icon name="book" /><span><b>{{ t("bakini.n.hdr.journal", "Journal") }}</b><small>{{ t("bakini.n.hdr.journalL", "Stories from the counter") }}</small></span></router-link>
+              </div>
+            </div>
           </div>
-          <div class="bk-menu__body">
-            <router-link :to="dealsTo" class="bk-menu__row -deal"><span class="bk-menu__ic -sale"><span class="ms">sell</span></span>{{ t("bakini.header.allDeals", "All deals") }}</router-link>
-            <p class="bk-menu__h">{{ t("bakini.menu.shop", "Shop") }}</p>
-            <!-- The first 6 categories in the shop's order; the rest behind
-                 "Show N more" (8 or fewer: all, no button). The owner's option A. -->
-            <router-link v-for="c in menuFirst" :key="c.id" :to="catTo(c)" class="bk-menu__row">
-              <span class="bk-menu__ic"><img v-if="c.icon" :src="catIcon(c)" alt="" /></span>{{ c.title || c.name }}
-            </router-link>
-            <transition name="bk-mm">
-              <div v-if="menuRest.length && menu_more" id="bk-menu-more" class="bk-menu__extra">
-                <div class="bk-menu__extra-in">
-                  <router-link v-for="(c, i) in menuRest" :key="c.id" :style="{ '--i': i }" :to="catTo(c)" class="bk-menu__row">
-                    <span class="bk-menu__ic"><img v-if="c.icon" :src="catIcon(c)" alt="" /></span>{{ c.title || c.name }}
+        </div>
+
+        <!-- Search: suggestions while typing (the live catalogue); Enter opens every result. -->
+        <div id="srch" :class="['drop', { open: is('srch') }]" role="search">
+          <div class="drop-in">
+            <form class="srch-form" @submit.prevent="submit()">
+              <nx-icon name="search" />
+              <input
+                ref="q"
+                :aria-label="t('bakini.n.hdr.searchLabel', 'Search the bakery')"
+                :placeholder="t('bakini.n.hdr.searchPh', 'Search {examples}…', { examples: searchExamples })"
+                :value="q"
+                autocomplete="off"
+                enterkeyhint="search"
+                type="search"
+                @input="q = $event.target.value"
+                @keydown.down.prevent="move(1)"
+                @keydown.up.prevent="move(-1)"
+              />
+              <button class="btn sm" type="submit">{{ t("bakini.n.hdr.search", "Search") }}</button>
+            </form>
+            <div class="srch-body">
+              <div v-if="!query" class="srch-pop">
+                <span class="lbl">{{ t("bakini.n.hdr.popular", "Popular") }}</span>
+                <router-link v-for="w in popular" :key="w" :to="searchTo(w)" class="chip">{{ w }}</router-link>
+              </div>
+              <template v-else>
+                <div v-if="sugCats.length" class="srch-pop" style="margin-bottom: 10px">
+                  <router-link v-for="c in sugCats" :key="c.id" :to="catTo(c)" class="chip"><img v-if="catImg(c)" :src="catImg(c)" alt="" /><bdi>{{ catTitle(c) }}</bdi></router-link>
+                </div>
+                <div v-if="hits.length" class="sugg" role="listbox">
+                  <router-link v-for="(p, i) in hits" :key="p.id" :class="{ hl: i === cursor }" :style="{ '--bk-hue': hueOf(p.category_id) }" :to="productTo(p)" role="option">
+                    <span class="th"><img :src="thumb(p)" alt="" /></span>
+                    <span style="min-width: 0"><b v-html="mark(p.title)"></b><small><bdi>{{ catTitle(catOf(p.category_id)) }}</bdi> · {{ t("bakini.n.card.per", "per {unit}", { unit: unitOf(p) }) }}</small></span>
+                    <span class="pr money">{{ money(priceView(shop, p).now) }}</span>
                   </router-link>
                 </div>
-              </div>
-            </transition>
-            <button
-              v-if="menuRest.length"
-              :aria-expanded="menu_more ? 'true' : 'false'"
-              aria-controls="bk-menu-more"
-              class="bk-menu__row bk-menu__more"
-              type="button"
-              @click="menu_more = !menu_more"
-            >
-              <span aria-hidden="true" class="bk-menu__ic -more"><span class="ms">{{ menu_more ? "expand_less" : "expand_more" }}</span></span>
-              {{ menu_more ? t("bakini.menu.showFewer", "Show fewer") : t("bakini.menu.showMore", "Show {n} more", { n: menuRest.length }) }}
-            </button>
-            <p class="bk-menu__h">{{ t("bakini.menu.bakery", "The bakery") }}</p>
-            <router-link v-for="s in services" :key="s.key" :to="s.to" class="bk-menu__row -link">
-              <span class="bk-menu__ic -line"><span class="ms">{{ s.icon }}</span></span>{{ s.title }}
-            </router-link>
-            <region-sheet :key="regionKey" row-class="bk-menu__row -link bk-menu__region" />
+                <p v-if="!hits.length && !sugCats.length" class="muted" style="padding: 6px 4px">
+                  {{ t("bakini.n.hdr.noMatch", "Nothing matches “{q}”. Try another word.", { q: query }) }}
+                </p>
+                <div v-else class="sugg-all">
+                  <router-link :to="searchTo(query)" class="link">{{ t("bakini.n.hdr.allFor", "See every result for “{q}”", { q: query }) }}<nx-icon name="arrow" /></router-link>
+                </div>
+              </template>
+            </div>
           </div>
         </div>
-      </transition>
-    </teleport>
 
-    <!-- ▆▆▆▆ The basket drawer (design C) ▆▆▆▆ -->
-    <teleport to="body">
-      <v-navigation-drawer
-        v-model="cart"
-        :location="$vuetify.locale.isRtl ? 'left' : 'right'"
-        :width="windowWidth < 520 ? windowWidth : 440"
-        class="k-drawer -basket bk-drawer"
-        temporary
-      >
-        <div class="k-drawer__head">
-          <p class="k-drawer__title">
-            {{ t("bakini.basket.title", "Your bag") }}<small v-if="units">{{ t("bakini.basket.count", { one: "{n} item", other: "{n} items" }, { n: units }) }}</small>
-          </p>
-          <button :aria-label="t('bakini.basket.close', 'Close')" class="bk-x" type="button" @click="cart = false"><span class="ms">close</span></button>
+        <!-- Language and currency (the region-switcher kit's chips). -->
+        <div v-if="regionOn" id="region" ref="region" :aria-label="t('region.title', 'Language & currency')" :class="['pop', { open: is('region') }]" :style="popPos.region" role="dialog">
+          <h3>{{ regionTitle }}</h3>
+          <region-chips :key="regionKey" @picked="closeLayer()" />
+          <p class="note">{{ regionNote }}</p>
         </div>
-        <div v-if="!units" class="bk-empty -drawer">
-          <span aria-hidden="true" class="bk-empty__ic"><span class="ms">shopping_bag</span></span>
-          <p class="bk-empty__t">{{ t("bakini.basket.emptyT", "Your bag is empty") }}</p>
-          <p class="bk-empty__p">{{ t("bakini.basket.emptyP", "Find something you love and it will wait for you here.") }}</p>
-          <router-link :to="dealsTo" class="bk-btn" @click="cart = false">{{ t("bakini.basket.shopDeals", "Shop today’s deals") }}</router-link>
-          <router-link :to="allTo" class="bk-btn -line" @click="cart = false">{{ t("bakini.basket.continue", "Continue shopping") }}</router-link>
+
+        <!-- Account. -->
+        <div id="acct" ref="acct" :aria-label="t('bakini.n.hdr.account', 'Account')" :class="['pop', 'acct-pop', { open: is('acct') }]" :style="popPos.acct" role="dialog">
+          <h3>{{ user ? t("bakini.n.hdr.hello", "Hello, {name}", { name: firstName }) : t("bakini.n.hdr.yourAccount", "Your account") }}</h3>
+          <button v-if="!user" class="btn block" type="button" @click="signIn">{{ t("bakini.n.hdr.signIn", "Sign in") }}</button>
+          <div class="acct-links">
+            <router-link :to="accountTo"><nx-icon name="grid" />{{ t("bakini.n.hdr.overview", "Overview") }}</router-link>
+            <router-link :to="ordersTo"><nx-icon name="box" />{{ t("bakini.n.hdr.orders", "Orders") }}</router-link>
+            <router-link :to="addressesTo"><nx-icon name="pin" />{{ t("bakini.n.hdr.addresses", "Addresses") }}</router-link>
+            <a v-if="user" href="#" @click.prevent="signOut"><nx-icon name="logout" />{{ t("bakini.n.hdr.signOut", "Sign out") }}</a>
+          </div>
+          <p v-if="!user" class="note">{{ t("bakini.n.hdr.guestNote", "Checkout works without an account.") }}</p>
         </div>
-        <kalio-basket-drawer v-else @close="cart = false" />
-      </v-navigation-drawer>
+
+        <!-- The phone menu: a panel under the bar. -->
+        <nav id="pmenu" :aria-label="t('bakini.n.hdr.menu', 'Menu')" :class="['pmenu', { open: is('pmenu') }]">
+          <div class="pmenu-in">
+            <p class="pm-h">{{ t("bakini.n.hdr.collections", "Collections") }}</p>
+            <div class="pm-list">
+              <router-link v-for="c in menuFirst" :key="c.id" :to="catTo(c)">
+                <span class="ic"><img v-if="catImg(c)" :src="catImg(c)" alt="" loading="lazy" /></span><span><bdi>{{ catTitle(c) }}</bdi></span><nx-icon cls="chev" name="right" />
+              </router-link>
+              <template v-if="menuRest.length && moreOpen">
+                <router-link v-for="c in menuRest" :key="c.id" :to="catTo(c)">
+                  <span class="ic"><img v-if="catImg(c)" :src="catImg(c)" alt="" loading="lazy" /></span><span><bdi>{{ catTitle(c) }}</bdi></span><nx-icon cls="chev" name="right" />
+                </router-link>
+              </template>
+              <button v-if="menuRest.length" :aria-expanded="moreOpen ? 'true' : 'false'" class="pm-more" type="button" @click="moreOpen = !moreOpen">
+                <span class="ic"><nx-icon :name="moreOpen ? 'minus' : 'down'" /></span>
+                <span>{{ moreOpen ? t("bakini.n.hdr.fewer", "Show fewer") : t("bakini.n.hdr.more", "Show {n} more", { n: menuRest.length }) }}</span><span></span>
+              </button>
+            </div>
+            <div class="pm-list">
+              <router-link :to="dealsTo"><span class="ic"><nx-icon name="tag" /></span><span>{{ t("bakini.n.hdr.deals", "Deals") }}<small>{{ dealsLine }}</small></span><nx-icon cls="chev" name="right" /></router-link>
+              <router-link :to="blogTo"><span class="ic"><nx-icon name="book" /></span><span>{{ t("bakini.n.hdr.journal", "Journal") }}</span><nx-icon cls="chev" name="right" /></router-link>
+              <router-link :to="aboutTo"><span class="ic"><nx-icon name="info" /></span><span>{{ t("bakini.n.hdr.about", "About") }}</span><nx-icon cls="chev" name="right" /></router-link>
+              <router-link :to="contactTo"><span class="ic"><nx-icon name="phone" /></span><span>{{ t("bakini.n.hdr.contact", "Contact") }}</span><nx-icon cls="chev" name="right" /></router-link>
+            </div>
+            <div class="pm-list">
+              <router-link v-if="user" :to="accountTo"><span class="ic"><nx-icon name="user" /></span><span>{{ firstName }}<small>{{ t("bakini.n.hdr.acctLine", "Orders, addresses and profile") }}</small></span><nx-icon cls="chev" name="right" /></router-link>
+              <button v-else type="button" @click="signIn"><span class="ic"><nx-icon name="user" /></span><span>{{ t("bakini.n.hdr.signIn", "Sign in") }}<small>{{ t("bakini.n.hdr.acctLine", "Orders, addresses and profile") }}</small></span><nx-icon cls="chev" name="right" /></button>
+              <button v-if="regionOn" :key="regionKey" aria-controls="langsheet" type="button" @click="openLayer('langsheet', $event.currentTarget)">
+                <span class="ic"><nx-icon name="globe" /></span><span>{{ t("region.title", "Language & currency") }}<small>{{ regionLong }}</small></span><nx-icon cls="chev" name="right" />
+              </button>
+            </div>
+          </div>
+        </nav>
+
+        <!-- The language & currency sheet (phone). -->
+        <div v-if="regionOn" id="langsheet" :aria-label="t('region.title', 'Language & currency')" :class="['bsheet', { open: is('langsheet') }]" aria-modal="true" role="dialog">
+          <div class="grab"></div>
+          <h2>{{ t("region.title", "Language & currency") }}</h2>
+          <region-chips :key="regionKey" />
+          <p class="muted" style="font-size: 13px; margin: 14px 0 18px">{{ regionNote }}</p>
+          <button class="btn block" type="button" @click="closeLayer()">{{ t("region.done", "Done") }}</button>
+        </div>
+
+        <div :class="['scrim', { open: scrim }]" @click="closeLayer()"></div>
+        <nx-bag-drawer />
+        <nx-quick />
+      </div>
     </teleport>
-  </header>
+  </div>
 </template>
 
 <script>
-import CurrencyMixin from "@selldone/components-vue/mixin/currency/CurrencyMixin.ts";
-import { EventBus } from "@selldone/components-vue/utils/events/EventBus.ts";
 import BakiniLogo from "../BakiniLogo.vue";
-import KalioBasketDrawer from "../../kalio/shell/KalioBasketDrawer.vue";
-import { aisleRoute, aisles, catalogueRoute, dealsRoute } from "../../kalio/kalio-catalog";
+import NxIcon from "../noir/NxIcon.vue";
+import NxBagDrawer from "../noir/NxBagDrawer.vue";
+import NxQuick from "../noir/NxQuick.vue";
+import RegionChips from "../../region-switcher/RegionChips.vue";
+import { EventBus } from "@selldone/components-vue/utils/events/EventBus.ts";
+import { catalogueRoute, dealsRoute } from "../../kalio/kalio-catalog";
 import { journalRoute } from "../../kalio/pages/kalio-journal";
-import { basketView } from "../../kalio/kalio-basket";
-import { catalogue, dealsEndDate, dealsOf, iso, moneyOf, moneyText } from "../bakini";
-import RegionSwitcherButton from "../../region-switcher/RegionSwitcherButton.vue";
-import RegionSheet from "../../region-switcher/RegionSheet.vue";
-import { currentCurrency, isRtl, money } from "../../region-switcher/region";
-import { formatDate, t } from "../../kalio/i18n/kalio-i18n";
+import { currencies, currentCurrency, currentLanguage, hasChoice, isRtl, languages, regionLabel, regionState, showLanguages } from "../../region-switcher/region";
+import {
+  catImage,
+  catOf,
+  catTitle,
+  catTo,
+  closeLayer,
+  closeOnRoute,
+  hueOf,
+  isModal,
+  layer,
+  loadNoir,
+  money,
+  noir,
+  openLayer,
+  priceView,
+  productImage,
+  productTo,
+  toggleLayer,
+  unitOf,
+  wireLayers,
+} from "../noir/noir";
+import { percentOff } from "../../kalio/kalio-catalog";
+import { t } from "../../kalio/i18n/kalio-i18n";
 
+/* Words that say nothing about a pastry, left out of "Popular". */
+const STOP = new Set(["and", "with", "the", "of", "a", "an", "in", "on", "mini", "classic", "double", "cake", "cakes"]);
 
 export default {
   name: "BakiniHeader",
-  components: { BakiniLogo, KalioBasketDrawer, RegionSwitcherButton, RegionSheet },
-  mixins: [CurrencyMixin],
-  inject: ["$shop"],
-
+  components: { BakiniLogo, NxIcon, NxBagDrawer, NxQuick, RegionChips },
   props: {
     showSearch: { type: Boolean, default: true },
   },
-
   emits: ["search", "clear"],
 
-  data: () => ({
-    cats: [],
-    products: [],
-    q: "",
-    hits: [],
-    cursor: -1,
-    open_suggest: false,
-    dd: null,
-    mega_at: null,
-    menu: false,
-    menu_more: false,
-    cart: false,
-    windowWidth: typeof window !== "undefined" ? window.innerWidth : 1440,
-  }),
+  data: () => ({ q: "", cursor: -1, moreOpen: false, popPos: { region: {}, acct: {} }, layer, noir, region: regionState }),
 
   computed: {
-    /* The region package reads its words when it draws: redraw the pill and
-       the menu's row once the language file has loaded (SYNC §21). */
-    regionKey() {
-      return t("region.title", "Language & currency");
-    },
-    rtl() {
-      return isRtl();
+    shop() {
+      return this.$store.getters.getShop;
     },
     user() {
       return this.$store.getters.getUser;
     },
-    busyUser() {
-      return this.$store.getters.getBusyUser;
-    },
     firstName() {
-      return String(this.user?.name || t("bakini.header.account", "Account")).split(/\s+/)[0].slice(0, 12);
+      return String(this.user?.name || "").split(/\s+/)[0].slice(0, 16);
     },
-    currency() {
-      return currentCurrency();
+    rtl() {
+      void this.region.language;
+      return isRtl();
+    },
+    cats() {
+      return this.noir.cats;
+    },
+    currentCat() {
+      return this.$route?.params?.category_name || null;
+    },
+    onDeals() {
+      return !!this.$route?.query?.filter && /only_has_discount/.test(String(this.$route.query.filter)) && !this.currentCat;
     },
     units() {
       return this.getBaskets().reduce((sum, b) => sum + (b?.items || []).reduce((n, it) => n + (it.count || 0), 0), 0);
     },
-    /* The basket's total as the Basket action's label (in the visitor's currency). */
-    basketTotal() {
-      const b = this.getBaskets().find((x) => x?.items?.length);
-      if (!b || !this.units) return "";
-      const bill = b.bill || {};
-      const total = typeof bill.price === "number" ? bill.price : b.price;
-      if (!(Number(total) > 0)) return "";
-      return money(total, bill.currency || b.currency);
+    scrim() {
+      return !!this.layer.open && isModal(this.layer.open);
+    },
+    /* The region package reads its words when it draws. */
+    regionKey() {
+      return t("region.title", "Language & currency") + this.region.words;
+    },
+    regionOn() {
+      void this.shop;
+      return hasChoice();
+    },
+    regionLabel() {
+      void this.region.currency;
+      void this.region.language;
+      void this.shop;
+      return regionLabel();
+    },
+    regionTitle() {
+      void this.shop;
+      return showLanguages() ? t("region.title", "Language & currency") : t("region.currency", "Currency");
+    },
+    regionLong() {
+      void this.region.currency;
+      const lang = languages().find((l) => l.code === currentLanguage());
+      return [lang?.title, currentCurrency()].filter(Boolean).join(" · ");
+    },
+    regionNote() {
+      void this.shop;
+      const lang = languages().find((l) => l.code === currentLanguage());
+      if (currencies().length <= 1 && !showLanguages())
+        return t("bakini.n.hdr.sellsIn", "{shop} sells in {language} and in {currency}.", { shop: this.shop?.title || "", language: lang?.title || "", currency: currentCurrency() });
+      return t("region.note", "Prices everywhere change at once: cards, filters, bag and checkout.");
+    },
+    menuFirst() {
+      return this.cats.length <= 8 ? this.cats : this.cats.slice(0, 6);
+    },
+    menuRest() {
+      return this.cats.length <= 8 ? [] : this.cats.slice(6);
+    },
+    /* "Up to 25% off every pastry", from the live deals. */
+    dealsLine() {
+      const offs = this.noir.products.map((p) => percentOff(this.shop, p)).filter((x) => x > 0);
+      if (!offs.length) return t("bakini.n.hdr.dealsNone", "Offers when there are some");
+      const max = Math.max(...offs);
+      const every = offs.length === this.noir.products.length && Math.min(...offs) === max;
+      return every ? t("bakini.n.hdr.dealsEvery", "{off}% off every piece right now", { off: max }) : t("bakini.n.hdr.dealsUpTo", "Up to {off}% off right now", { off: max });
+    },
+    /* "Popular": the words most products share (flavours), from the live catalogue. */
+    popular() {
+      const count = new Map();
+      const catWords = new Set(this.cats.flatMap((c) => catTitle(c).toLowerCase().split(/\s+/)).concat(this.cats.flatMap((c) => catTitle(c).toLowerCase().replace(/s$/, "").split(/\s+/))));
+      for (const p of this.noir.products) {
+        const seen = new Set();
+        for (const w of String(p.title || "").split(/[^\p{L}]+/u)) {
+          const k = w.toLowerCase();
+          if (k.length < 4 || STOP.has(k) || catWords.has(k) || catWords.has(k + "s") || seen.has(k)) continue;
+          seen.add(k);
+          count.set(k, (count.get(k) || 0) + 1);
+        }
+      }
+      return [...count.entries()]
+        .filter(([, n]) => n >= 2)
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+        .slice(0, 6)
+        .map(([w]) => w.charAt(0).toUpperCase() + w.slice(1));
+    },
+    searchExamples() {
+      return this.cats.slice(0, 2).map((c) => catTitle(c).toLowerCase()).concat(this.popular.length ? [] : []).join(", ") || t("bakini.n.hdr.pastries", "pastries");
+    },
+    query() {
+      return this.q.trim();
+    },
+    hits() {
+      const q = this.query.toLowerCase();
+      if (!q) return [];
+      const words = q.split(/\s+/).filter(Boolean);
+      const score = (p) => {
+        const title = String(p.title || "").toLowerCase();
+        const hay = (title + " " + catTitle(catOf(p.category_id)) + " " + Object.values(p.spec || {}).flat().join(" ")).toLowerCase();
+        let s = 0;
+        for (const w of words) {
+          if (title.includes(w)) s += 3;
+          else if (hay.includes(w)) s += 1;
+          else return 0;
+        }
+        return s;
+      };
+      return this.noir.products
+        .map((p) => ({ p, s: score(p) }))
+        .filter((x) => x.s > 0)
+        .sort((a, b) => b.s - a.s || (b.p.sells || 0) - (a.p.sells || 0))
+        .slice(0, 6)
+        .map((x) => x.p);
+    },
+    sugCats() {
+      const q = this.query.toLowerCase();
+      return q ? this.cats.filter((c) => catTitle(c).toLowerCase().includes(q)) : [];
     },
     r() {
       return window.$storefront.routes;
     },
-    ordersTo() {
-      return { name: this.r.HISTORY_ORDERS_PHYSICAL };
+    dealsTo() {
+      return dealsRoute();
     },
-    returnsTo() {
-      return { name: this.r.SHOP_PROFILE_PAGE_TERMS };
-    },
-    helpTo() {
-      return this.$router.hasRoute("ShopFAQ") ? { name: "ShopFAQ" } : { name: this.r.SHOP_CONTACT_US };
-    },
-    contactTo() {
-      return { name: this.r.SHOP_CONTACT_US };
+    lovedTo() {
+      return catalogueRoute({ sort: "most_sales" });
     },
     compareTo() {
       return { name: this.r.COMPARISON_PAGE };
@@ -345,219 +398,131 @@ export default {
     blogTo() {
       return journalRoute();
     },
-    savedTo() {
-      return { name: this.r.USER_FAVORITES_PAGE };
+    aboutTo() {
+      return { name: this.r.SHOP_PROFILE_PAGE_ABOUT_US };
+    },
+    contactTo() {
+      return { name: this.r.SHOP_CONTACT_US };
     },
     accountTo() {
       return { name: "KalioAccountHome" };
     },
-    dealsTo() {
-      return dealsRoute();
+    ordersTo() {
+      return { name: this.r.HISTORY_ORDERS_PHYSICAL };
     },
-    newTo() {
-      return catalogueRoute({ sort: "newest" });
-    },
-    allTo() {
-      return catalogueRoute();
-    },
-    deals() {
-      return dealsOf(this.$shop, this.products);
-    },
-    dealsUntil() {
-      const d = dealsEndDate(this.$shop, this.products);
-      return d ? formatDate(d) : "";
-    },
-    /* The phone menu's own pages: honest links to the shop's pages. */
-    services() {
-      return [
-        { key: "journal", icon: "menu_book", title: t("bakini.menu.journal", "Journal"), to: this.blogTo },
-        { key: "about", icon: "storefront", title: t("bakini.menu.about", "About"), to: { name: window.$storefront.routes.SHOP_PROFILE_PAGE_ABOUT_US } },
-        { key: "contact", icon: "mail", title: t("bakini.menu.contact", "Contact"), to: this.contactTo },
-        { key: "help", icon: "help", title: t("bakini.menu.faq", "FAQ"), to: this.helpTo },
-        { key: "track", icon: "local_shipping", title: t("bakini.menu.orders", "Your orders"), to: this.ordersTo },
-      ];
-    },
-    /* The phone menu: 6 categories, the rest behind "Show N more"; 8 or
-       fewer show all. */
-    menuFirst() {
-      return this.cats.length <= 8 ? this.cats : this.cats.slice(0, 6);
-    },
-    menuRest() {
-      return this.cats.length <= 8 ? [] : this.cats.slice(6);
-    },
-    megaCat() {
-      return this.cats.find((c) => c.id === this.mega_at) || this.cats[0] || null;
-    },
-    megaPicks() {
-      const c = this.megaCat;
-      if (!c) return [];
-      const mine = this.products.filter((p) => p.category_id === c.id && p.quantity > 0);
-      const deals = dealsOf(this.$shop, mine);
-      const rest = mine.filter((p) => !deals.includes(p));
-      return [...deals, ...rest].slice(0, 3);
-    },
-    megaLine() {
-      const c = this.megaCat;
-      if (!c) return "";
-      const best = Math.max(0, ...this.products.filter((p) => p.category_id === c.id).map((p) => this.price(p).save));
-      return best > 0 ? t("bakini.header.upTo", "Up to {amount} off", { amount: this.whole(best) }) : "";
-    },
-    /* Categories with deals, the biggest saving first. */
-    dealCats() {
-      const best = new Map();
-      for (const p of this.deals) {
-        const s = this.price(p).save;
-        if (s > (best.get(p.category_id) || 0)) best.set(p.category_id, s);
-      }
-      return this.cats
-        .filter((c) => best.has(c.id))
-        .map((c) => ({ cat: c, save: best.get(c.id) }))
-        .sort((a, b) => b.save - a.save)
-        .slice(0, 8);
-    },
-    catHits() {
-      const q = this.q.trim().toLowerCase();
-      if (q.length < 2) return [];
-      return this.cats.filter((c) => `${c.title} ${c.name}`.toLowerCase().includes(q)).slice(0, 2);
+    addressesTo() {
+      return { name: this.r.USER_ADDRESSES_PAGE };
     },
   },
 
   watch: {
-    $route() {
-      this.dd = null;
-      this.menu = false;
-      this.cart = false;
-      this.open_suggest = false;
+    "layer.open"(id) {
+      if (id === "srch") this.$nextTick(() => setTimeout(() => this.$refs.q?.focus({ preventScroll: true }), 60));
+      if (id === "region" || id === "acct") this.$nextTick(() => this.place(id));
+      if (id !== "pmenu") this.moreOpen = false;
     },
-    cart(open) {
-      basketView.drawerOpen = open;
-      this.$store.commit("setForceHideNavigation", open);
-    },
-    dd() {
-      this.listenOutside();
-    },
-    menu(open) {
-      if (open) this.menu_more = false; /* each time the menu opens it starts collapsed */
-      document.documentElement.style.overflow = open ? "hidden" : "";
-      if (open) this.$nextTick(() => this.$refs.menuClose?.focus());
-    },
-    "$route.query.search": {
-      handler(v) {
-        this.q = v ? String(v) : "";
-      },
-      immediate: true,
+    query() {
+      this.cursor = -1;
     },
   },
 
+  created() {
+    loadNoir();
+    wireLayers();
+    closeOnRoute(this.$router);
+  },
+
   mounted() {
-    aisles().then((list) => (this.cats = list));
-    catalogue().then((list) => (this.products = list));
-    this.onResize = () => (this.windowWidth = window.innerWidth);
-    window.addEventListener("resize", this.onResize, { passive: true });
-    /* Any part of the page can open the basket (the footer's Basket link). */
-    this.openCart = () => (this.cart = true);
-    EventBus.$on("bakini:open-cart", this.openCart);
-    /* Esc closes the basket drawer and the menu (Vuetify's temporary
-       drawer does not close on Esc by itself; SYNC §16). */
-    this.onKey = (e) => {
-      if (e.key !== "Escape") return;
-      if (this.cart) this.cart = false;
-      else if (this.menu) this.menu = false;
-      else if (this.dd) this.dd = null;
+    this.onResize = () => {
+      if (this.layer.open === "region" || this.layer.open === "acct") this.place(this.layer.open);
     };
-    document.addEventListener("keydown", this.onKey);
+    window.addEventListener("resize", this.onResize, { passive: true });
+    /* Any part of the page can open the bag. */
+    this.openBag = () => openLayer("drawer");
+    EventBus.$on("bakini:open-cart", this.openBag);
   },
 
   beforeUnmount() {
     window.removeEventListener("resize", this.onResize);
-    document.removeEventListener("click", this.outside, true);
-    document.removeEventListener("keydown", this.onKey);
-    EventBus.$off("bakini:open-cart", this.openCart);
-    clearTimeout(this.typing);
-    if (this.menu) document.documentElement.style.overflow = "";
+    EventBus.$off("bakini:open-cart", this.openBag);
   },
 
   methods: {
-    iso,
     t,
-    price(p) {
-      return moneyOf(this.$shop, p, null, this.currency);
+    money,
+    priceView,
+    catTitle,
+    catTo,
+    catOf,
+    hueOf,
+    unitOf,
+    productTo,
+    openLayer,
+    closeLayer,
+    is(id) {
+      return this.layer.open === id;
     },
-    whole(n) {
-      return moneyText(Math.round(n), this.currency, true);
+    toggle(id, e) {
+      toggleLayer(id, e?.currentTarget || null);
     },
-    catTo: aisleRoute,
-    dealsIn(c) {
-      return { ...aisleRoute(c), query: { filter: JSON.stringify({ only_has_discount: true }) } };
+    catImg(c) {
+      return catImage(c, 256);
     },
-    catIcon(c) {
-      return window.CDN.GET_CATEGORY_ICON(c.id, 128);
+    thumb(p) {
+      return productImage(p, 128);
     },
-    productTo(p) {
-      return { name: this.r.PRODUCT_PAGE, params: { product_id: p.id } };
+    /* Under the button, its right edge on the button's, never within 12px of an edge. */
+    place(id) {
+      const btn = document.querySelector(`[aria-controls="${id}"]`);
+      const el = this.$refs[id];
+      if (!btn || !el) return;
+      const r = btn.getBoundingClientRect();
+      const w = el.offsetWidth || 320;
+      const left = Math.max(12, Math.min(window.innerWidth - w - 12, r.right - w));
+      this.popPos[id] = { top: `${r.bottom + 10}px`, left: `${left}px` };
     },
-    thumb(p, size = 64) {
-      return window.CDN.GET_SHOP_IMAGE_PATH(p.icon, size > 128 ? null : 128);
-    },
-    signIn() {
-      EventBus.$emit("need-login", true);
-    },
-    toggle(which) {
-      this.dd = this.dd === which ? null : which;
-    },
-    listenOutside() {
-      document.removeEventListener("click", this.outside, true);
-      if (this.dd) document.addEventListener("click", this.outside, true);
-    },
-    outside(e) {
-      const el = e.target;
-      const inPanel = this.$refs.dd?.contains?.(el);
-      const onButton = el?.closest?.("[data-dd]");
-      if (!inPanel && !onButton) this.dd = null;
-    },
-    /* Suggestions while typing: the input's own value (v-model waits for an
-       Android keyboard's composition to end). */
-    onType(value) {
-      this.q = value;
-      this.cursor = -1;
-      this.open_suggest = true;
-      clearTimeout(this.typing);
-      const q = value.trim();
-      if (q.length < 2) {
-        this.hits = [];
-        return;
-      }
-      this.typing = setTimeout(() => {
-        window.axios
-          .get(window.XAPI.GET_SEARCH_QUERY(window.$storefront.name, encodeURIComponent(q)))
-          .then(({ data }) => {
-            if (this.q.trim() !== q) return;
-            this.hits = (data?.items || []).filter((p) => p && p.id && p.title && p.icon).slice(0, 6);
-          })
-          .catch(() => (this.hits = []));
-      }, 250);
+    mark(title) {
+      const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+      let out = esc(title);
+      for (const w of this.query.split(/\s+/).filter(Boolean)) out = out.replace(new RegExp(`(${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "ig"), "<mark>$1</mark>");
+      return out;
     },
     move(d) {
-      if (!this.hits.length) return;
-      this.cursor = (this.cursor + d + this.hits.length) % this.hits.length;
+      const n = this.hits.length;
+      if (!n) return;
+      this.cursor = (this.cursor + d + n) % n;
     },
-    blurSoon() {
-      setTimeout(() => (this.open_suggest = false), 150);
+    searchTo(q) {
+      return { name: this.r.SHOP_PAGE, query: { search: q } };
     },
     submit() {
       if (this.cursor >= 0 && this.hits[this.cursor]) {
-        this.$router.push(this.productTo(this.hits[this.cursor]));
-        this.open_suggest = false;
+        this.$router.push(productTo(this.hits[this.cursor]));
         return;
       }
-      const text = this.q.trim();
-      this.open_suggest = false;
-      this.$refs.q?.blur();
-      if (!text) {
-        this.$emit("clear");
-        return;
-      }
+      const text = this.query;
+      closeLayer(true);
+      if (!text) return this.$emit("clear");
       this.$emit("search", { search: text, search_type: null });
+    },
+    signIn() {
+      closeLayer(true);
+      EventBus.$emit("need-login", true);
+    },
+    signOut() {
+      closeLayer(true);
+      try {
+        this.Logout(() => {});
+      } catch (e) {
+        window.$storefront?.user?.logout?.();
+      }
+    },
+    skip() {
+      const m = document.getElementById("main") || document.querySelector("main");
+      if (m) {
+        m.setAttribute("tabindex", "-1");
+        m.focus();
+      }
     },
   },
 };
