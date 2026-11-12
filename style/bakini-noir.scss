@@ -66,8 +66,10 @@
 .nx .pc-ph img.cut {
   transform: scale(1.3);
 }
+/* With the quick-look eye the photo keeps its size: the eye sits in the
+   plate's empty top corner (the cut-outs are centred, the corners clear). */
 .nx .pc.has-look .pc-ph {
-  inset: 4px 40px 24px;
+  inset: 8px 14px 24px;
 }
 
 /* ── The region-switcher kit's chips in the mockup's panel and sheet ── */

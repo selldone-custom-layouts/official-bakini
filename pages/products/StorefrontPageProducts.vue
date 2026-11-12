@@ -36,146 +36,17 @@
       <!-- ▆▆▆▆▆▆▆▆ Shop page: the home ▆▆▆▆▆▆▆▆ -->
       <nx-home v-if="show_home" />
 
-      <!-- ▆▆▆▆▆▆▆▆ Category, search, Deals, All products ▆▆▆▆▆▆▆▆ -->
-      <div v-if="!show_home" :class="['bk-wrap', 'bk-list', '-' + view]">
-        <nav :aria-label="t('bakini.crumbs', 'Breadcrumb')" class="bk-crumbs">
-          <router-link :to="{ path: '/' }">{{ t("bakini.home", "Home") }}</router-link>
-          <span aria-hidden="true" class="ms bk-chev">chevron_right</span>
-          <span aria-current="page" class="bk-crumbs__here">{{ crumb }}</span>
-        </nav>
-
-        <div id="bk-results" class="bk-list__top">
-          <component :is="category_name ? 'h2' : 'h1'" class="bk-list__h">{{ heading }}</component>
-          <p v-if="deals_page && dealsUntil" class="bk-list__sub">
-            <span class="ms">schedule</span>{{ t("bakini.list.dealsEnd", "Every deal here ends {date}, shown on each product", { date: dealsUntil }) }}
-          </p>
-        </div>
-
-        <!-- A slim promo banner: an honest offer (compare). -->
-        <router-link :to="compareTo" class="bk-lbanner">
-          <span class="ms">compare_arrows</span>
-          <span class="bk-lbanner__w">{{ bannerLine }}</span>
-          <span aria-hidden="true" class="ms bk-chev">chevron_right</span>
-        </router-link>
-
-        <div class="bk-list__grid">
-          <aside v-if="!phone" class="bk-list__side">
-            <bakini-filter-panel
-              :filters="filters_def"
-              :hide-out="hide_out"
-              :model-value="t_filter"
-              @update:hide-out="setHideOut"
-              @update:model-value="setFilter"
-            />
-          </aside>
-
-          <div class="bk-list__main">
-            <!-- The toolbar: sort, page size, the count, List / Grid. -->
-            <div class="bk-tbar">
-              <button v-if="phone" class="bk-tbar__filters" type="button" @click="sheet_open = true">
-                <span class="ms">tune</span>{{ t("bakini.filters.title", "Filters") }}<i v-if="on_count">{{ on_count }}</i>
-              </button>
-              <label class="bk-select">
-                <span class="bk-select__k">{{ t("bakini.list.sortBy", "Sort by") }}:</span>
-                <select :aria-label="t('bakini.list.sortBy', 'Sort by')" :value="t_sort || ''" @change="setSort($event.target.value || null)">
-                  <option value="">{{ search_query ? t("bakini.sort.relevance", "Best match") : t("bakini.sort.featured", "Featured") }}</option>
-                  <option v-for="s in sorts" :key="s.val" :value="s.val">{{ s.name }}</option>
-                </select>
-                <span aria-hidden="true" class="ms">expand_more</span>
-              </label>
-              <label v-if="!phone" class="bk-select">
-                <span class="bk-select__k">{{ t("bakini.list.show", "Show") }}:</span>
-                <select :aria-label="t('bakini.list.perPage', 'Products per page')" :value="per_page" @change="setPerPage(Number($event.target.value))">
-                  <option v-for="n in PAGE_SIZES" :key="n" :value="n">{{ n }}</option>
-                </select>
-                <span aria-hidden="true" class="ms">expand_more</span>
-              </label>
-              <transition mode="out-in" name="lm-fade">
-                <span v-if="catalogue_total !== null" :key="catalogue_total" class="bk-tbar__count">{{
-                  t("bakini.list.items", { one: "{n} item", other: "{n} items" }, { n: catalogue_total })
-                }}</span>
-              </transition>
-              <div v-if="!phone" :aria-label="t('bakini.list.view', 'View')" class="bk-seg" role="group">
-                <button :aria-pressed="view === 'list' ? 'true' : 'false'" :class="{ '-on': view === 'list' }" type="button" @click="setView('list')">
-                  <span class="ms">view_list</span>{{ t("bakini.list.list", "List") }}
-                </button>
-                <button :aria-pressed="view === 'grid' ? 'true' : 'false'" :class="{ '-on': view === 'grid' }" type="button" @click="setView('grid')">
-                  <span class="ms">grid_view</span>{{ t("bakini.list.grid", "Grid") }}
-                </button>
-              </div>
-            </div>
-
-            <!-- While the results reload: a small pill (absolute, so nothing
-                 moves); the cards stay, dimmed (listing-motion). -->
-            <div class="lm-anchor">
-              <transition name="lm-pill">
-                <div v-if="lm.updating" aria-live="polite" class="lm-pill" role="status">
-                  <i aria-hidden="true" class="lm-spin"></i>{{ t("bakini.list.updating", "Updating results…") }}
-                </div>
-              </transition>
-            </div>
-            <div v-if="on_chips.length" class="bk-chips bk-list__on">
-              <button v-for="c in on_chips" :key="c.key" class="bk-chip -on" type="button" @click="c.off()">
-                {{ c.label }}<span class="ms">close</span>
-              </button>
-              <button v-if="on_chips.length > 1" class="bk-link" type="button" @click="setFilter(null)">{{ t("bakini.filters.clear", "Clear all") }}</button>
-            </div>
-            <s-products-listing
-              ref="listing"
-              :key="$route.path"
-              :class="[{ '-catalogue': catalogue }, lm.gridClass(), '-' + view]"
-              :has-breadcrumb="false"
-              :has-filter="false"
-              :vendor-id="vendor_id"
-              class="t-listing w-listing bk-grid"
-              load-more
-              route-mode
-              update-route
-              @fetch-products="updateProductsSeo"
-              @lm-state="lm.onState"
-            ></s-products-listing>
-            <!-- First load: skeletons in the results' shape; load more: at the end. -->
-            <div v-if="lm.first || lm.loadingMore" :class="'-' + view" aria-hidden="true" class="lm-skels">
-              <div v-for="n in skelCount" :key="n" class="lm-skel"><i class="-img"></i><i class="-t1"></i><i class="-t2"></i><i class="-p"></i><i class="-b"></i></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ▆▆▆▆▆▆▆▆ Under the results ▆▆▆▆▆▆▆▆ -->
-        <bakini-row v-if="catalogue && search_query" :limit="12" :title="t('bakini.list.popular', 'Popular right now')" lazy sort="bestselling" />
-      </div>
+      <!-- ▆▆▆▆▆▆▆▆ Category, search, Deals, All products: Bakini Noir's listing ▆▆▆▆▆▆▆▆ -->
+      <nx-listing
+        v-else
+        :key="'ls-' + (category_name || '') + '|' + search_query + '|' + (deals_page ? 1 : 0)"
+        :category-name="category_name"
+        :deals="deals_page"
+        :initial-sort="String($route.query.sort || '')"
+        :search="search_query"
+      />
     </v-card>
 
-    <!-- The phone's Filters: the same panel in a side sheet (teleported). -->
-    <teleport to="body">
-      <transition name="bk-fade">
-        <div v-if="sheet_open" aria-hidden="true" class="bk-menu-scrim" @click="sheet_open = false"></div>
-      </transition>
-      <transition name="bk-slide">
-        <div
-          v-if="sheet_open"
-          :aria-label="t('bakini.filters.title', 'Filters')"
-          :dir="rtl ? 'rtl' : 'ltr'"
-          aria-modal="true"
-          class="bk-fsheet"
-          role="dialog"
-          @keydown.esc="sheet_open = false"
-        >
-          <div class="bk-fsheet__head">
-            <b>{{ t("bakini.filters.title", "Filters") }}</b>
-            <button ref="sheetX" :aria-label="t('bakini.basket.close', 'Close')" class="bk-x" type="button" @click="sheet_open = false"><span class="ms">close</span></button>
-          </div>
-          <div class="bk-fsheet__body">
-            <bakini-filter-panel :filters="filters_def" :hide-out="hide_out" :model-value="t_filter" @update:hide-out="setHideOut" @update:model-value="setFilter" />
-          </div>
-          <div class="bk-fsheet__foot">
-            <button class="bk-btn -block" type="button" @click="sheet_open = false">
-              {{ catalogue_total !== null ? t("bakini.filters.showN", { one: "Show {n} result", other: "Show {n} results" }, { n: catalogue_total }) : t("bakini.filters.show", "Show results") }}
-            </button>
-          </div>
-        </div>
-      </transition>
-    </teleport>
 
     <!-- A card's "Choose options" opens Kalio's quick-buy sheet (kalio-listing-quick-buy.ts). -->
     <kalio-quick-buy v-model="quick_open" :product="quick_pick" />
@@ -186,6 +57,7 @@
 import SProductsListing from "@selldone/components-vue/storefront/products/listing/SProductsListing.vue";
 import TemplateMixin from "@selldone/components-vue/mixin/template/TemplateMixin.ts";
 import NxHome from "../../components/bakini/noir/NxHome.vue";
+import NxListing from "../../components/bakini/noir/shop/NxListing.vue";
 import BakiniFilterPanel from "../../components/bakini/shop/BakiniFilterPanel.vue";
 import BakiniRow from "../../components/bakini/BakiniRow.vue";
 import { SORTS, countOn, fromRoute } from "../../components/walio/shop/walio-filters";
@@ -206,6 +78,7 @@ export default {
   components: {
     SProductsListing,
     NxHome,
+    NxListing,
     BakiniFilterPanel,
     BakiniRow,
     KalioQuickBuy,
