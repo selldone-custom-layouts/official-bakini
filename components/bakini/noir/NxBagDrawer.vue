@@ -21,9 +21,9 @@
           <div style="min-width: 0">
             <router-link :to="productTo(it)" class="nm" @click="close">{{ it.product?.title }}</router-link>
             <div class="meta">
-              <span class="money">{{ amount(it.price, it) }}</span>
-              <template v-if="it.dis > 0">
-                <span class="was money">{{ amount(it.price + it.dis, it) }}</span> · <span class="gold">{{ t("bakini.n.bag.save", "Save {amount}", { amount: amount(it.dis, it) }) }}</span></template
+              <span class="money">{{ amount(it.price, it) }}</span
+              ><template v-if="it.dis > 0"
+                >{{ " " }}<span class="was money">{{ amount(it.price + it.dis, it) }}</span>{{ " · " }}<span class="gold">{{ t("bakini.n.bag.save", "Save {amount}", { amount: amount(it.dis, it) }) }}</span></template
               >
             </div>
           </div>

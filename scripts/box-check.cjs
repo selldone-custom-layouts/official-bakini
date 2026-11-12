@@ -142,7 +142,7 @@ const fillCart = (pg) =>
     const mob = w < 600;
     const ctx = await b.newContext({ viewport: { width: w, height: mob ? 844 : 900 }, deviceScaleFactor: 1, isMobile: mob, hasTouch: mob });
     if (process.env.STORAGE) await ctx.addInitScript((st) => { for (const [k, v] of Object.entries(JSON.parse(st))) localStorage.setItem(k, v); }, process.env.STORAGE);
-    await ctx.route("**/buy/**", (r) => r.abort());
+    await ctx.route(/^https:\/\/[^/]*selldone\.com\/.*\/buy\//, (r) => r.abort()); /* the API's buy calls only: the dev server's own modules live under /buy/ folders too */
     const pg = await ctx.newPage();
     await pg.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 90000 });
     await pg.waitForSelector(WAIT, { timeout: 90000 });
