@@ -109,7 +109,7 @@ login modes). Do not place real orders.
 
 ## 4. Check the result yourself
 
-- Open your domain. You should see your shop's title as the wordmark (lower case, with a small gold dot), then the dark stage: one pastry huge under a spotlight, with a tab for each of up to three collections. Not Selldone's default home.
+- Open your domain. You should see your shop's title as the wordmark (lower case, with a small gold dot), then the line "Pastry, in the spotlight." and a carousel of your collections in arched cards (your own photos from `assets/bakini/hero-<collection name>.webp`, or each collection's three best sellers on a plate). Not Selldone's default home.
 - Tap the round + on a card: it becomes "− 1 +" in place, and the bag's count goes up.
 - Tap the account, then Sign in: the sign-in sheet opens with your shop's own ways in. It should never end on an error page at Selldone.
 - Open the bag from the header, then Checkout: the step pills, your delivery ways as cards, and their time windows.

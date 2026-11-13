@@ -257,3 +257,98 @@ html:not(.bk-dark) .nx .deal-band .db-copy .eyebrow {
 .nx details > * {
   box-sizing: border-box;
 }
+
+/* ── The home's carousel (NxCarousel.vue; bakio-design/home-hero4-b.html, hero/sliders.css) ──
+   Every collection's portrait photo in an arched card; the chosen one in the middle, two on each
+   side stepping back. It replaced the stage (one product photo blown up). */
+.nx .hp { --cw: min(360px, 30vw); position: relative; isolation: isolate; overflow: hidden; padding-block: clamp(30px, 4.4vw, 60px) clamp(28px, 4vw, 52px); text-align: center; }
+.nx .hp::before {
+  content: ""; position: absolute; z-index: -1; left: 50%; top: 34%; width: min(1100px, 120vw); aspect-ratio: 1.6;
+  transform: translate(-50%, -30%); pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--bk-hue) 30%, transparent), transparent 72%);
+  opacity: var(--bk-halo-a); transition: background .6s ease;
+}
+.nx .hp-hd { display: grid; justify-items: center; gap: 12px; }
+.nx .hp-hd .eyebrow { margin: 0; }
+.nx .hp-h { margin: 0; font: 400 clamp(48px, 6vw, 96px)/.94 var(--bk-fd); letter-spacing: -.02em; text-wrap: balance; }
+.nx .hp-h em { font-style: italic; color: var(--bk-gold); }
+.nx .hp-lede { margin: 0; color: var(--bk-mut); font-size: clamp(15px, 1.2vw, 17px); max-width: 600px; }
+.nx .hp-stage { position: relative; height: calc(var(--cw) * 1.25 + 24px); margin-top: clamp(22px, 3vw, 40px); touch-action: pan-y; -webkit-user-select: none; user-select: none; }
+.nx .hp-stage img { -webkit-user-drag: none; }
+.nx .hp-track { position: absolute; inset: 0; }
+.nx .hp-card {
+  --x: calc(var(--o) * var(--cw) * .74 + var(--o) * var(--a) * var(--cw) * -.08);
+  position: absolute; left: 50%; top: 0; width: var(--cw); padding: 0; border-radius: 0; text-align: center; background: none;
+  transform: translateX(calc(-50% + var(--x))) scale(calc(1 - var(--a) * .16));
+  transform-origin: 50% 70%; transition: transform .7s cubic-bezier(.2, .75, .2, 1), opacity .5s ease, filter .5s ease; cursor: pointer;
+}
+.nx .hp-card.on { cursor: default; }
+.nx .hp-card.far { opacity: 0; pointer-events: none; }
+html.bk-dark .nx .hp-card:not(.on) { filter: brightness(calc(.78 - var(--a) * .14)) saturate(.85); }
+html:not(.bk-dark) .nx .hp-card:not(.on) { filter: brightness(calc(1 - var(--a) * .05)) saturate(calc(1 - var(--a) * .15)); }
+html.bk-dark .nx .hp-card:hover:not(.on):not(.far) { filter: brightness(.9); }
+html:not(.bk-dark) .nx .hp-card:hover:not(.on):not(.far) { filter: none; }
+.nx .hp-arch {
+  display: block; position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--bk-plate);
+  border-radius: 50% 50% var(--bk-r-xl) var(--bk-r-xl) / 40% 40% var(--bk-r-xl) var(--bk-r-xl);
+  box-shadow: 0 40px 70px -40px rgba(0, 0, 0, .6);
+}
+.nx .hp-arch > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; }
+.nx .hp-arch::after {
+  content: ""; position: absolute; inset: 10px; pointer-events: none; border: 1px solid rgba(255, 255, 255, .55);
+  border-radius: 50% 50% calc(var(--bk-r-xl) - 7px) calc(var(--bk-r-xl) - 7px) / 40% 40% calc(var(--bk-r-xl) - 7px) calc(var(--bk-r-xl) - 7px);
+}
+.nx .hp-card:focus-visible .hp-arch::after { border: 2px solid var(--bk-focus); }
+/* a collection without its photo: its three best sellers on a plate, above the name's glass */
+.nx .hp-collage {
+  position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: center; padding: 0 6% 36%;
+  background: radial-gradient(70% 40% at 50% 66%, color-mix(in srgb, var(--bk-hue) 34%, transparent), transparent 70%), linear-gradient(var(--bk-s2), var(--bk-plate));
+}
+.nx .hp-collage img { width: 40%; aspect-ratio: 1; object-fit: contain; margin-inline: -5%; filter: drop-shadow(0 14px 16px rgba(0, 0, 0, .35)); }
+.nx .hp-collage img:nth-child(2) { width: 52%; position: relative; z-index: 1; }
+/* the name on the chosen card */
+.nx .hp-cap {
+  position: absolute; left: 14px; right: 14px; bottom: 14px; display: grid; gap: 2px; padding: 12px 14px; border-radius: var(--bk-r-lg);
+  background: var(--bk-glass); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); box-shadow: inset 0 0 0 1px var(--bk-line);
+  opacity: 0; transform: translateY(8px); visibility: hidden; transition: opacity .4s ease, transform .4s ease, visibility 0s .4s;
+}
+.nx .hp-card.on .hp-cap { opacity: 1; transform: none; visibility: visible; transition: opacity .4s ease .25s, transform .4s ease .25s; }
+.nx .hp-cap b { font: 400 26px/1.1 var(--bk-fd); color: var(--bk-ink); }
+.nx .hp-cap > span { font-size: 12.5px; color: var(--bk-mut); }
+.nx .hp-prev, .nx .hp-next { position: absolute; top: calc(var(--cw) * .62); z-index: 20; transform: translateY(-50%); }
+.nx .hp-prev { inset-inline-start: calc(50% - var(--cw) / 2 - 64px); }
+.nx .hp-next { inset-inline-start: calc(50% + var(--cw) / 2 + 22px); }
+.nx .hp-prev:focus-visible, .nx .hp-next:focus-visible { box-shadow: inset 0 0 0 2px var(--bk-arrow-fg), inset 0 0 0 4px var(--bk-focus); }
+/* the chosen collection, under the carousel */
+.nx .hp-detail { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 22px; margin-top: 18px; text-align: start; }
+.nx .hp-count { margin: 0; font: 600 13px/1 var(--bk-ft); color: var(--bk-mut); font-variant-numeric: tabular-nums; letter-spacing: .06em; }
+.nx .hp-count span { color: var(--bk-ink); }
+.nx .hp-best {
+  display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; align-items: center; gap: 12px; min-width: 300px; max-width: 420px;
+  padding: 8px 12px 8px 8px; border-radius: var(--bk-r-lg);
+  background: var(--bk-glass); -webkit-backdrop-filter: blur(18px) saturate(1.2); backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow: inset 0 0 0 1px var(--bk-line);
+}
+.nx .hp-best .th { width: 56px; height: 56px; border-radius: 12px; overflow: hidden; padding: 5px; background: var(--bk-plate); }
+.nx .hp-best .th img { width: 100%; height: 100%; object-fit: contain; }
+.nx .hp-best .tx { display: grid; gap: 1px; min-width: 0; text-align: start; }
+.nx .hp-best .eyebrow { margin: 0; font-size: 10.5px; }
+.nx .hp-best b { font: 400 19px/1.15 var(--bk-fd); }
+.nx .hp-best b a { color: var(--bk-ink); }
+.nx .hp-best b a:hover { color: var(--bk-act-text); }
+.nx .hp-best .pr { font-size: 12.5px; color: var(--bk-mut); }
+.nx .hp-best .pr .now { color: var(--bk-ink); font-weight: 800; }
+@media (prefers-reduced-motion: reduce) { .nx .hp-card, .nx .hp-cap, .nx .hp-card.on .hp-cap { transition: none; } }
+@media (max-width: 1100px) { .nx .hp { --cw: min(340px, 38vw); } }
+@media (max-width: 760px) {
+  .nx .hp { --cw: min(300px, 66vw); padding-block: 24px 30px; }
+  .nx .hp-h { font-size: clamp(44px, 12.4vw, 60px); }
+  .nx .hp-h em { display: block; }
+  .nx .hp-lede { font-size: 14.5px; }
+  .nx .hp-card { --x: calc(var(--o) * var(--cw) * .9); transform: translateX(calc(-50% + var(--x))) scale(calc(1 - var(--a) * .14)); }
+  .nx .hp-prev, .nx .hp-next { display: none; }
+  .nx .hp-detail { display: grid; grid-template-columns: minmax(0, 1fr); justify-items: stretch; gap: 10px; margin-top: 12px; }
+  .nx .hp-count { text-align: center; }
+  .nx .hp-best { min-width: 0; max-width: none; }
+  .nx .hp-detail .btn { justify-content: center; }
+}

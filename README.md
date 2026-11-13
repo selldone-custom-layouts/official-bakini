@@ -5,7 +5,7 @@
 <h1 align="center">Bakini Noir Patisserie</h1>
 
 <p align="center">
-  <b>A single bakery as a dark pastry theatre: one pastry under a spotlight, deep caramel, gold and ivory.</b><br>
+  <b>A single bakery as a dark pastry theatre: its collections in arched windows, deep caramel, gold and ivory.</b><br>
   A custom Selldone Layout built on the official <a href="https://github.com/selldone/storefront">selldone/storefront</a>.
 </p>
 
@@ -30,7 +30,7 @@
 
 ## What it is
 
-**Bakini Noir Patisserie** dresses a single pâtisserie as a dark pastry theatre, in the manner of a premium product launch: a pastry floating huge under a spotlight, the collections as tall dark cards, the shop's real facts in a bento, and a calm, glassy buy flow. It was drawn for **Bakio**, a bakery that sells individual pastries for courier delivery, worldwide shipping and pickup, paid in cash on delivery.
+**Bakini Noir Patisserie** dresses a single pâtisserie as a dark pastry theatre, in the manner of a premium product launch: its collections in a carousel of arched windows, the collections again as tall dark cards, the shop's real facts in a bento, and a calm, glassy buy flow. It was drawn for **Bakio**, a bakery that sells individual pastries for courier delivery, worldwide shipping and pickup, paid in cash on delivery.
 
 - a deep stage (`#120c10`) with ivory type, dark cards and a warm halo behind every pastry; each collection gets its own warm hue, in the shop's order;
 - **one** deep caramel `#a0522d` for every action (buttons, chosen states, links), gold `#d4a373` for small type, savings and hairlines only;
@@ -60,7 +60,7 @@ Everything is read live from the shop: its title (drawn as the wordmark), collec
 ## Highlights
 
 - **Header:** a slim glass bar that sticks to the top: the wordmark (the shop's title), **Shop** (every collection with its photo and line, plus Deals, Most loved, Compare and Journal), the collections on wide screens, Deals, a search with live suggestions and "popular" words, the language and currency pill, the account and the bag with its count. On a phone: the menu (collections, Deals, the bakery's pages, sign-in, a "Language & currency" sheet), search and the bag.
-- **Home:** the stage (the best seller of each of the three best-selling collections, one tab each, no autoplay), the collections, Tonight's selection, a bento of the shop's real facts (open days and counter hours, the courier's windows, shipping and its free threshold, the way to pay, pickup), Most loved, **Which <unit> is yours?** (four best sellers side by side), a deals band with a Save roundel that fits any currency, Compose a trio, the bakery's story, **Visit & pickup** with a real map of the shop's address, and the journal (the four newest posts) last.
+- **Home:** the carousel (every collection as an arched card with its own portrait photo, best-selling first; the chosen one's best seller and button under it; arrows, a click, the arrow keys or a swipe turn it, it never moves by itself), the collections, Tonight's selection, a bento of the shop's real facts (open days and counter hours, the courier's windows, shipping and its free threshold, the way to pay, pickup), Most loved, **Which <unit> is yours?** (four best sellers side by side), a deals band with a Save roundel that fits any currency, Compose a trio, the bakery's story, **Visit & pickup** with a real map of the shop's address, and the journal (the four newest posts) last.
 - **Listings:** a collection, a search, the deals and every pastry: real spec filters (a key becomes a filter only when it has two or more short values; no filter is invented), a price range, On offer and Sort, a calm loading fade, and a filter sheet on a phone.
 - **Card:** the cut-out on its dark plate, a round **+** in the free corner that turns into "− n +" in place, a quick-look eye, the name, "per <unit>", the price, the struck was-price and the saving in gold.
 - **Product page:** a gallery with one row of thumbnails, a sticky buy column (price, saving, stock, options only when the product has real variants, Add to bag, Compare, Copy link, delivery, pickup and payment lines) and a buy bar on a phone; **Why you'll love it** (the product's pros), the spec in the shop's groups, **Buy together**, the reviews (an honest empty state with the shop's rating criteria until the first review) and **More <collection>** without the product itself.

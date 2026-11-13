@@ -3,8 +3,8 @@
   "deploy_path": "",
   "package": "bakini-noir-patisserie",
   "name": "Bakini Noir Patisserie",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "storefront": true,
   "backoffice": false,
-  "description": "A dark pastry theatre for a single bakery: a slim glass header, a cinematic hero with one pastry under a spotlight, the collections as a side-scrolling lineup of tall dark cards, a bento of the shop's real facts (counter hours, delivery windows, pickup, shipping, cash on delivery), selection rows, a compare strip, deals and the journal; real spec filters, a product page with a sticky buy column and Buy together, a bag drawer, glass checkout cards, a desk account, and an ivory light mode."
+  "description": "A dark pastry theatre for a single bakery: a slim glass header, a carousel of the collections in arched windows, the collections as a side-scrolling lineup of tall dark cards, a bento of the shop's real facts (counter hours, delivery windows, pickup, shipping, cash on delivery), selection rows, a compare strip, deals and the journal; real spec filters, a product page with a sticky buy column and Buy together, a bag drawer, glass checkout cards, a desk account, and an ivory light mode."
 }

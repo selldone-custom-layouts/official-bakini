@@ -33,11 +33,16 @@ The facts on the home, the footer, Contact and the sample pages come from the sh
 - Give each one an **image**: a pastry cut-out on a transparent ground. It sits on the collection's card, in the Shop panel, in the listing head and on the chips.
 - Give each one a short **description**: its line in the Shop panel and the listing head.
 - Order them in Selldone; the Layout keeps your order. The six warm hues behind the pastries are given to the collections in that order, then repeat.
-- The stage, the trio and "Which <unit> is yours?" pick the **best-selling** collections; Buy together takes the best seller of two other collections.
+- The carousel starts on the **best-selling** collection; the trio and "Which <unit> is yours?" pick the best-selling collections; Buy together takes the best seller of two other collections.
+
+## Collection photos (the home's carousel)
+
+- One **portrait photo per collection** (4:5; the Layout serves 900 × 1125), file name `assets/bakini/hero-<collection name>.webp`, where the collection name is its address name in Selldone (`cookies`, `mini-cakes`). Plain wall in the top 40% (the arch crops it) and the pastries in the centre and lower centre; the name sits on glass over the bottom quarter.
+- A collection without a photo shows its three best sellers on a plate, so a new collection never shows an empty card. Codex prompts: `bakio-design/hero/CODEX-PROMPTS.md` in the project.
 
 ## Products
 
-- The **main photo** as a **transparent cut-out** (PNG or WebP, the pastry alone on no ground). Every card, the stage, the quick look and the product page set it on a dark plate under a warm halo; a photo with its own ground shows as a square. More photos make the product page's gallery.
+- The **main photo** as a **transparent cut-out** (PNG or WebP, the pastry alone on no ground). Every card, the quick look and the product page set it on a dark plate under a warm halo; a photo with its own ground shows as a square. More photos make the product page's gallery.
 - A **unit** (Selldone's `unit` field, for example "croissant"): "per croissant" on every card, "per croissant · sold individually" on the product page, "In stock · 3 croissants left", and the home's "Which croissant is yours?". Without one, the Layout says "piece".
 - A **price**, and a **discount** for a saving: the struck was-price, "Save $X" in gold, the Deals page, the deals band and its Save roundel. The deals band's headline is "Up to X% off.", or "X% off. Every piece." when every product has the same saving.
 - **Discount dates:** a deal with a real end date gets a clock on the product page. Without an end date there is no clock; no date is ever invented.

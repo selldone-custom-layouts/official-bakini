@@ -44,7 +44,7 @@ Each section folds away without its data:
 
 | Section | Needs |
 | --- | --- |
-| The stage | products in your collections (the three best-selling collections each give one) |
+| The carousel | collections with products; a photo `assets/bakini/hero-<collection name>.webp` for each, or it shows the collection's three best sellers on a plate |
 | Tonight's selection | products in stock |
 | The facts bento | open days in the shop info, a courier or shipping way, a payment method or a pickup point |
 | "Which <unit> is yours?" | two or more products in the best-selling collection |

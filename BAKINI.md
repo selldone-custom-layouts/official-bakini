@@ -48,8 +48,9 @@ build step leaves these files alone (they hold both modes). Re-run the script af
 | Journal, article, about, terms, privacy, contact, FAQ, 404, sign-in | `components/bakini/noir/read/`, `pages/blog/`, `pages/official/`, `pages/faq/`, `pages/errors/`, `components/kalio/shell/KalioSignIn.vue` |
 
 **What the mockup hard-codes and the Layout reads live.** The collections' hues: the mockup's six
-warm hues given in the shop's order (Bakio gets exactly the mockup's), cycled for more. The stage:
-the best seller of each of the three best-selling collections. "Which croissant": the best-selling
+warm hues given in the shop's order (Bakio gets exactly the mockup's), cycled for more. The home's first section (1.0.5 on):
+the carousel, every collection with products, best-selling first, each with its photo
+(`assets/bakini/hero-<name>.webp`, matched by the collection's `name`) or a collage of its three best sellers. "Which croissant": the best-selling
 collection's top four, its unit word ("cookie"), the first spec rows that are short and differ.
 Trio: three collections by sales. Bento, story, visit, footer: the shop's `info` (address, days),
 its pickup point's note (the counter hours are read from it, "8:00-18:00"), its delivery ways
@@ -134,6 +135,7 @@ gateway's courier words and "leave it at the door"; a cancelled order still said
 | 1.0.2 | 13 Nov 2026 | 36 | 632 | From test order SM-39: the order tab says the shop's label ("Order SM-39", Molino's `titleOrder()`), not the basket id in the address (SM-30072); the bag and checkout tabs read "Your bag" and "Checkout", not "Open bag". Verified, pinned, live title checked after in-app navigation |
 | 1.0.3 | 13 Nov 2026 | 36 | 633 | From test order SM-40 (pickup): no "Local delivery within 100 km" under the counter, "Pay at pickup $X" with "You pay in cash at the counter when you collect it." instead of the cash gateway's courier words, chat starters about collecting; Arabic for the new words. Verified, pinned, live |
 | 1.0.4 | 13 Nov 2026 | 36 | 634 | A cancelled order says "Nothing to pay" (its cash-on-delivery transaction stays pending) and its chat starters ask why it was cancelled or to order again. Verified, pinned, live on both cancelled test orders; home, `?utm_source=`, search, bag, journal and About re-checked |
+| 1.0.5 | 13 Nov 2026 | 36 | 635 | The home opens on the **carousel** (`NxCarousel.vue`, mockup `bakio-design/home-hero4-b.html`) instead of the stage, which blew a 640 px product photo up (soft, cut at the top; the owner's call). Every collection with products, best-selling first, as an arched card with its portrait photo (`assets/bakini/hero-<name>.webp`, stand-ins drawn from the cut-outs until the Codex photos come; a collection without one shows its three best sellers on a plate); arrows, click, arrow keys, swipe (a mouse drag's trailing click is ignored), mirrored right to left; the chosen collection's best seller with its quantity box and "Shop <collection>" below. Arabic for the new words. 360 files: the upload limit is near, so a later photo swap must not add files. Verified (js/css match), pinned on the shop default and domain 1247, live-checked on both addresses |
 
 **Shop default (13 Nov 2026, morning, the owner's OK).** 1.0.4 pinned as Bakio's default
 (`api.shops.layout.set`, exact version). `local` and `sub` (bakio.myselldone.com) inherit it, and

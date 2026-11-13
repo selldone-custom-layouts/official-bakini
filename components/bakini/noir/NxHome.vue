@@ -3,10 +3,11 @@
   every section from the shop's live data; nothing names a product, price,
   collection or delivery way.
 
-   1. The stage: one pastry huge under a spotlight — the best seller of each
-      of the three best-selling collections, one tab each (no autoplay); the
-      eyebrow is the shop's address, the line names its collections and how
-      it sends them.
+   1. The carousel (NxCarousel.vue, bakio-design/home-hero4-b.html): the
+      shop's address and line, then every collection as an arched card with
+      its own photo, best-selling first; the chosen one's best seller and
+      button under it. It replaced the stage, which blew one 640 px product
+      photo up (soft, and cut at the top).
    2. "Explore the collections": every collection as a tall dark card.
    3. "Tonight's selection": best sellers, mixed across collections.
    4. "Everything you need to know": a bento of the shop's real facts (open
@@ -25,49 +26,8 @@
 -->
 <template>
   <div class="nx nx-home">
-    <!-- 1. The stage -->
-    <section :style="{ '--bk-hue': heroHue }" class="stage">
-      <div class="wrap st-in">
-        <div class="st-copy">
-          <p v-if="shortAddress" class="eyebrow">{{ t("bakini.n.home.eyebrow", "Pâtisserie · {address}", { address: shortAddress }) }}</p>
-          <h1 class="st-h">{{ t("bakini.n.home.h1", "Pastry,") }} <em>{{ t("bakini.n.home.h1em", "in the spotlight.") }}</em></h1>
-          <p v-if="heroLede" class="st-lede">{{ heroLede }}</p>
-        </div>
-        <div class="st-show">
-          <div v-for="(p, i) in hero" :key="p.id" :aria-hidden="i === slide ? undefined : 'true'" :class="['st-slide', { on: i === slide }]" :style="{ '--bk-hue': hueOf(p.category_id) }">
-            <div class="st-ph">
-              <img :alt="p.title" :src="img(p)" height="640" loading="eager" width="640" />
-              <img :src="img(p)" alt="" aria-hidden="true" class="st-refl" />
-            </div>
-            <div class="st-cap">
-              <p class="st-name">{{ p.title }}</p>
-              <p class="st-price">
-                <span class="money">{{ money(pv(p).now) }}</span>{{ " " }}<span v-if="pv(p).was" class="was money">{{ money(pv(p).was) }}</span>{{ " " }}<span v-if="pv(p).save > 0" class="gold">{{ t("bakini.n.home.save", "Save {amount}", { amount: money(pv(p).save) }) }}</span>{{ " · " + t("bakini.n.card.per", "per {unit}", { unit: unitOf(p) }) }}
-              </p>
-              <div class="st-acts">
-                <nx-qb :label="t('bakini.n.qb.addToBag', 'Add to bag')" :product="p" size="mid" />
-                <router-link :to="productTo(p)" class="btn ghost">{{ t("bakini.n.home.learn", "Learn more") }}<nx-icon name="arrow" /></router-link>
-              </div>
-            </div>
-          </div>
-          <div v-if="!hero.length" class="st-slide on" aria-hidden="true"><div class="st-ph"></div></div>
-        </div>
-        <div v-if="hero.length > 1" :aria-label="t('bakini.n.home.featured', 'Featured pastry')" class="st-tabs" role="tablist" @keydown="tabKeys">
-          <button
-            v-for="(p, i) in hero"
-            :key="p.id"
-            :aria-selected="i === slide ? 'true' : 'false'"
-            :tabindex="i === slide ? 0 : -1"
-            class="st-tab"
-            role="tab"
-            type="button"
-            @click="slide = i"
-          >
-            <span class="th"><img :src="thumb(p)" alt="" /></span><span class="st-long">{{ p.title }}</span><span aria-hidden="true" class="st-short">{{ shortName(p) }}</span>
-          </button>
-        </div>
-      </div>
-    </section>
+    <!-- 1. The carousel -->
+    <nx-carousel :cats="catsBySells" :eyebrow="shortAddress ? t('bakini.n.home.eyebrow', 'Pâtisserie · {address}', { address: shortAddress }) : ''" :lede="heroLede" />
 
     <!-- 2. The collections -->
     <section v-if="noir.cats.length" class="sec lu-sec">
@@ -388,6 +348,7 @@ import NxCard from "./NxCard.vue";
 import NxRow from "./NxRow.vue";
 import NxMap from "./NxMap.vue";
 import NxPost from "./NxPost.vue";
+import NxCarousel from "./NxCarousel.vue";
 import {
   bySells,
   catImage,
@@ -426,9 +387,9 @@ const list = (items) => {
 
 export default {
   name: "NxHome",
-  components: { NxIcon, NxQb, NxCard, NxRow, NxMap, NxPost },
+  components: { NxIcon, NxQb, NxCard, NxRow, NxMap, NxPost, NxCarousel },
 
-  data: () => ({ noir, slide: 0, posts: [], trioAt: [0, 0, 0], trioBusy: false, trioDone: false }),
+  data: () => ({ noir, posts: [], trioAt: [0, 0, 0], trioBusy: false, trioDone: false }),
 
   computed: {
     shop() {
@@ -457,16 +418,6 @@ export default {
     },
     topCat() {
       return this.catsBySells[0] || null;
-    },
-    hero() {
-      return this.catsBySells
-        .slice(0, 3)
-        .map((c) => bySells(inCat(c.id).filter((p) => p.quantity > 0))[0] || bySells(inCat(c.id))[0])
-        .filter(Boolean);
-    },
-    heroHue() {
-      const p = this.hero[this.slide];
-      return p ? hueOf(p.category_id) : hueOf(null);
     },
     heroLede() {
       const names = this.noir.cats.map((c) => catTitle(c).toLowerCase());
@@ -714,24 +665,6 @@ export default {
     regionShort(region) {
       const US = { California: "CA", "New York": "NY", Texas: "TX", Washington: "WA", Illinois: "IL", Florida: "FL" };
       return US[region] || region;
-    },
-    /* The tab's short word: the title without its collection's own word. */
-    shortName(p) {
-      const unit = unitOf(p).toLowerCase();
-      const words = String(p.title || "")
-        .split(/\s+/)
-        .filter((w) => w.toLowerCase() !== unit && w.toLowerCase() !== unit + "s" && !/^(classic|mini)$/i.test(w));
-      return words.slice(0, 2).join(" ") || p.title;
-    },
-    tabKeys(e) {
-      const n = this.hero.length;
-      if (!n) return;
-      const fwd = (e.key === "ArrowRight") !== isRtl();
-      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-        this.slide = (this.slide + (fwd ? 1 : -1) + n) % n;
-        this.$nextTick(() => e.currentTarget?.querySelectorAll(".st-tab")[this.slide]?.focus());
-        e.preventDefault();
-      }
     },
     page(ref, dir) {
       const tr = this.$refs[ref];
