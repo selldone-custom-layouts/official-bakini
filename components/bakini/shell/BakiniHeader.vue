@@ -51,7 +51,7 @@
             :aria-expanded="is('region') ? 'true' : 'false'"
             :aria-label="t('bakini.n.hdr.regionAria', 'Language and currency: {value}', { value: regionLabel })"
             aria-controls="region"
-            class="pill-region"
+            class="pill-region rs-pick__btn"
             type="button"
             @click="toggle('region', $event)"
           >
@@ -141,8 +141,9 @@
           </div>
         </div>
 
-        <!-- Language and currency (the region-switcher kit's chips). -->
-        <div v-if="regionOn" id="region" ref="region" :aria-label="t('region.title', 'Language & currency')" :class="['pop', { open: is('region') }]" :style="popPos.region" role="dialog">
+        <!-- Language and currency (the region-switcher kit's chips; the kit's own class
+             names stay on the pill, panel, row and sheet so its checks find them). -->
+        <div v-if="regionOn" id="region" ref="region" :aria-label="t('region.title', 'Language & currency')" :class="['pop', 'rs-pop', { open: is('region') }]" :style="popPos.region" role="dialog">
           <h3>{{ regionTitle }}</h3>
           <region-chips :key="regionKey" @picked="closeLayer()" />
           <p class="note">{{ regionNote }}</p>
@@ -188,7 +189,7 @@
             <div class="pm-list">
               <router-link v-if="user" :to="accountTo"><span class="ic"><nx-icon name="user" /></span><span>{{ firstName }}<small>{{ t("bakini.n.hdr.acctLine", "Orders, addresses and profile") }}</small></span><nx-icon cls="chev" name="right" /></router-link>
               <button v-else type="button" @click="signIn"><span class="ic"><nx-icon name="user" /></span><span>{{ t("bakini.n.hdr.signIn", "Sign in") }}<small>{{ t("bakini.n.hdr.acctLine", "Orders, addresses and profile") }}</small></span><nx-icon cls="chev" name="right" /></button>
-              <button v-if="regionOn" :key="regionKey" aria-controls="langsheet" type="button" @click="openLayer('langsheet', $event.currentTarget)">
+              <button v-if="regionOn" :key="regionKey" aria-controls="langsheet" class="rs-row" type="button" @click="openLayer('langsheet', $event.currentTarget)">
                 <span class="ic"><nx-icon name="globe" /></span><span>{{ t("region.title", "Language & currency") }}<small>{{ regionLong }}</small></span><nx-icon cls="chev" name="right" />
               </button>
             </div>
@@ -196,7 +197,7 @@
         </nav>
 
         <!-- The language & currency sheet (phone). -->
-        <div v-if="regionOn" id="langsheet" :aria-label="t('region.title', 'Language & currency')" :class="['bsheet', { open: is('langsheet') }]" aria-modal="true" role="dialog">
+        <div v-if="regionOn" id="langsheet" :aria-label="t('region.title', 'Language & currency')" :class="['bsheet', 'rs-sheet', { open: is('langsheet') }]" aria-modal="true" role="dialog">
           <div class="grab"></div>
           <h2>{{ t("region.title", "Language & currency") }}</h2>
           <region-chips :key="regionKey" />

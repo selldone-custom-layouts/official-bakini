@@ -56,7 +56,7 @@
           <span>{{ t("bakini.n.rc.full", "Items at full price") }}</span><span class="money">{{ money(sum.full, sum.currency) }}</span>
         </div>
         <div v-if="sum.save > 0" class="ln save">
-          <span>{{ t("bakini.n.rc.savings", "Savings") }}</span><span class="money">−{{ money(sum.save, sum.currency) }}</span>
+          <span>{{ saveLabel }}</span><span class="money">−{{ money(sum.save, sum.currency) }}</span>
         </div>
         <div class="ln">
           <span>{{ t("bakini.n.rc.delivery", "Delivery") }}</span><span>{{ t("bakini.n.rc.atCheckout", "Chosen at checkout") }}</span>
@@ -108,6 +108,12 @@ export default {
       }
       save += this.lines.reduce((s, it) => s + (it.offer_amount || 0), 0);
       return { full, save, total: full - save, currency: b.bill?.currency || b.currency };
+    },
+    /* "Savings · 25% off" when every line saves the same percent (the bag page's rule). */
+    saveLabel() {
+      const offs = this.lines.filter((it) => it.dis > 0).map((it) => Math.round((it.dis / (it.price + it.dis)) * 100));
+      if (offs.length && offs.length === this.lines.length && offs.every((x) => x === offs[0])) return t("bakini.n.co.savingsOff", "Savings · {off}% off", { off: offs[0] });
+      return t("bakini.n.rc.savings", "Savings");
     },
     /* Three best sellers, one per collection not already in the bag. */
     often() {

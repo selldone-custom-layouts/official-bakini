@@ -645,6 +645,7 @@ const ar: Record<string, string> = {
   "bakini.n.qb.remove": "إزالة {name} من الحقيبة",
   "bakini.n.qb.soldOut": "نفدت الكمية",
   "bakini.n.qv.close": "إغلاق النظرة السريعة",
+  "bakini.n.qv.choose": "اختر الخيارات",
   "bakini.n.qv.details": "عرض كل التفاصيل",
   "bakini.n.qv.inStock": "متوفر",
   "bakini.n.rc.atCheckout": "يُحدَّد عند إتمام الشراء",

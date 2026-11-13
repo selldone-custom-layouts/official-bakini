@@ -29,7 +29,10 @@
             ><span v-if="pv.save > 0" class="save">{{ t("bakini.n.card.save", "Save {amount} · {off}%", { amount: money(pv.save), off: pv.off }) }}</span>
           </div>
           <p v-if="desc" class="qv-desc">{{ desc }}</p>
-          <nx-qb :product="p" size="big" />
+          <!-- A product with options (sizes, colours) is chosen on its own page,
+               with Selldone's own option picker. -->
+          <router-link v-if="hasOptions" :to="to" class="btn lg block" @click="close">{{ t("bakini.n.qv.choose", "Choose options") }}<nx-icon name="arrow" /></router-link>
+          <nx-qb v-else :product="p" size="big" />
           <router-link :to="to" class="link" @click="close">{{ t("bakini.n.qv.details", "View full details") }}<nx-icon name="arrow" /></router-link>
         </div>
       </div>
@@ -64,6 +67,10 @@ export default {
     },
     to() {
       return productTo(this.p);
+    },
+    hasOptions() {
+      const p = this.p || {};
+      return !!((p.product_variants && p.product_variants.length) || (p.variants && p.variants.length));
     },
     desc() {
       return (prosOf(this.p)[0] || [])[1] || "";

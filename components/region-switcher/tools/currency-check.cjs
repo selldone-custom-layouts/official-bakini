@@ -146,7 +146,7 @@ const fillCart = (pg, shop) =>
   for (const w of WIDTHS) {
     const phone = w < 768;
     const ctx = await b.newContext({ viewport: { width: w, height: phone ? 844 : 900 }, isMobile: phone, hasTouch: phone });
-    await ctx.route((u) => u.href.includes("/buy/"), (r) => r.abort());
+    await ctx.route((u) => /selldone\.com\/.*\/buy\//.test(u.href), (r) => r.abort());
     const pg = await ctx.newPage();
     await pg.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 120000 });
     await pg.waitForSelector(WAIT, { timeout: 120000 });

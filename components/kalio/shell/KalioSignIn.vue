@@ -23,10 +23,12 @@
       <div :class="['scrim', { open: show }]" @click="close"></div>
       <div
         :aria-hidden="show ? undefined : 'true'"
+        ref="dlg"
         :class="['dialog', 'nx-lg', { open: show }]"
         aria-labelledby="lg-t"
         aria-modal="true"
         role="dialog"
+        tabindex="-1"
         @keydown.esc.stop="close"
       >
         <div :data-step="step" class="lg-card">
@@ -188,6 +190,13 @@ export default {
         this.codeErr = "";
         this.emailErr = "";
         this.redirecting = "";
+        /* Focus moves into the sheet (Tab and Esc work at once) and back to
+           the button that opened it on close. */
+        this.opener = document.activeElement;
+        this.$nextTick(() => this.$refs.dlg?.focus({ preventScroll: true }));
+      } else if (this.opener && document.contains(this.opener)) {
+        this.opener.focus({ preventScroll: true });
+        this.opener = null;
       }
     },
     /* Signed in (by the code or a redirect back): say so, then close. */
@@ -197,6 +206,18 @@ export default {
         setTimeout(() => (this.show = false), 1400);
       }
     },
+  },
+
+  mounted() {
+    /* Esc closes the sheet wherever the focus is (a click on the page behind
+       can leave it outside the sheet). */
+    this.onEsc = (e) => {
+      if (e.key === "Escape" && this.show) this.close();
+    };
+    document.addEventListener("keydown", this.onEsc);
+  },
+  beforeUnmount() {
+    document.removeEventListener("keydown", this.onEsc);
   },
 
   created() {

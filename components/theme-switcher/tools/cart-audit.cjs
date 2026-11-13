@@ -75,7 +75,7 @@ const fillCart = (pg) =>
     const ctx = await b.newContext({ viewport: { width: w, height: mob ? 844 : 900 }, isMobile: mob, hasTouch: mob });
     await ctx.addInitScript(([k, v]) => { try { localStorage.setItem(k, v); } catch (e) {} }, [KEY, JSON.stringify(themeChoice(palette, mode))]);
     if (process.env.SHOP_STUB) await ctx.addInitScript((s) => { window.__THEME_SWITCHER_SHOP__ = JSON.parse(s); }, process.env.SHOP_STUB);
-    await ctx.route((u) => u.href.includes("/buy/"), (r) => r.abort());
+    await ctx.route((u) => /selldone\.com\/.*\/buy\//.test(u.href), (r) => r.abort());
     const pg = await ctx.newPage();
     await pg.goto(base.replace(/\/$/, "") + "/", { waitUntil: "domcontentloaded", timeout: 120000 });
     await pg.waitForSelector(WAIT, { timeout: 120000 });

@@ -222,3 +222,38 @@ html:not(.bk-dark) .nx .nx-map__img {
     transform: translate(-50%, -87%) scale(1.3);
   }
 }
+
+/* Selldone's own ".link" (components.scss: color var(--theme-info) !important,
+   bolder on hover) shares the mockup's class name: the mockup's link colour
+   and weight win inside Noir markup. */
+.nx .link,
+.nx .link .v-icon {
+  color: var(--bk-act-text) !important;
+  font-weight: 700;
+}
+.nx .link:hover,
+.nx .link:hover .v-icon {
+  color: var(--bk-ink) !important;
+}
+
+/* The deals band's halo takes its collection's warm hue; on the ivory page a
+   light hue (rose, butter) leaves the muted words under 4.5:1, so in light
+   mode the band's words are the deeper ink. */
+html:not(.bk-dark) .nx .deal-band .db-copy p,
+html:not(.bk-dark) .nx .deal-band .db-copy .eyebrow {
+  color: var(--bk-ink-2);
+}
+
+/* The stage's caption sits right under the photo's clipping box, not 4px up
+   into it, so no word ever meets the picture (box-check OVERLAP). */
+.nx .st-cap {
+  margin-top: 0;
+}
+
+/* Selldone's reset ("*, ::before, ::after { box-sizing: inherit }") comes after
+   the mockup's border-box rule; inside a <details> the words hang under the
+   browser's own content slot (content-box), so they would inherit content-box
+   (a 32px chip drew 44px tall). The details' own children start the chain again. */
+.nx details > * {
+  box-sizing: border-box;
+}

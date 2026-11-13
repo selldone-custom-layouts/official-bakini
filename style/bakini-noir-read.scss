@@ -177,6 +177,10 @@
   box-shadow: none;
   border-radius: 34px;
 }
+/* The sheet itself takes the focus when it opens (not a control: no ring). */
+.nx .dialog.nx-lg:focus {
+  outline: none;
+}
 .nx .nx-lg .lg-card {
   position: relative;
   width: 100%;
@@ -186,8 +190,9 @@
 .nx .nx-lg .nx-lg__x {
   position: absolute;
   top: 14px;
-  inset-inline-end: 14px;
+  left: auto;
   right: auto;
+  inset-inline-end: 14px; /* after the physical sides, so it wins: the corner at the line's end in both directions */
   z-index: 3;
   background: var(--bk-s2);
 }

@@ -177,6 +177,43 @@
 .nx .nx-offers .v-btn {
   border-radius: 999px !important;
 }
+/* Selldone's coupon strip (only when the shop has coupons for this shopper):
+   its show/hide pill, the coupon tickets and "Add coupon" in Noir. */
+.nx .nx-offers .s--storefront-coupons > p .v-btn,
+.nx .nx-offers .coupon-slide > .v-btn {
+  background: var(--bk-s2) !important;
+  color: var(--bk-ink) !important;
+  border: 0 !important;
+}
+.nx .nx-offers .s--storefront-coupons > p .v-btn .fas {
+  display: none;
+}
+.nx .nx-offers .s--coupon-card {
+  border: 1.5px dashed var(--bk-line-2) !important;
+  border-radius: 14px;
+  background: var(--bk-s2);
+  color: var(--bk-ink);
+  padding: 12px;
+  font-family: var(--bk-ft);
+}
+.nx .nx-offers .s--coupon-card.selected {
+  border-style: solid !important;
+  border-color: var(--bk-act-text) !important;
+  background: var(--bk-sel) !important;
+  color: var(--bk-ink) !important;
+}
+.nx .nx-offers .s--coupon-card.selected small,
+.nx .nx-offers .s--coupon-card .v-icon {
+  color: var(--bk-mut) !important;
+}
+.nx .nx-offers .s--coupon-card .coupon-title {
+  font-size: 13.5px;
+  font-weight: 700;
+}
+.nx .nx-offers .s--coupon-card .coupon-description {
+  color: var(--bk-mut);
+  font-size: 12.5px;
+}
 .nx .nx-coform:empty {
   display: none;
 }

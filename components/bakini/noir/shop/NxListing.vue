@@ -151,10 +151,10 @@
                 <summary>{{ f.key }}<nx-icon name="down" /></summary>
                 <div class="fg-body">
                   <template v-for="(v, i) in f.values" :key="v">
-                    <button v-if="i < 6 || moreOpen[f.key]" :aria-pressed="picked(f.key, v) ? 'true' : 'false'" class="fchip" type="button" @click="toggle(f.key, v)">{{ v }}</button>
+                    <button v-if="i < 12 || moreOpen[f.key]" :aria-pressed="picked(f.key, v) ? 'true' : 'false'" class="fchip" type="button" @click="toggle(f.key, v)">{{ v }}</button>
                   </template>
-                  <button v-if="f.values.length > 6" :aria-expanded="moreOpen[f.key] ? 'true' : 'false'" class="fmore" type="button" @click="moreOpen[f.key] = !moreOpen[f.key]">
-                    <nx-icon name="down" />{{ moreOpen[f.key] ? t("bakini.n.ls.fewer", "Show fewer") : t("bakini.n.ls.more", "Show {n} more", { n: f.values.length - 6 }) }}
+                  <button v-if="f.values.length > 12" :aria-expanded="moreOpen[f.key] ? 'true' : 'false'" class="fmore" type="button" @click="moreOpen[f.key] = !moreOpen[f.key]">
+                    <nx-icon name="down" />{{ moreOpen[f.key] ? t("bakini.n.ls.fewer", "Show fewer") : t("bakini.n.ls.more", "Show {n} more", { n: f.values.length - 12 }) }}
                   </button>
                 </div>
               </details>
