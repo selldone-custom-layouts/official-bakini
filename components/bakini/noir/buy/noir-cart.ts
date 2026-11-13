@@ -146,7 +146,10 @@ export default {
     },
     nx_note_value: {
       get(this: any): string {
-        return this.receiver_info?.message || "";
+        const r = this.receiver_info || {};
+        /* the counter's own note (left from choosing pickup) is not the buyer's */
+        if (this.nx_receiver_is_pickup && r.message && r.message === this.nx_pickup_point?.message) return "";
+        return r.message || "";
       },
       set(this: any, v: string) {
         if (!this.basket) return;
@@ -211,6 +214,28 @@ export default {
     nx_delivery_label(this: any): string {
       const way = this.nx_way;
       return way ? wayTitle(way, this.$shop) : t("bakini.n.co.delivery", "Delivery");
+    },
+    /* The receipt's delivery value. Selldone sends -1 for "paid on delivery"
+       (the way's SOD switch); a way with no fee at all (no fixed fee, no rate
+       by distance or weight) is free either way, as its card says. */
+    nx_delivery_value(this: any): string {
+      const d = this.nx_rc.delivery;
+      if (d > 0) return this.nx_money(d);
+      if (d === 0 || this.nx_way_is_free) return t("bakini.n.co.free", "Free");
+      return t("bakini.n.co.atDoor", "On delivery");
+    },
+    /* The chosen way costs nothing: no fixed fee, no rate by distance or weight. */
+    nx_way_is_free(this: any): boolean {
+      const way = this.nx_way ? { ...this.nx_way, ...shopWay(this.$shop, this.nx_way) } : null;
+      if (!way) return false;
+      if (way.type === ShopTransportations.Pickup.code) return true;
+      return !(Number(way.const) > 0) && !(Number(way.distance_rate) > 0) && !(Number(way.weight_rate) > 0);
+    },
+    /* The bag's delivery ways in the checkout's order: the ways, then pickup. */
+    nx_ways_in_order(this: any): any[] {
+      const list = this.transportation_list || [];
+      const pickup = ShopTransportations.Pickup.code;
+      return [...list.filter((w: any) => w.type !== pickup), ...list.filter((w: any) => w.type === pickup)];
     },
     shopTo(): any {
       return catalogueRoute({});
@@ -302,9 +327,17 @@ export default {
        pickup choice does). */
     nx_pick_way(this: any, way: any) {
       if (!this.basket || !way) return;
+      /* the buyer's own phone and note go with them from way to way */
+      const phone = this.nx_phone;
+      const note = this.nx_note_value;
+      const fromPickup = this.nx_receiver_is_pickup;
       this.delivery_info.type = way.type;
       if (way.type === ShopTransportations.Pickup.code && way.pickups?.length) {
-        this.basket.receiver_info = Object.assign({}, way.pickups[0]);
+        const point = way.pickups[0];
+        this.basket.receiver_info = Object.assign({}, point, { phone: phone || point.phone, message: note || point.message });
+      } else if (fromPickup) {
+        /* leaving pickup: the counter's address is not a delivery address */
+        this.basket.receiver_info = { phone, message: note };
       }
       this.setBasketConfig();
     },
@@ -314,6 +347,8 @@ export default {
       const free = !!way.free_shipping && !(Number(way.free_shipping_limit) > 0);
       if (way.type === ShopTransportations.Pickup.code || free) return t("bakini.n.co.free", "Free");
       const fee = Number(way.const) || 0;
+      /* priced by distance or weight: the address sets it */
+      if (!fee && (Number(way.distance_rate) > 0 || Number(way.weight_rate) > 0)) return way.sod ? t("bakini.n.co.atDoor", "On delivery") : t("bakini.n.co.byAddress", "Set by your address");
       const over = way.free_shipping && Number(way.free_shipping_limit) > 0 ? money(Number(way.free_shipping_limit), way.currency, { short: "auto" }) : "";
       if (!fee) return over ? t("bakini.n.co.freeOver", "Free over {amount}", { amount: over }) : t("bakini.n.co.free", "Free");
       const base = money(fee, way.currency);

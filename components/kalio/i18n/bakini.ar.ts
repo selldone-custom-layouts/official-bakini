@@ -192,6 +192,7 @@ const ar: Record<string, string> = {
   "bakini.n.co.anywhere": "نشحن إلى أي مكان",
   "bakini.n.co.atCheckout": "عند إتمام الشراء",
   "bakini.n.co.atDoor": "عند الاستلام",
+  "bakini.n.co.byAddress": "يُحدَّد حسب عنوانك",
   "bakini.n.co.bag": "الحقيبة",
   "bakini.n.co.bagEm": "حقيبتك.",
   "bakini.n.co.beforePlace": "قبل تأكيد الطلب، أضف:",

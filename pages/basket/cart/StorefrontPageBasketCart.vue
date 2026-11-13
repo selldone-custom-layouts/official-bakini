@@ -93,7 +93,7 @@
               </div>
               <div class="dpv">
                 <button
-                  v-for="way in transportation_list"
+                  v-for="way in nx_ways_in_order"
                   :key="way.type + (way.id || '')"
                   :aria-pressed="delivery_info?.type === way.type ? 'true' : 'false'"
                   class="dpv-o"
@@ -125,7 +125,7 @@
                 </div>
                 <div class="ln">
                   <span>{{ t("bakini.n.co.deliveryOf", "Delivery · {way}", { way: nx_delivery_label }) }}</span>
-                  <span>{{ nx_rc.delivery > 0 ? nx_money(nx_rc.delivery) : nx_rc.delivery === 0 ? t("bakini.n.co.free", "Free") : t("bakini.n.co.atCheckout", "At checkout") }}</span>
+                  <span>{{ nx_rc.delivery < 0 && !nx_way_is_free ? t("bakini.n.co.atCheckout", "At checkout") : nx_delivery_value }}</span>
                 </div>
                 <div class="ln tot">
                   <span>{{ t("bakini.n.co.total", "Total") }}</span><span class="money">{{ nx_money(nx_rc.total) }}</span>
@@ -398,7 +398,7 @@
               </div>
               <div v-if="!isService" class="ln">
                 <span>{{ nx_delivery_label }}</span>
-                <span>{{ nx_rc.delivery > 0 ? nx_money(nx_rc.delivery) : nx_rc.delivery === 0 ? t("bakini.n.co.free", "Free") : t("bakini.n.co.atDoor", "On delivery") }}</span>
+                <span>{{ nx_delivery_value }}</span>
               </div>
               <div v-if="bill.tax" class="ln">
                 <span>{{ $t("global.commons.tax") }}</span><span class="money">{{ nx_money(bill.tax) }}</span>
@@ -456,7 +456,7 @@
     <teleport to="body">
       <div class="nx nx-buy-layers">
         <div :class="['scrim', { open: delivery_sheet }]" @click="delivery_sheet = false"></div>
-        <div id="dlsheet" :class="['dialog', { open: delivery_sheet }]" aria-labelledby="dl-t" aria-modal="true" role="dialog" style="--bk-dw: 720px" @keydown.esc="delivery_sheet = false">
+        <div id="dlsheet" ref="dlsheet" :class="['dialog', { open: delivery_sheet }]" aria-labelledby="dl-t" aria-modal="true" role="dialog" style="--bk-dw: 720px" tabindex="-1" @keydown.esc.stop="delivery_sheet = false">
           <button :aria-label="t('bakini.n.co.close', 'Close')" class="iconbtn x" type="button" @click="delivery_sheet = false"><nx-icon name="close" /></button>
           <div v-if="delivery_sheet && basket && bill" class="sh-in">
             <p class="eyebrow">{{ t("bakini.n.co.delivery", "Delivery") }}</p>
@@ -1133,6 +1133,22 @@ export default {
    */
 
   watch: {
+    /* The delivery sheet takes the focus (Tab and Esc work at once) and gives
+       it back to "All details" on close; Esc closes it wherever the focus is. */
+    delivery_sheet(open) {
+      if (open) {
+        this.nx_dl_opener = document.activeElement;
+        this.nx_dl_esc = (e) => {
+          if (e.key === "Escape") this.delivery_sheet = false;
+        };
+        document.addEventListener("keydown", this.nx_dl_esc);
+        this.$nextTick(() => this.$refs.dlsheet?.focus({ preventScroll: true }));
+      } else {
+        document.removeEventListener("keydown", this.nx_dl_esc);
+        if (this.nx_dl_opener && document.contains(this.nx_dl_opener)) this.nx_dl_opener.focus({ preventScroll: true });
+        this.nx_dl_opener = null;
+      }
+    },
     map_dialog(val) {
       this.$store.commit("setForceHideNavigation", val);
     },
@@ -1181,6 +1197,9 @@ export default {
     GtagEcommerce.MeasuringCheckoutSteps(this.basket, 0, "");
 
     this.loadFromBasket();
+  },
+  beforeUnmount() {
+    if (this.nx_dl_esc) document.removeEventListener("keydown", this.nx_dl_esc);
   },
   mounted() {
     if (

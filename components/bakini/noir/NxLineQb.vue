@@ -12,7 +12,7 @@
       type="button"
       @click.prevent.stop="step(-1)"
     >
-      <nx-icon :name="n > 1 ? 'minus' : 'trash'" />
+      <nx-icon name="minus" />
     </button>
     <span aria-live="polite" class="n">{{ n }}</span>
     <button

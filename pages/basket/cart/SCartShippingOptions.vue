@@ -44,7 +44,7 @@
         :aria-pressed="selectedPickup?.address && selectedPickup.address === pickup.address ? 'true' : 'false'"
         class="dmc"
         type="button"
-        @click="$emit('pickupSelected', { pickup, transportation: pickup_transportation })"
+        @click="pickPickup(pickup)"
       >
         <span class="dm-ic"><nx-icon name="store" /></span>
         <b>{{ pickup_transportation?.title || t("bakini.way.pickupAt", "Pickup at {place}", { place: pickup.title || pickup.name || pickup.address }) }}</b>
@@ -517,7 +517,25 @@ export default defineComponent({
     },
 
     // ▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅ Kalio ▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅
+    /* The buyer's own phone and note, apart from the counter's (Selldone
+       copies the pickup point, with its phone and note, into the receiver). */
+    buyerBits() {
+      const r = this.basket?.receiver_info || {};
+      const point = r.address ? (this.pickups || []).find((p) => p.address === r.address && (p.name || "") === (r.name || "")) : null;
+      return {
+        point,
+        phone: point && r.phone === point.phone ? "" : r.phone || "",
+        message: point && r.message === point.message ? "" : r.message || "",
+      };
+    },
+    pickPickup(pickup) {
+      const me = this.buyerBits();
+      this.$emit("pickupSelected", { pickup: { ...pickup, phone: me.phone || pickup.phone, message: me.message || pickup.message }, transportation: this.pickup_transportation });
+    },
     pickWay(item) {
+      /* leaving pickup: the counter's address is not a delivery address */
+      const me = this.buyerBits();
+      if (me.point && this.basket) this.basket.receiver_info = { phone: me.phone, message: me.message };
       this.$emit("update:transportation", item);
       this.$nextTick(() => this.setBasketConfig());
     },

@@ -179,14 +179,24 @@
 }
 /* Selldone's coupon strip (only when the shop has coupons for this shopper):
    its show/hide pill, the coupon tickets and "Add coupon" in Noir. */
-.nx .nx-offers .s--storefront-coupons > p .v-btn,
-.nx .nx-offers .coupon-slide > .v-btn {
+/* (the strip's root carries both .nx-offers and Selldone's .s--storefront-coupons) */
+.nx .nx-offers > p .v-btn {
   background: var(--bk-s2) !important;
   color: var(--bk-ink) !important;
   border: 0 !important;
 }
-.nx .nx-offers .s--storefront-coupons > p .v-btn .fas {
+.nx .nx-offers > p .v-btn .fas {
   display: none;
+}
+.nx .nx-offers .coupon-slide > .v-btn {
+  background: transparent !important;
+  color: var(--bk-act-text) !important;
+  border: 1.5px dashed var(--bk-line-2) !important;
+  border-radius: 14px !important;
+  margin-inline-start: 12px;
+}
+.nx .nx-offers .coupon-slide > .v-btn:hover {
+  color: var(--bk-ink) !important;
 }
 .nx .nx-offers .s--coupon-card {
   border: 1.5px dashed var(--bk-line-2) !important;
@@ -822,4 +832,35 @@ html.bk-dark .s--storefront-master-payment-dialog,
 .nx .co-main .v-container {
   max-width: 100% !important;
   padding-inline: 0 !important;
+}
+
+/* The delivery sheet itself takes the focus when it opens (not a control: no ring). */
+.nx #dlsheet:focus {
+  outline: none;
+}
+
+/* On a phone the address sheet fills the window; without a map its fields
+   take all the room between the head and the foot (the foot sits at the
+   bottom, no empty band under it). */
+.v-dialog--fullscreen .k-addr__grid.-nomap {
+  flex: 1 1 auto;
+  max-height: none;
+  min-height: 0;
+}
+
+/* The payment window on a wide screen: a dialog in the middle of the page,
+   as in the mockup (payment-b), not a sheet stuck to the bottom edge; on a
+   phone it stays Selldone's bottom sheet. */
+@media (min-width: 761px) {
+  .v-bottom-sheet > .v-overlay__content.s--storefront-master-payment-dialog {
+    align-self: center !important;
+    margin-block: auto !important;
+    max-height: calc(100dvh - 64px) !important;
+    border-radius: var(--bk-r-xl) !important;
+  }
+  html.bk-dark .s--storefront-master-payment-dialog > .v-card,
+  .s--storefront-master-payment-dialog > .v-card {
+    border-radius: var(--bk-r-xl) !important;
+    box-shadow: inset 0 0 0 1px var(--bk-line-2), 0 40px 80px -30px rgba(0, 0, 0, 0.7) !important;
+  }
 }

@@ -59,7 +59,12 @@
           <span>{{ saveLabel }}</span><span class="money">−{{ money(sum.save, sum.currency) }}</span>
         </div>
         <div class="ln">
-          <span>{{ t("bakini.n.rc.delivery", "Delivery") }}</span><span>{{ t("bakini.n.rc.atCheckout", "Chosen at checkout") }}</span>
+          <template v-if="freeWay"
+            ><span>{{ t("bakini.n.co.deliveryOf", "Delivery · {way}", { way: freeWay }) }}</span><span>{{ t("bakini.n.co.free", "Free") }}</span></template
+          >
+          <template v-else
+            ><span>{{ t("bakini.n.rc.delivery", "Delivery") }}</span><span>{{ t("bakini.n.rc.atCheckout", "Chosen at checkout") }}</span></template
+          >
         </div>
         <div class="ln tot">
           <span>{{ t("bakini.n.rc.total", "Total") }}</span><span class="money">{{ money(sum.total, sum.currency) }}</span>
@@ -77,7 +82,7 @@
 import NxIcon from "./NxIcon.vue";
 import NxLineQb from "./NxLineQb.vue";
 import NxMini from "./NxMini.vue";
-import { bySells, closeLayer, hueOf, layer, noir } from "./noir";
+import { bySells, closeLayer, hueOf, layer, noir, wayTitle } from "./noir";
 import { shownCount } from "../../kalio/kalio-basket";
 import { catalogueRoute, productImage } from "../../kalio/kalio-catalog";
 import { money } from "../../region-switcher/region";
@@ -108,6 +113,18 @@ export default {
       }
       save += this.lines.reduce((s, it) => s + (it.offer_amount || 0), 0);
       return { full, save, total: full - save, currency: b.bill?.currency || b.currency };
+    },
+    /* The bag's chosen way when it costs nothing (pickup, or no fee and no
+       rate by distance or weight; or over its free-shipping amount): the
+       receipt names it, as the mockup does. Otherwise the checkout says. */
+    freeWay() {
+      const type = this.basket?.delivery_info?.type;
+      const shop = this.$store.getters.getShop;
+      const way = type && (shop?.transportations || []).find((w) => w && w.type === type && w.enable !== false);
+      if (!way) return "";
+      const noFee = !(Number(way.const) > 0) && !(Number(way.distance_rate) > 0) && !(Number(way.weight_rate) > 0);
+      const overLimit = !!way.free_shipping && (!(Number(way.free_shipping_limit) > 0) || this.sum.total >= Number(way.free_shipping_limit));
+      return type === "Pickup" || noFee || overLimit ? wayTitle(way, shop) : "";
     },
     /* "Savings · 25% off" when every line saves the same percent (the bag page's rule). */
     saveLabel() {
