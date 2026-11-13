@@ -330,6 +330,8 @@ const ar: Record<string, string> = {
   "order.chat.send": "إرسال",
   "order.chat.shopBadge": "المتجر",
   "order.chat.starter.change": "هل يمكنني تغيير شيء؟",
+  "order.chat.starter.again": "هل يمكنني طلبه مرة أخرى؟",
+  "order.chat.starter.why": "لماذا أُلغي الطلب؟",
   "order.chat.starter.someoneElse": "سيستلمه شخص آخر",
   "order.chat.starter.whenReady": "متى يمكنني استلامه؟",
   "order.chat.starter.door": "يُرجى تركه عند الباب",

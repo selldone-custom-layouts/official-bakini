@@ -96,7 +96,10 @@ import { BRAND } from "../kalio-brand";
 import { t } from "../i18n/kalio-i18n";
 
 /* A few common questions to start from, in the visitor's language. */
-function starters(pickup = false) {
+function starters(pickup = false, cancelled = false) {
+  /* Cancelled: nothing will arrive, so no delivery questions. */
+  if (cancelled)
+    return [t("order.chat.starter.why", "Why was it cancelled?"), t("order.chat.starter.again", "Can I order it again?")];
   /* Collected at the counter: questions about collecting it, not a door. */
   if (pickup)
     return [
@@ -135,7 +138,7 @@ export default {
 
   computed: {
     starters() {
-      return starters(this.basket?.delivery_info?.type === "Pickup");
+      return starters(this.basket?.delivery_info?.type === "Pickup", this.basket?.status === "Canceled");
     },
     messages() {
       return (this.basket?.chat || []).map((message, index) => ({

@@ -256,6 +256,10 @@ export default {
         const g = b.payment?.gateway;
         return { icon: "check", title: t("bakini.n.ord.paid", "Paid {amount}", { amount: this.amount(b.price) }), line: g?.name || "" };
       }
+      /* Cancelled first: its cash-on-delivery transaction stays pending, but
+         nothing is owed (Bakio's cancelled test order SM-39 still said "Pay on
+         delivery", 13 Nov 2026). */
+      if (b.status === "Canceled") return { icon: "close", title: t("bakini.n.ord.notCharged", "Nothing to pay"), line: "" };
       const cod = (b.transactions_pending || []).find((x) => x.cod) || (b.status === "COD" ? {} : null);
       if (cod) {
         /* Collected at the counter: paid there, not to a courier (the cash
@@ -265,7 +269,6 @@ export default {
         const facts = shopFacts(this.shop);
         return { icon: "cash", title: t("bakini.n.ord.payOnDelivery", "Pay on delivery {amount}", { amount: this.amount(b.price) }), line: facts.gateway?.description || cod.name || "" };
       }
-      if (b.status === "Canceled") return { icon: "close", title: t("bakini.n.ord.notCharged", "Nothing to pay"), line: "" };
       return null;
     },
 

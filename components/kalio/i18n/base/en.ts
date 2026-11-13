@@ -258,6 +258,8 @@ const en: Record<string, string> = {
   "order.chat.send": "Send",
   "order.chat.shopBadge": "Shop",
   "order.chat.starter.change": "Can I change something?",
+  "order.chat.starter.again": "Can I order it again?",
+  "order.chat.starter.why": "Why was it cancelled?",
   "order.chat.starter.someoneElse": "Someone else will collect it",
   "order.chat.starter.whenReady": "When can I collect it?",
   "order.chat.starter.door": "Please leave it at the door",
