@@ -107,4 +107,8 @@ check tools block Selldone's `/buy/` API only (the dev server serves modules fro
 
 ## Releases
 
-None yet. `1.0.0` will be the first upload (it creates the Layout id).
+| Version | Date | Layout | Deploy | What |
+| --- | --- | --- | --- | --- |
+| 1.0.0 | 13 Nov 2026 | **36** | 630 | The whole set B port (every page and state), 354 files. Verified on the server: `extracting:false`, `error:null`, js and css sha256 match `dist/app`; release `layouts/36/releases/01M7975E2GC0598DRBEW943SZ8/app` on cdn.selldone.com. **Uploaded only**: not attached to any shop or domain (bakini.selldone.shop, Bakio's default Layout 8 untouched) |
+
+Next uploads: `bash "../new-shop-kits/upload-guard.sh" env LAYOUT_ID=36 SELLDONE_CLI=… SELLDONE_CLI_SRC="../selldone-cli-src" bash scripts/release.sh <version> desk`, then `node --use-system-ca scripts/kalio-verify-deploy.mjs <cli> 36 dist/app`.
