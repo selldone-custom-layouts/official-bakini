@@ -90,8 +90,18 @@ circle and circle-ar, contrast dark/light/yellow/Arabic, contrast with the drawe
 underline dark/light. A buyer walk on the live shop at 1440 (dark) and 390 (light) went home →
 collection → filter → product → add to bag → drawer → bag page → checkout → courier with a window,
 worldwide, pickup → delivery sheet → address sheet → missing-items state; the fixes it led to are
-1.0.1's. The payment window was opened from the page on dev (Selldone's buy endpoint blocked); no
-order was placed by Claude (the owner's rule: each live test order needs the owner's own OK).
+1.0.1's. The payment window was opened from the page on dev (Selldone's buy endpoint blocked) in
+that walk.
+
+**Test orders (live, 13 November 2026, on the owner's request in the kit prompt: "test as a buyer up
+to a cash-on-delivery test order and give the order numbers").** Placed by the coordinator in the
+app's browser with fake data only (Test Buyer, `@example.com`, +1 415 555 01xx, 1 Test Street, note
+"Test order, do not ship"): **SM-39** (basket 30072, desktop, Bakio courier · Morning, $2.81) and
+**SM-40** (basket 30073, phone 375 px, pickup at the counter · Morning, $3.15). Both cancelled the
+same minute through the process center (`baskets.reject.set`, `ShopOwnerFault`, express). They led to
+1.0.2–1.0.4: the order tab named the basket (SM-30072) instead of the label (SM-39); the bag and
+checkout tabs said "Open bag"; a pickup order showed "Local delivery within 100 km", the cash
+gateway's courier words and "leave it at the door"; a cancelled order still said "Pay on delivery".
 
 **Notes for the next person.**
 
@@ -121,9 +131,12 @@ order was placed by Claude (the owner's rule: each live test order needs the own
 | --- | --- | --- | --- | --- |
 | 1.0.0 | 13 Nov 2026 | **36** | 630 | The whole set B port (every page and state), 354 files. Verified on the server: `extracting:false`, `error:null`, js and css sha256 match `dist/app`; release `layouts/36/releases/01M7975E2GC0598DRBEW943SZ8/app` on cdn.selldone.com. Pinned on domain 1247 (bakini.selldone.shop) by the coordinator; Bakio's default Layout 8 untouched |
 | 1.0.1 | 13 Nov 2026 | 36 | 631 | The shop address keeps the home for tracking and unknown query keys (`?utm_source=`, `fbclid`, `gclid`, `?v=`); only listing keys (`search`, `filter`, `sort`, `dir`, `page`, `offset`, `vendor_id`, `tags`) open the listing. From the live buyer walk: a way with no fee reads Free in every receipt (drawer, bag, checkout; Selldone sends −1 for its SOD switch); the buyer's phone and note stay theirs across pickup and back, and leaving pickup clears the counter's address; the delivery sheet takes the focus and closes on Esc; the payment window sits in the middle on wide screens; the phone address sheet fills the window; coupon strip in Noir; bag rows step with − at 1. Verified (extracting false, error null, js/css match), pinned on domain 1247 (`api.shops.domains.layout.set`, exact version), live re-checked |
+| 1.0.2 | 13 Nov 2026 | 36 | 632 | From test order SM-39: the order tab says the shop's label ("Order SM-39", Molino's `titleOrder()`), not the basket id in the address (SM-30072); the bag and checkout tabs read "Your bag" and "Checkout", not "Open bag". Verified, pinned, live title checked after in-app navigation |
+| 1.0.3 | 13 Nov 2026 | 36 | 633 | From test order SM-40 (pickup): no "Local delivery within 100 km" under the counter, "Pay at pickup $X" with "You pay in cash at the counter when you collect it." instead of the cash gateway's courier words, chat starters about collecting; Arabic for the new words. Verified, pinned, live |
+| 1.0.4 | 13 Nov 2026 | 36 | 634 | A cancelled order says "Nothing to pay" (its cash-on-delivery transaction stays pending) and its chat starters ask why it was cancelled or to order again. Verified, pinned, live on both cancelled test orders; home, `?utm_source=`, search, bag, journal and About re-checked |
 
 **GitHub (13 November 2026).** `https://github.com/selldone-custom-layouts/official-bakini`: `main`
-(default) is this branch at the live 1.0.1 plus docs; the `assets` branch holds the journal's cover
+(default) is this branch at the live release plus docs; the `assets` branch holds the journal's cover
 images (`blog-covers/blog-900001..4.webp`, linked from the shop's four articles) and is never
 rewritten. Push protection flagged Selldone's public Mapbox `pk.` key in the storefront history
 (no `sk.` key anywhere); it was allowed with the `push-protection-bypasses` API as for the other

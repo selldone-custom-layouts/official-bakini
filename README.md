@@ -91,6 +91,8 @@ Live shop **bakini.selldone.shop**, Layout version **1.0.1**, 13 November 2026 (
 | Underline (dark, light) | no line under any word or icon, at rest or on hover | 8 pages | **0** |
 
 Each also ran on the dev server before the release. A buyer walk on desktop and phone (home, collection, filter, product, add to bag, drawer, bag page, checkout, courier with a window, worldwide shipping, pickup, the delivery sheet, the address sheet, the payment window) was checked by eye against the mockups.
+
+**Test orders.** Two cash-on-delivery orders were placed on the live shop with fake details and cancelled from the shop's order desk: **SM-39** (desktop, courier with a morning window) and **SM-40** (phone, pickup at the counter). They led to 1.0.2–1.0.4: the order tab shows the same number as the page, the bag and checkout tabs read "Your bag" and "Checkout", a pickup order talks about the counter (not a courier or a door), and a cancelled order says "Nothing to pay".
 <!-- TESTS:END -->
 
 ## Languages
