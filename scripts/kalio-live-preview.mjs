@@ -19,7 +19,8 @@
  */
 import http from "node:http";
 
-const SHOP = "https://molino.myselldone.com";
+/* the shop address (any of its domains); set SHOP_URL for another shop */
+const SHOP = process.env.SHOP_URL || "https://bakini.selldone.shop";
 const RELEASE = /^[0-9A-Z]{26}$/i.test(process.argv[2] || "") ? process.argv[2] : null;
 const PORT = Number(process.argv[RELEASE ? 3 : 2] || process.env.PORT || 9125);
 

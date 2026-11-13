@@ -48,7 +48,7 @@ Then release and check:
 1. Build and upload: `LAYOUT_ID=<your Layout id> SELLDONE_CLI_SRC=<cli clone> bash scripts/release.sh <new version> desk`. Put the version live.
 2. Check the contrast on the live shop. It must print `TOTAL 0`:
    ```sh
-   PAGES="home=/,category=/<a category>,product=/product/<id>" node components/theme-switcher/tools/contrast-audit.cjs https://<your shop> ".bk-footer"
+   PAGES="home=/,category=/<a category>,product=/product/<id>" node components/theme-switcher/tools/contrast-audit.cjs https://<your shop> ".ftr"
    ```
 3. If the visitor switcher is on, also run the kit's `ring-sweep.cjs` in light and dark (`STORAGE='{"bakini-theme":"{\\"palette\\":\\"caramel\\",\\"mode\\":\\"light\\"}"}'`). The switcher is the Theme row in the footer.
 
