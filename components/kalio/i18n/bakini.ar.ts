@@ -548,6 +548,8 @@ const ar: Record<string, string> = {
   "bakini.n.ord.orderWord": "الطلب",
   "bakini.n.ord.paid": "دُفع {amount}",
   "bakini.n.ord.payOnDelivery": "الدفع عند الاستلام {amount}",
+  "bakini.n.ord.payAtCounter": "تدفع نقدًا عند الكاونتر حين تستلم طلبك.",
+  "bakini.n.ord.payAtPickup": "الدفع عند الاستلام من الكاونتر {amount}",
   "bakini.n.ord.payment": "الدفع",
   "bakini.n.ord.pickAt": "استلمه من",
   "bakini.n.ord.pickupT": "الاستلام من المحل",

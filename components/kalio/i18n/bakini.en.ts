@@ -512,6 +512,8 @@ const en: Record<string, string> = {
   "bakini.n.ord.orderWord": "Order",
   "bakini.n.ord.paid": "Paid {amount}",
   "bakini.n.ord.payOnDelivery": "Pay on delivery {amount}",
+  "bakini.n.ord.payAtCounter": "You pay in cash at the counter when you collect it.",
+  "bakini.n.ord.payAtPickup": "Pay at pickup {amount}",
   "bakini.n.ord.payment": "Payment",
   "bakini.n.ord.pickAt": "Pick it up at",
   "bakini.n.ord.pickupT": "Pickup",

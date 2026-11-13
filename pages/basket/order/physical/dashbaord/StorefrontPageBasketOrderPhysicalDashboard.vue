@@ -158,7 +158,7 @@ import { t } from "../../../../../components/kalio/i18n/kalio-i18n";
 import NxIcon from "../../../../../components/bakini/noir/NxIcon.vue";
 import { hueOf, loadNoir, shopFacts, wayTitle } from "../../../../../components/bakini/noir/noir";
 import { money } from "../../../../../components/region-switcher/region";
-import { wayWindowLine } from "../../../../../components/bakini/noir/buy/noir-cart";
+import { isPickupWay, wayWindowLine } from "../../../../../components/bakini/noir/buy/noir-cart";
 
 /* The size of a variant in words: its volume, weight, pack, colour or style. */
 function sizeOf(variant) {
@@ -258,6 +258,10 @@ export default {
       }
       const cod = (b.transactions_pending || []).find((x) => x.cod) || (b.status === "COD" ? {} : null);
       if (cod) {
+        /* Collected at the counter: paid there, not to a courier (the cash
+           gateway's own words are about the courier). */
+        if (isPickupWay(b.delivery_info))
+          return { icon: "cash", title: t("bakini.n.ord.payAtPickup", "Pay at pickup {amount}", { amount: this.amount(b.price) }), line: t("bakini.n.ord.payAtCounter", "You pay in cash at the counter when you collect it.") };
         const facts = shopFacts(this.shop);
         return { icon: "cash", title: t("bakini.n.ord.payOnDelivery", "Pay on delivery {amount}", { amount: this.amount(b.price) }), line: facts.gateway?.description || cod.name || "" };
       }

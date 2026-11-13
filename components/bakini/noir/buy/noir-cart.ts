@@ -62,9 +62,17 @@ export function wayWindowLine(shop: any, info: any): string {
 export function wayReach(shop: any, given: any): string {
   const item = { ...(given || {}), ...shopWay(shop, given) };
   if (item.message) return item.message;
+  /* A pickup has no reach: the counter's address and hours say it (Bakio's
+     pickup order SM-40 read "Local delivery within 100 km", 13 Nov 2026). */
+  if (item.type === ShopTransportations.Pickup.code) return "";
   if (item.type === "Global") return t("bakini.n.co.anywhere", "Ships anywhere");
   if (item.distance && item.distance < 1000) return t("bakini.n.co.within", "Local delivery within {km} km of the bakery", { km: item.distance });
   return "";
+}
+
+/** True when the order or bill is collected at a pickup counter. */
+export function isPickupWay(info: any): boolean {
+  return info?.type === ShopTransportations.Pickup.code;
 }
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;

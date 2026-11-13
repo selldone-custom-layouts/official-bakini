@@ -96,7 +96,14 @@ import { BRAND } from "../kalio-brand";
 import { t } from "../i18n/kalio-i18n";
 
 /* A few common questions to start from, in the visitor's language. */
-function starters() {
+function starters(pickup = false) {
+  /* Collected at the counter: questions about collecting it, not a door. */
+  if (pickup)
+    return [
+      t("order.chat.starter.whenReady", "When can I collect it?"),
+      t("order.chat.starter.change", "Can I change something?"),
+      t("order.chat.starter.someoneElse", "Someone else will collect it"),
+    ];
   return [
     t("order.chat.starter.when", "When will it arrive?"),
     t("order.chat.starter.change", "Can I change something?"),
@@ -128,7 +135,7 @@ export default {
 
   computed: {
     starters() {
-      return starters();
+      return starters(this.basket?.delivery_info?.type === "Pickup");
     },
     messages() {
       return (this.basket?.chat || []).map((message, index) => ({
