@@ -75,6 +75,22 @@ Everything is read live from the shop: its title (drawn as the wordmark), collec
 Every check runs one browser at a time against the live shop, at 1440px and 390px, dark and light, a custom yellow brand colour and Arabic (right to left). Each is delivered at **TOTAL 0**.
 
 <!-- TESTS:START -->
+Live shop **bakini.selldone.shop**, Layout version **1.0.1**, 13 November 2026 (`bash scripts/run-checks.sh https://bakini.selldone.shop <logs>`):
+
+| Check | What it looks for | Where | TOTAL |
+| --- | --- | --- | --- |
+| Ring sweep (dark, light, Arabic) | every selection ring and edge drawn inside its box | 16 pages (home, collection, deals, search, two products, compare, journal, About, Terms, Privacy, Contact, FAQ, 404, bag, account), 8 in Arabic | **0** |
+| Card edge (kit, Noir dark, Noir light) | no card's content touching its edge | home, collection, search, deals, journal, About, FAQ, Contact | **0** |
+| Corner clear | the + and the eye on a card never on or touching words | 8 pages, 390 to 1920px | **0** |
+| Circle fit (long prices, Arabic) | the words in the Save roundel stay inside it | home, deals | **0** |
+| Contrast (dark, light, yellow brand, Arabic) | every word at 4.5:1 or better on what is really behind it | 16 pages, 8 for yellow and Arabic | **0** |
+| Contrast with layers open | the bag drawer or phone menu open, the sign-in sheet open | home | **0** |
+| Bag audit (dark, light) | the drawer, the bag page and the address sheet | 1440 and 390 | **0** |
+| Currency | every price, filter and total follows the picked currency at once | home, collection, product, deals, drawer, menus | **0** |
+| Box check (dark, light, Arabic) | no photo over words, icon rows aligned | every page and open state | **0** |
+| Underline (dark, light) | no line under any word or icon, at rest or on hover | 8 pages | **0** |
+
+Each also ran on the dev server before the release. A buyer walk on desktop and phone (home, collection, filter, product, add to bag, drawer, bag page, checkout, courier with a window, worldwide shipping, pickup, the delivery sheet, the address sheet, the payment window) was checked by eye against the mockups.
 <!-- TESTS:END -->
 
 ## Languages

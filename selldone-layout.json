@@ -5,16 +5,26 @@
   "summary": "A single bakery dressed as a dark pastry theatre: a deep stage with ivory type, deep caramel for every action and gold for small accents; Instrument Serif over Manrope; a glass header with the collections, search, a language and currency pill and the bag; a cinematic hero, the collections as tall dark cards, a bento of the shop's real facts, selection rows, a compare strip, deals and the journal; real spec filters, a product page with a sticky buy column and Buy together, a bag drawer, glass checkout cards and a desk account. Dark by default, with an ivory light mode and a footer Theme row.",
   "live": "https://bakini.selldone.shop",
   "cover": "docs/screenshots/cover.jpg",
-  "screenshots": [],
+  "screenshots": [
+    "docs/screenshots/desktop-home.jpg",
+    "docs/screenshots/desktop-category.jpg",
+    "docs/screenshots/desktop-product.jpg",
+    "docs/screenshots/desktop-cart.jpg",
+    "docs/screenshots/phone-home.jpg",
+    "docs/screenshots/phone-category.jpg",
+    "docs/screenshots/phone-product.jpg",
+    "docs/screenshots/phone-cart.jpg"
+  ],
   "tags": [
     "bakery",
     "patisserie",
     "single-vendor",
     "dark",
     "luxury",
-    "caramel"
+    "caramel",
+    "rtl"
   ],
   "package": "bakini-noir-patisserie",
   "base": "selldone/storefront",
-  "status": "in progress"
+  "status": "live"
 }

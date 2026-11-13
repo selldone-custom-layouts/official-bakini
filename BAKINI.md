@@ -83,6 +83,16 @@ dark/light. The light pages (category, product, checkout, bag drawer, sign-in, p
 compared by eye with `shots/*-b-*-light.png`, the dark ones with every `shots/*-b-1440/390.png`. The
 check tools block Selldone's `/buy/` API only (the dev server serves modules from `/buy/` folders).
 
+**Checks (live, 13 November 2026, 1.0.1 on bakini.selldone.shop, the same runner with the live
+address).** All 24 TOTAL 0: ring dark/light/Arabic, card-edge kit and Noir dark/light, corner,
+circle and circle-ar, contrast dark/light/yellow/Arabic, contrast with the drawer or menu open
+(dark/light) and with the sign-in sheet open, cart dark/light, currency, box dark/light/Arabic,
+underline dark/light. A buyer walk on the live shop at 1440 (dark) and 390 (light) went home →
+collection → filter → product → add to bag → drawer → bag page → checkout → courier with a window,
+worldwide, pickup → delivery sheet → address sheet → missing-items state; the fixes it led to are
+1.0.1's. The payment window was opened from the page on dev (Selldone's buy endpoint blocked); no
+order was placed by Claude (the owner's rule: each live test order needs the owner's own OK).
+
 **Notes for the next person.**
 
 - *Account.* `.env`'s `VITE_KALIO_ACCOUNT=desk` is no longer read: `ACCOUNT_STYLE` is always `"home"`
