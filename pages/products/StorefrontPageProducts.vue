@@ -38,6 +38,10 @@ import NxHome from "../../components/bakini/noir/NxHome.vue";
 import NxListing from "../../components/bakini/noir/shop/NxListing.vue";
 import { StorefrontSeo } from "../../helpers/StorefrontSeo";
 
+/* The query keys that ask for the listing. Anything else in the address
+   (utm_*, fbclid, gclid, a cache-buster…) keeps the home. */
+const LISTING_KEYS = ["search", "filter", "sort", "dir", "page", "offset", "vendor_id", "tags"];
+
 function filterOf(query: any): any {
   try {
     return query?.filter ? JSON.parse(query.filter) : null;
@@ -72,7 +76,11 @@ export default {
       return !!filterOf(this.$route.query)?.only_has_discount && !this.search_query && !this.category_name;
     },
     show_home() {
-      return String(this.$route.name || "").startsWith(window.$storefront.routes.SHOP_PAGE) && !this.vendor_id && !Object.keys(this.$route.query || {}).length;
+      return (
+        String(this.$route.name || "").startsWith(window.$storefront.routes.SHOP_PAGE) &&
+        !this.vendor_id &&
+        !Object.keys(this.$route.query || {}).some((k) => LISTING_KEYS.includes(k))
+      );
     },
   },
 
