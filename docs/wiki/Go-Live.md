@@ -6,7 +6,7 @@ Before you go live, check that your shop's **OAuth client id** is set up (see [S
 
 ## 1. Attach the version to one domain (how Bakini runs)
 
-A shop can show a different Layout on one of its domains. Bakini lives only on `bakini.selldone.shop`, one domain of the shop Bakio, while the shop's default and its other addresses carry another Layout.
+A shop can show a different Layout on one of its domains. Bakini started on `bakini.selldone.shop` alone, one domain of the shop Bakio, while the shop's default and its other addresses still carried the older Layout. Once the owner was happy, it became the shop default as well (step 2).
 
 **In the dashboard:** shop › **Domains**, open the domain's settings and pick your Layout and the exact version for that domain.
 
@@ -24,7 +24,7 @@ Your Layout id is the one printed after your first upload. Pin the **exact** ver
 
 Set that domain's own Home to the shop page too: `selldone_shop_home_domain_set` with `domain_address` and `page_id: "shop"`.
 
-Then **don't** pin the shop default when you release this Layout: that would move every other address too. Check both addresses' `window.sdShopLayout` after a release.
+While you test on one domain, **don't** pin the shop default when you release this Layout: that would move every other address too. Check both addresses' `window.sdShopLayout` after a release.
 
 ## 2. The whole shop (when you are ready)
 
@@ -46,6 +46,8 @@ A custom domain **keeps its own Layout selection**. It can stay on an old versio
 - Check every address after a release: `name.myselldone.com`, your custom domain, and any sub-domain.
 
 Skip this for a domain that carries its own Layout on purpose.
+
+Or keep the domain's own pin. Bakio kept `bakini.selldone.shop` pinned on its own, so it survives if the default is ever switched back. The cost is that every release is pinned twice: on the shop default and on that domain, both with the same exact version.
 
 ## 3. Home = Shop page
 

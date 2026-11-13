@@ -40,7 +40,7 @@
 - dark by default, with an ivory light mode; a **Theme** row in the footer on the showcase shop: five palettes (Caramel, Cassis, Pistachio, Sapphire, Gold-safe), a **Custom colour** and Light / Dark;
 - it says **bag**, never cart; every word it writes is in English and Arabic (right to left).
 
-It runs on **[bakini.selldone.shop](https://bakini.selldone.shop)**, one address of the Selldone shop Bakio. Selldone lets each domain of a shop carry its own Layout.
+It runs on **[bakini.selldone.shop](https://bakini.selldone.shop)** and is the default Layout of the Selldone shop Bakio. It went live on that one address first, because Selldone lets each domain of a shop carry its own Layout, and then became the whole shop's.
 
 Everything is read live from the shop: its title (drawn as the wordmark), collections, products, prices and savings, delivery ways and their time windows, the pickup counter and its hours, the way to pay, the articles. Nothing about Bakio is written in the code, so another bakery that imports the Layout gets its own data. Selldone's own bag, checkout, payments and orders keep working underneath.
 

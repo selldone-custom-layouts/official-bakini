@@ -4,7 +4,7 @@
 
 **Bakini Noir Patisserie** is a custom storefront **Layout** for Selldone shops: a single bakery dressed as a dark pastry theatre. A deep stage with ivory type, one deep caramel for every action, gold for small accents and hairlines, Instrument Serif over Manrope, and every pastry a cut-out floating on a dark plate under a warm halo. A stage hero, the collections as tall dark cards, a bento of the shop's real facts, a compare strip and a deals band; real spec filters; a product page with a sticky buy column and Buy together; a bag drawer, glass checkout cards, a desk account and a 404 inside the Layout. Dark is the default, with an ivory light mode. It says **bag**, never cart. Every word it writes is in English and Arabic (right to left).
 
-It runs on **[bakini.selldone.shop](https://bakini.selldone.shop)**, one address of the Selldone shop Bakio: one shop, one Layout per domain (see [Go Live](Go-Live)). It is built on the official [selldone/storefront](https://github.com/selldone/storefront), so Selldone's basket, checkout, payments and orders keep working underneath a new design.
+It runs on **[bakini.selldone.shop](https://bakini.selldone.shop)**, the default Layout of the Selldone shop Bakio. It went live on that one domain first, then became the whole shop's (see [Go Live](Go-Live)). It is built on the official [selldone/storefront](https://github.com/selldone/storefront), so Selldone's basket, checkout, payments and orders keep working underneath a new design.
 
 ## Start here
 

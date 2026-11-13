@@ -1,6 +1,6 @@
 # Bakini Noir — Selldone Layout
 
-**Bakini Noir Patisserie** (package `bakini-noir-patisserie`, first version `1.0.0`) is a Layout of the Selldone shop **Bakio** (shop 15740, xapi name `bakio`, `https://bakio.myselldone.com`): one pâtisserie at 1 The Embarcadero, San Francisco, selling individual pastries for courier delivery, worldwide shipping and pickup, cash on delivery, guest checkout. Single seller, English only, USD only. It is to run on **bakini.selldone.shop** (domain 1247) only; the shop's default Layout (id 8) is never changed.
+**Bakini Noir Patisserie** (package `bakini-noir-patisserie`, first version `1.0.0`) is a Layout of the Selldone shop **Bakio** (shop 15740, xapi name `bakio`, `https://bakio.myselldone.com`): one pâtisserie at 1 The Embarcadero, San Francisco, selling individual pastries for courier delivery, worldwide shipping and pickup, cash on delivery, guest checkout. Single seller, English only, USD only. It went live on **bakini.selldone.shop** (domain 1247) first. On the morning of 13 Nov 2026 the owner made it the **shop default** too (`api.shops.layout.set` `{mode:"private", layout_id:36, layout_version:"1.0.4"}`), so `bakio.myselldone.com` and every inheriting address show it. Domain 1247 keeps its own explicit pin, so **a new version is pinned in both places**: the shop default and domain 1247, each with the exact version. The previous default was Layout 8 "Bakio Bakery Storefront" with no version pinned (it served 1.0.29); to go back: `{mode:"private", layout_id:8, layout_version:null}`.
 
 The design is mockup set **B, "Noir"** (`../bakio-design/`: `BRIEF-ALL-PAGES.md`, the 27 `<page>-b.html` pages, their source in `b/`, screenshots in `shots/`): an Apple-Store-like product theatre on a dark stage. Build brief: `../bakio-design/BUILD-NOIR.md`.
 
@@ -134,6 +134,13 @@ gateway's courier words and "leave it at the door"; a cancelled order still said
 | 1.0.2 | 13 Nov 2026 | 36 | 632 | From test order SM-39: the order tab says the shop's label ("Order SM-39", Molino's `titleOrder()`), not the basket id in the address (SM-30072); the bag and checkout tabs read "Your bag" and "Checkout", not "Open bag". Verified, pinned, live title checked after in-app navigation |
 | 1.0.3 | 13 Nov 2026 | 36 | 633 | From test order SM-40 (pickup): no "Local delivery within 100 km" under the counter, "Pay at pickup $X" with "You pay in cash at the counter when you collect it." instead of the cash gateway's courier words, chat starters about collecting; Arabic for the new words. Verified, pinned, live |
 | 1.0.4 | 13 Nov 2026 | 36 | 634 | A cancelled order says "Nothing to pay" (its cash-on-delivery transaction stays pending) and its chat starters ask why it was cancelled or to order again. Verified, pinned, live on both cancelled test orders; home, `?utm_source=`, search, bag, journal and About re-checked |
+
+**Shop default (13 Nov 2026, morning, the owner's OK).** 1.0.4 pinned as Bakio's default
+(`api.shops.layout.set`, exact version). `local` and `sub` (bakio.myselldone.com) inherit it, and
+domain 1247 keeps its own 1.0.4 pin. Both addresses' `"saved"` block names release
+`01M79FE60H1WBNAS7X4E7F4W4T`. Checked on bakio.myselldone.com: the home, a product, search, the
+journal, About, Contact and the bag, plus the home at 375 px with no sideways scroll. No link
+points at another host.
 
 **GitHub (13 November 2026).** `https://github.com/selldone-custom-layouts/official-bakini`: `main`
 (default) is this branch at the live release plus docs; the `assets` branch holds the journal's cover
