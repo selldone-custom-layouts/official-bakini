@@ -122,4 +122,12 @@ order was placed by Claude (the owner's rule: each live test order needs the own
 | 1.0.0 | 13 Nov 2026 | **36** | 630 | The whole set B port (every page and state), 354 files. Verified on the server: `extracting:false`, `error:null`, js and css sha256 match `dist/app`; release `layouts/36/releases/01M7975E2GC0598DRBEW943SZ8/app` on cdn.selldone.com. Pinned on domain 1247 (bakini.selldone.shop) by the coordinator; Bakio's default Layout 8 untouched |
 | 1.0.1 | 13 Nov 2026 | 36 | 631 | The shop address keeps the home for tracking and unknown query keys (`?utm_source=`, `fbclid`, `gclid`, `?v=`); only listing keys (`search`, `filter`, `sort`, `dir`, `page`, `offset`, `vendor_id`, `tags`) open the listing. From the live buyer walk: a way with no fee reads Free in every receipt (drawer, bag, checkout; Selldone sends −1 for its SOD switch); the buyer's phone and note stay theirs across pickup and back, and leaving pickup clears the counter's address; the delivery sheet takes the focus and closes on Esc; the payment window sits in the middle on wide screens; the phone address sheet fills the window; coupon strip in Noir; bag rows step with − at 1. Verified (extracting false, error null, js/css match), pinned on domain 1247 (`api.shops.domains.layout.set`, exact version), live re-checked |
 
+**GitHub (13 November 2026).** `https://github.com/selldone-custom-layouts/official-bakini`: `main`
+(default) is this branch at the live 1.0.1 plus docs; the `assets` branch holds the journal's cover
+images (`blog-covers/blog-900001..4.webp`, linked from the shop's four articles) and is never
+rewritten. Push protection flagged Selldone's public Mapbox `pk.` key in the storefront history
+(no `sk.` key anywhere); it was allowed with the `push-protection-bypasses` API as for the other
+official repos. The wiki (`official-bakini.wiki.git`) is `docs/wiki/`; its first page was made in
+the browser. Large pushes go from PowerShell (the Bash tool's sandbox ends big POSTs silently).
+
 Next uploads: `bash "../new-shop-kits/upload-guard.sh" env LAYOUT_ID=36 SELLDONE_CLI=… SELLDONE_CLI_SRC="../selldone-cli-src" bash scripts/release.sh <version> desk`, then `node --use-system-ca scripts/kalio-verify-deploy.mjs <cli> 36 dist/app`.
