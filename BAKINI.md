@@ -72,6 +72,17 @@ value or long sentences. The listing works on the live catalogue (one read of `p
 (`.pc-ph` inset 4px 6px 24px, the zoom 1.3), with the quick-look eye in the empty top corner and the
 + in the free lower corner.
 
+**Checks (dev, 13 November 2026, `bash scripts/run-checks.sh http://localhost:9135 <logs>`).** One
+browser at a time, 1440 and 390, dark and light (Caramel), plus a custom yellow and Arabic. Every one
+TOTAL 0: ring-sweep dark/light/Arabic (16 pages, or the 8 main ones in Arabic), card-edge (kit) and
+the Noir card-edge dark/light, corner-clear, circle-fit (long prices) and circle-fit in Arabic,
+contrast dark/light/yellow/Arabic, contrast with the bag drawer or phone menu open (dark/light) and
+with the sign-in sheet open, cart-audit dark/light (drawer, bag page, address sheet), currency-check,
+box-check dark/light/Arabic (photos never on words, icon rows aligned) and underline-check
+dark/light. The light pages (category, product, checkout, bag drawer, sign-in, phone menu) were
+compared by eye with `shots/*-b-*-light.png`, the dark ones with every `shots/*-b-1440/390.png`. The
+check tools block Selldone's `/buy/` API only (the dev server serves modules from `/buy/` folders).
+
 **Notes for the next person.**
 
 - *Account.* `.env`'s `VITE_KALIO_ACCOUNT=desk` is no longer read: `ACCOUNT_STYLE` is always `"home"`
