@@ -109,7 +109,7 @@ const en: Record<string, string> = {
   "basket.delivery.method": "{name}.",
   "basket.delivery.methodFree": "{name}, free.",
   "basket.delivery.pickupFrom": "Pickup from {place}.",
-  "basket.pageTitle": "Open bag",
+  "basket.pageTitle": "Your bag",
   "basket.pay.cannotPay": "This bag cannot be paid yet.",
   "basket.pay.checkEmail": "Check your email address.",
   "basket.pay.label": "Pay",

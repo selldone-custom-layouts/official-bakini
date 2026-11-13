@@ -285,6 +285,7 @@ const ar: Record<string, string> = {
   "bakini.n.co.stepDelivery": "التوصيل",
   "bakini.n.co.stepDetails": "البيانات",
   "bakini.n.co.stepPayment": "الدفع",
+  "bakini.n.co.pageTitle": "إتمام الشراء",
   "bakini.n.co.steps": "خطوات إتمام الشراء",
   "bakini.n.co.total": "الإجمالي",
   "bakini.n.co.whereService": "إلى أين نأتي؟",

@@ -1133,6 +1133,13 @@ export default {
    */
 
   watch: {
+    /* The tab names the stage: "Your bag", then "Checkout" (not "Open bag"). */
+    nx_stage: {
+      handler(stage) {
+        this.setPageTitle(stage === "checkout" ? t("bakini.n.co.pageTitle", "Checkout") : t("basket.pageTitle", "Your bag"));
+      },
+      immediate: true,
+    },
     /* The delivery sheet takes the focus (Tab and Esc work at once) and gives
        it back to "All details" on close; Esc closes it wherever the focus is. */
     delivery_sheet(open) {
@@ -1192,7 +1199,6 @@ export default {
 
     this.type = this.$route.params.type;
 
-    this.setPageTitle(t("basket.pageTitle", "Open bag")); // Set Page Title!
 
     GtagEcommerce.MeasuringCheckoutSteps(this.basket, 0, "");
 

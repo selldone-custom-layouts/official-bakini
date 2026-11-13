@@ -261,6 +261,7 @@ const en: Record<string, string> = {
   "bakini.n.co.stepDelivery": "Delivery",
   "bakini.n.co.stepDetails": "Details",
   "bakini.n.co.stepPayment": "Payment",
+  "bakini.n.co.pageTitle": "Checkout",
   "bakini.n.co.steps": "Checkout steps",
   "bakini.n.co.total": "Total",
   "bakini.n.co.whereService": "Where should we come?",
