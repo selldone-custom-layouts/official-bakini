@@ -102,6 +102,12 @@ import NxIcon from "../../../components/bakini/noir/NxIcon.vue";
 import { shopWay, wayIcon } from "../../../components/bakini/noir/buy/noir-cart";
 import { wayTitle } from "../../../components/bakini/noir/noir";
 
+/* The buyer's own delivery address, kept per basket while a pickup counter stands in for it (Selldone copies
+   the counter into the receiver). Going back from the pickup to a delivery way brings it back, instead of an
+   empty address and a "Add a delivery address" before Place order. Module level: this component is drawn
+   again for the delivery sheet and the card, and both must see it. */
+const homeAddress = new Map<string | number, Record<string, any>>();
+
 export default defineComponent({
   name: "SCartShippingOptions",
   mixins: [TemplateMixin, ProductMixin, MapMixin],
@@ -530,12 +536,19 @@ export default defineComponent({
     },
     pickPickup(pickup) {
       const me = this.buyerBits();
+      /* leaving a delivery address for the counter: keep the buyer's address for a way back */
+      const r = this.basket?.receiver_info;
+      if (!me.point && r?.address && this.basket?.id != null) homeAddress.set(this.basket.id, JSON.parse(JSON.stringify(r)));
       this.$emit("pickupSelected", { pickup: { ...pickup, phone: me.phone || pickup.phone, message: me.message || pickup.message }, transportation: this.pickup_transportation });
     },
     pickWay(item) {
-      /* leaving pickup: the counter's address is not a delivery address */
+      /* leaving pickup: the counter's address is not a delivery address; the buyer's own address comes back
+         when they had one before the pickup (with the phone and note they gave since) */
       const me = this.buyerBits();
-      if (me.point && this.basket) this.basket.receiver_info = { phone: me.phone, message: me.message };
+      if (me.point && this.basket) {
+        const home = this.basket.id != null ? homeAddress.get(this.basket.id) : null;
+        this.basket.receiver_info = home ? { ...home, phone: me.phone || home.phone, message: me.message || home.message } : { phone: me.phone, message: me.message };
+      }
       this.$emit("update:transportation", item);
       this.$nextTick(() => this.setBasketConfig());
     },
