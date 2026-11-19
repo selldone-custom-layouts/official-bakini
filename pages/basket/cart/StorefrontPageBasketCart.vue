@@ -1359,11 +1359,17 @@ export default {
 
     setBasketConfig() {
       this.PENDING_UPDATE = true;
+      /* (19 Nov 2026, as Galio 1.0.7) the bill is not settled while an update waits for the throttle or is on its
+         way. The answer to an update is dropped when a newer one waits (below), so without this the receipt and
+         Place order kept the old bill for up to ~4 s after a way change (shipping, then pickup: the shipping fee
+         stayed on a pickup order). */
+      this.busy_save = true;
       this.setBasketConfigThrottle();
     },
     setBasketConfigThrottle: throttle(
       function setBasketConfig() {
         this.PENDING_UPDATE = false;
+        this.ly_inflight = (this.ly_inflight || 0) + 1;
 
         this.busy_save = true;
         //console.log("🧨 setBasketConfig");
@@ -1411,7 +1417,9 @@ export default {
             NotificationService.showLaravelError(error);
           })
           .finally(() => {
-            this.busy_save = false;
+            this.ly_inflight = Math.max(0, (this.ly_inflight || 0) - 1);
+            /* settled only when no update waits and none is on its way */
+            if (!this.PENDING_UPDATE && !this.ly_inflight) this.busy_save = false;
           });
       },
       3000,
